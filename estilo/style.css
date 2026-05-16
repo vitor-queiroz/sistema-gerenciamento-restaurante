@@ -68,6 +68,7 @@ body{
 
 .conteudo-capa{
     font-family: 'Encode Sans Condensed', sans-serif;
+    font-weight: 800;
     position: absolute;
     top: 50%;
     left: 5%;
@@ -97,7 +98,8 @@ body{
     font-weight: bold;
     display: inline-block;
 }
- /*PARTE DO SOBRE DOMPALLADAR*/
+ 
+/*PARTE DO SOBRE DOMPALLADAR*/
 
 .sobre{
     display: flex;
@@ -168,4 +170,76 @@ body{
     color: white;
     font-size: 1.3rem;
     font-weight: 600;
+}
+
+/*PARTE SOBRE O CARDAPIO*/
+
+.secao-cardapio{
+
+    background-color: #61300d;
+    padding: 5rem 2rem; /*tirar a imagem "grudada na parede
+    displa*/
+    display: flex;
+    justify-content: center;
+}
+
+.container-cardapio{
+    display: flex;
+    align-items: center;
+    max-width: 1200px;
+    }
+
+.imagem-cardapio{
+       flex: 1; /*se houver vários elementos lado a lado,
+       todos com flex: 1, eles vão dividir o espaço igualmente.*/
+       min-width: 50%;
+}
+
+.imagem-cardapio img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    box-shadow: 0 15px 40px ;
+}
+
+.conteudo-cardapio{
+    flex: 1 1 50%;
+    padding: 4rem 5rem;
+    color: white;
+    font-family: 'Encode Sans Condesed', sans-serif;
+}
+
+.conteudo-cardapio h2{
+    font-family: 'Encode Sans Condesed', sans-serif;
+    font-size: 4.2rem;
+    line-height: 1.05;
+    margin-bottom: 3rem;
+    font-weight: 750;
+}
+
+.conteudo-cardapio h2 span{
+    color: #d4a017;
+    display: block;
+    margin-top: 0.5rem;
+    font-weight: bold;
+}
+
+.botao-veja-aqui{
+    display: inline-block;
+    background-color: #1C1108;
+    color: white;
+    text-decoration: none;
+    padding: 1rem 2.5rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border: 2px solid #f2c94c;
+    border-radius: 4px;
+    transition: all 0.3s;
+}
+
+.botao-veja-aqui:hover {
+    background-color: #f2c94c;
+    color: #1C1108;
+    transform: translateY(-3px);
 }
