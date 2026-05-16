@@ -9,7 +9,7 @@ html{
 }
 
 body{
-    background-color: rgb(153, 95, 18);
+    background-color: #61300d;
 }
 
 .navegacao{
@@ -102,33 +102,46 @@ body{
 .sobre{
     display: flex;
     justify-content: center;
-    padding: 13rem 2rem;
+    padding: 10rem 2rem;
 }
 
 .camada-sobre{
-    background-color: #2e2c2c;
+    background-color: #111;
     width: 100%;
-    max-width: 900px;
-    padding: 4rem; 
-    border-radius: 10px;
+    max-width: 650px;
+    padding: 3rem; 
+    border-radius: 11px;
 }
 
 .numero-sobre{
     color: #d4a017;
-    font-size: 8rem;
+    font-size: 10rem;
     font-weight: bold;
+    line-height: 1;
+}
+
+.topo-sobre{
+    display: flex;
+    align-items: flex-start;
+    gap: 2rem;
+}
+
+.textos-sobre{
+    display: flex;
+    flex-direction: column;
 }
 
 .titulo-sobre{
     color: white;
-    font-size: 7rem;
-    line-height: 1.2;
-    margin: 1rem 0;
+    font-size: 3rem;
+    line-height: 1.1;
+    font-weight: bold;
 }
 
 .nome-restaurante{
     color:#d4a017;
-    font-size: 3.5rem;
+    font-size: 3rem;
+    margin-top: 1rem;
     margin-bottom: 3rem;
 }
 
@@ -146,13 +159,13 @@ body{
 
 .item span{
     color: #d4a017;
-    font-size: 2.5rem;
+    font-size: 2rem;
     font-weight: bold;
-    min-width: 60px;
+    min-width: 45px;
 }
 
 .item p{
     color: white;
-    font-size: 1.4rem;
+    font-size: 1.3rem;
     font-weight: 600;
 }
