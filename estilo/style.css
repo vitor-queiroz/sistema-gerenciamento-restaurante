@@ -30,6 +30,8 @@ body{
 }
 
 .menu-inicio{
+    font-family: 'Instrument Serif', sans-serif ;
+    font-weight: 700;
     text-decoration: none;
     color: rgb(250, 205, 4);
     display: flex;
@@ -65,6 +67,7 @@ body{
 
 
 .conteudo-capa{
+    font-family: 'Encode Sans Condensed', sans-serif;
     position: absolute;
     top: 50%;
     left: 5%;
@@ -93,4 +96,63 @@ body{
     padding: 1rem 2rem;
     font-weight: bold;
     display: inline-block;
+}
+ /*PARTE DO SOBRE DOMPALLADAR*/
+
+.sobre{
+    display: flex;
+    justify-content: center;
+    padding: 13rem 2rem;
+}
+
+.camada-sobre{
+    background-color: #2e2c2c;
+    width: 100%;
+    max-width: 900px;
+    padding: 4rem; 
+    border-radius: 10px;
+}
+
+.numero-sobre{
+    color: #d4a017;
+    font-size: 8rem;
+    font-weight: bold;
+}
+
+.titulo-sobre{
+    color: white;
+    font-size: 7rem;
+    line-height: 1.2;
+    margin: 1rem 0;
+}
+
+.nome-restaurante{
+    color:#d4a017;
+    font-size: 3.5rem;
+    margin-bottom: 3rem;
+}
+
+.lista{
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.item{
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.item span{
+    color: #d4a017;
+    font-size: 2.5rem;
+    font-weight: bold;
+    min-width: 60px;
+}
+
+.item p{
+    color: white;
+    font-size: 1.4rem;
+    font-weight: 600;
 }
