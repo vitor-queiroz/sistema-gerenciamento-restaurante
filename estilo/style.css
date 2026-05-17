@@ -317,3 +317,57 @@ color: #f2c94c;
 font-size: 1.6rem;
 letter-spacing: 4px;
 }
+
+/*------PARTE DO DELIVERY--------*/
+
+.secao-delivery{
+    background-color: #61300d;
+    padding: 6rem 2rem;
+}
+
+.container-delivery{
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2.5rem;
+}
+
+.card-delivery{
+position: relative;
+border-radius: 12px;
+overflow:hidden;
+box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
+}
+
+.card-delivery img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.sobreposicao-delivery{
+    position: absolute;
+    top:45px;
+    left: 45px;
+}
+
+.botao-delivery{
+    display: inline-block;
+    background-color: rgba(0, 0, 0, 0.88);
+    color: white;
+    text-decoration: none;
+    font-size: 1.6rem;
+    font-weight: 700;
+    padding: 14px 32px;
+    border: 2px solid #b48803;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;    
+}
+
+.botao-delivery:hover{
+    background-color: #ddab08;
+    color: #000000;
+    transform: translateX(-3px);
+}
