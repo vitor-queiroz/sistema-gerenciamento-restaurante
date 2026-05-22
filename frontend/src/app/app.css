@@ -1,0 +1,388 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body{
+    background-color: #61300d;
+}
+
+.navegacao{
+    position: fixed;
+    background: rgba(15, 9, 1, 0.8);
+    width: 100%;
+    z-index: 100;
+    padding: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.menu{
+    display: flex;
+    list-style: none;
+    gap: 3rem;
+}
+
+.menu-inicio{
+    font-family: 'Instrument Serif', sans-serif ;
+    font-weight: 700;
+    text-decoration: none;
+    color: rgb(250, 205, 4);
+    display: flex;
+    justify-content: left;
+}
+
+.menu-link{
+    text-decoration: none;
+    color: wheat;
+    font-weight: 550;
+    position: relative;
+    padding: 0.5rem;
+}
+
+.cabecalho{
+    min-height: 100vh;
+    
+}
+
+.bloco-capa{
+    width: 100%;
+    height: 100vh;
+    position: relative;
+    overflow: hidden;
+}
+
+.inicio-capa{
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /*preenche todo o espaco, sem defomar*/
+    display: block;
+}
+
+
+.conteudo-capa{
+    font-family: 'Encode Sans Condensed', sans-serif;
+    font-weight: 800;
+    position: absolute;
+    top: 50%;
+    left: 5%;
+    transform: translateY(-50%);
+}
+
+.logo{
+    color: #d4a017;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.titulo-capa{
+    color: white;
+    font-size: 5rem;
+    line-height: 1.1;
+    margin-bottom: 2rem;
+}
+
+.botao-reserva{
+    text-decoration: none;
+    color: white;
+    font-size: 30px;
+    background-color: rgba(0, 0, 0, 0.575);
+    border: 2px solid #d4a017;
+    padding: 1rem 2rem;
+    font-weight: bold;
+    display: inline-block;
+    transition: all 0.4s ease;
+
+    cursor: pointer; /*senão o botão “parece texto”*/
+    position: relative;
+    z-index: 10;/*quando algo fica por cima do botão*/
+}
+
+.botao-reserva:hover{
+    background-color: #000000;
+    color: #d4a017;
+    transform: translateY(-12px);
+}
+ 
+/*PARTE DO SOBRE DOMPALLADAR*/
+
+.sobre{
+    display: flex;
+    justify-content: center;
+    padding: 10rem 2rem;
+    background-color: #61300d;
+}
+
+.camada-sobre{
+    background-color: #111;
+    width: 100%;
+    max-width: 650px;
+    padding: 3rem; 
+    border-radius: 11px;
+}
+
+.numero-sobre{
+    color: #d4a017;
+    font-size: 10rem;
+    font-weight: bold;
+    line-height: 1;
+}
+
+.topo-sobre{
+    display: flex;
+    align-items: flex-start;
+    gap: 2rem;
+}
+
+.textos-sobre{
+    display: flex;
+    flex-direction: column;
+}
+
+.titulo-sobre{
+    color: white;
+    font-size: 3rem;
+    line-height: 1.1;
+    font-weight: bold;
+}
+
+.nome-restaurante{
+    color:#d4a017;
+    font-size: 3rem;
+    margin-top: 1rem;
+    margin-bottom: 3rem;
+}
+
+.lista{
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.item{
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.item span{
+    color: #d4a017;
+    font-size: 2rem;
+    font-weight: bold;
+    min-width: 45px;
+}
+
+.item p{
+    color: white;
+    font-size: 1.3rem;
+    font-weight: 600;
+}
+
+/*PARTE SOBRE O CARDAPIO*/
+
+.secao-cardapio{
+
+    background-color: #61300d;
+    padding: 5rem 2rem; /*tirar a imagem "grudada na parede*/
+    display: flex;
+    justify-content: center;
+}
+
+.container-cardapio{
+    display: flex;
+    align-items: center;
+    max-width: 1200px;
+    }
+
+.imagem-cardapio{
+       flex: 1; /*se houver vários elementos lado a lado,
+       todos com flex: 1, eles vão dividir o espaço igualmente.*/
+       min-width: 50%;
+}
+
+.imagem-cardapio img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    box-shadow: 0 15px 40px ;
+}
+
+.conteudo-cardapio{
+    flex: 1 1 50%;
+    padding: 4rem 5rem;
+    color: white;
+    font-family: 'Encode Sans Condensed', sans-serif;
+}
+
+.conteudo-cardapio h2{
+    font-family: 'Encode Sans Condensed', sans-serif;
+    font-size: 4.2rem;
+    line-height: 1.05;
+    margin-bottom: 3rem;
+    font-weight: 750;
+}
+
+.conteudo-cardapio h2 span{
+    color: #d4a017;
+    display: block;
+    margin-top: 0.5rem;
+    font-weight: bold;
+}
+
+.botao-veja-aqui{
+    display: inline-block;
+    background-color: #1C1108;
+    color: white;
+    text-decoration: none;
+    padding: 1rem 2.5rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border: 2px solid #f2c94c;
+    border-radius: 4px;
+    transition: all 0.3s;
+
+    cursor: pointer; /*senão o botão “parece texto”*/
+    position: relative;
+    z-index: 10;/*quando algo fica por cima do botão*/
+}
+
+.botao-veja-aqui:hover {
+    background-color: #f2c94c;
+    color: #1C1108;
+    transform: translateY(-3px);
+}
+
+/*PARTE DE AVALIAÇÕES*/
+
+.avaliacao{
+    background: #61300d;
+    padding: 6rem 2rem;
+    color: white;
+
+}
+
+.container-avaliacao{
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.titulo-avaliacao{
+    padding: 4rem 4rem;
+    color: white;
+    display: flex;
+    justify-content: center;
+    font-size: 3.2rem;
+    font-weight: 700;
+}
+
+/* TEMMM UM --- S --- AQUI NO CARD*/
+.cards-avaliacao{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 2.5rem;
+}
+
+.card-avaliacao{
+    background-color: #2a160b;
+    border-radius: 12px;
+    overflow: hidden; 
+    transition: transform 0.5s ease;
+    will-change: transform;
+}
+
+.card-avaliacao:hover{
+    transform: translateY(-12px);
+}
+
+.card-avaliacao img{
+    width: 100%;
+    height: 420px;
+    object-fit: cover;
+    object-position: 10%;
+    /*object-fit: cover;  alinha a imagem certinha denntro do 'quadrado'*/
+    display: block;
+}
+
+.conteudo-avaliacao{
+    padding: 1.8rem 1.6rem 2rem;
+    text-align: center;
+}
+
+.conteudo-avaliacao h3{
+    font-size: 2rem;
+    margin-bottom: 0.8rem;
+    color: #ffffff;
+}
+
+.conteudo-avaliacao p{
+    font-size: 1.2rem;
+    line-height: 1.5;
+    margin-bottom: 1.2rem;
+}
+
+.estrelas{
+color: #f2c94c;
+font-size: 1.6rem;
+letter-spacing: 4px;
+}
+
+/*------PARTE DO DELIVERY--------*/
+
+.secao-delivery{
+    background-color: #61300d;
+    padding: 6rem 2rem;
+}
+
+.container-delivery{
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2.5rem;
+}
+
+.card-delivery{
+position: relative;
+border-radius: 12px;
+overflow:hidden;
+box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
+}
+
+.card-delivery img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.sobreposicao-delivery{
+    position: absolute;
+    top:45px;
+    left: 45px;
+}
+
+.botao-delivery{
+    display: inline-block;
+    background-color: rgba(0, 0, 0, 0.88);
+    color: white;
+    text-decoration: none;
+    font-size: 1.6rem;
+    font-weight: 700;
+    padding: 14px 32px;
+    border: 2px solid #b48803;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;    
+
+    cursor: pointer; /*senão o botão “parece texto”*/
+    position: relative;
+    z-index: 10;/*quando algo fica por cima do botão*/
+}
+
+.botao-delivery:hover{
+    background-color: #ddab08;
+    color: #000000;
+    transform: translateX(-3px);
+}
