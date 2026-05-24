@@ -18,6 +18,8 @@
 
         <input
           type="text"
+          [(ngModel)]="nome"
+          name="nome"
           placeholder="Digite seu nome">
       </div>
 
@@ -27,14 +29,18 @@
 
         <input
           type="tel"
-          placeholder="(11) 99999-9999">
+          [(ngModel)]="telefone"
+          name="telefone"
+          maxlength="11"
+          pattern="[0-9]{11}"
+          placeholder="11999999999">
       </div>
 
       <div class="grupo-input">
 
         <label>Quantidade de pessoas</label>
 
-        <select>
+        <select [(ngModel)]="pessoas" name="pessoas">
           <option>1 Pessoa</option>
           <option>2 Pessoas</option>
           <option>3 Pessoas</option>
@@ -49,7 +55,8 @@
 
         <label>Data da reserva</label>
 
-        <input type="date">
+        <input type="date"
+        [(ngModel)]="data" name="data">
 
       </div>
 
@@ -57,7 +64,7 @@
 
         <label>Horário</label>
 
-        <select>
+        <select [(ngModel)]="horario" name="horario">
           <option>18:00</option>
           <option>19:00</option>
           <option>20:00</option>
@@ -71,7 +78,7 @@
 
         <label>Mesa desejada</label>
 
-        <select>
+        <select [(ngModel)]="mesa" name="mesa">
           <option>Área interna</option>
           <option>Área externa</option>
           <option>Próximo à janela</option>
@@ -80,7 +87,9 @@
 
       </div>
 
-      <button class="botao-confirmar">
+      <button class="botao-confirmar"
+      type="button"
+      (click)="salvarReserva()">
         Confirmar Reserva
       </button>
 
