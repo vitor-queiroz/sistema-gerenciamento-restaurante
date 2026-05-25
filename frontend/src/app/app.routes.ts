@@ -4,7 +4,7 @@ import { Home } from './pages/home/home';
 import { Reservas } from './pages/reservas/reservas';
 
 // importando rotas para conseguir cadastrar os produtos
-import { Produtos } from './pages/produtos/produtos';
+import { Produtos } from './pages/admin/produtos/produtos';
 
 export const routes: Routes=[
     {
@@ -20,7 +20,7 @@ export const routes: Routes=[
         component: Reservas
     },
     {
-        path: 'produtos',
+        path: 'admin/produtos',
         component: Produtos
     }
 ];

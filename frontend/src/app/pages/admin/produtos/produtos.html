@@ -1,0 +1,63 @@
+<h1>Cadastrar Produto</h1>
+
+<input
+  type="text"
+  [(ngModel)]="nome"
+  placeholder="Nome do produto">
+
+<br><br>
+
+<input
+  type="number"
+  [(ngModel)]="preco"
+  placeholder="Preço">
+
+<br><br>
+
+<textarea
+  [(ngModel)]="descricao"
+  placeholder="Descrição do produto">
+</textarea>
+
+<br><br>
+
+<button (click)="salvarProduto()">
+
+  Salvar Produto
+
+</button>
+
+<hr>
+
+<h2>Produtos cadastrados</h2>
+
+<div
+  *ngFor="let produto of produtos">
+
+  <h3>{{ produto.nome }}</h3>
+
+  <p>{{ produto.descricao }}</p>
+
+  <strong>
+    R$ {{ produto.preco }}
+  </strong>
+
+  <br><br>
+
+  <button
+    (click)="editarProduto(produto)">
+
+    Editar
+
+  </button>
+
+  <button
+    (click)="excluirProduto(produto.id)">
+
+    Excluir
+
+  </button>
+
+  <hr>
+
+</div>
