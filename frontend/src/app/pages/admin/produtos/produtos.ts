@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 
 import { FormsModule } from '@angular/forms';
 
-import { Firestore, collection, addDoc, collectionData, doc, deleteDoc, updateDoc } from '@angular/fire/firestore';
+import { Firestore, collection, addDoc, getDocs, doc, deleteDoc, updateDoc } from '@angular/fire/firestore';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -21,58 +21,105 @@ export class Produtos {
 
   produtos: any[] = [];
 
-  constructor(private firestore: Firestore) {
+   constructor(private firestore: Firestore) {
 
-    const produtosRef = collection(this.firestore, 'produtos');
-
-      collectionData(produtosRef, {
-        idField: 'id'
-      }). subscribe((dados) => {
-
-          this.produtos = dados;
-      });
-
-    }
-
-      
-      async salvarProduto() {
-
-    const produtosRef = collection(this.firestore, 'produtos');
-
-    await addDoc(produtosRef, {
-      nome: this.nome,
-      preco: this.preco,
-      descricao: this.descricao
-    });
-
-    alert('Produto salvo com sucesso!');
-        this.nome = '';
-        this.preco = 0;
-        this.descricao = '';
-
+    this.carregarProdutos();
 
   }
 
+  async carregarProdutos() {
 
-      async excluirProduto(id: string){
+    const produtosRef = collection(
+      this.firestore,
+      'produtos'
+    );
 
-        const produtoDoc= doc(
-          this.firestore, 'produtos', id);
+    const snapshot = await getDocs(produtosRef);
+
+    this.produtos = snapshot.docs.map((item: any) => {
+
+      const dados = item.data();
       
-            await deleteDoc(produtoDoc); /* PARTE DE EXCLUIR PRODUTOS*/
-        }
 
-      async editarProduto(produto: any){
+      return{
 
-          const novoNome = prompt('Novo nome do produto', produto.nome); /* Esse (prompt) é uma função que abre uma "caixinha" no navegador pedindo uma informação pro usuário*/
-      
-          if(!novoNome) return;
+      id: item.id,
+      nome: dados.nome,
+      preco: dados.preco,
+      descricao: dados.descricao
+      };
+    });
 
-          const produtoDoc = doc(this.firestore, 'produtos', produto.id);
+  }
 
-          await updateDoc(produtoDoc, {
-            nome: novoNome
-          });
-          
-        }    
-        }
+  async salvarProduto() {
+
+    if(!this.nome || !this.preco || !this.descricao){
+
+      alert('Preencha todos os campos');
+      return;
+    }
+
+    const produtosRef = collection(
+      this.firestore,
+      'produtos'
+    );
+
+    await addDoc(produtosRef, {
+
+      nome: this.nome,
+      preco: this.preco,
+      descricao: this.descricao
+
+    });
+
+    await this.carregarProdutos();
+
+    alert('Produto salvo com sucesso!');
+
+    this.nome = '';
+    this.preco = 0;
+    this.descricao = '';
+
+  }
+
+  async excluirProduto(id: string) {
+
+    const produtoDoc = doc(
+      this.firestore,
+      'produtos',
+      id
+    );
+
+    await deleteDoc(produtoDoc);
+
+    await this.carregarProdutos();
+
+  }
+
+  async editarProduto(produto: any) {
+
+    const novoNome = prompt(
+      'Novo nome do produto',
+      produto.nome
+    );
+
+    if (!novoNome) return;
+
+    const produtoDoc = doc(
+      this.firestore,
+      'produtos',
+      produto.id
+    );
+
+    await updateDoc(produtoDoc, {
+
+      nome: novoNome
+
+    });
+
+    await this.carregarProdutos();
+
+  }
+
+}

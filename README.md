@@ -1,7 +1,7 @@
 # Sistema de Gerenciamento de Restaurante 🍴
 
 ### Qual a proposta deste sistema?
-- Temos como objetivo desenvolver um sistema completo para restaurantes, integrando tanto a experiênciad o cliente quanto a operação interna do "estabelecimento.
+- Temos como objetivo desenvolver um sistema completo para restaurantes, integrando tanto a experiência do cliente quanto a operação interna do "estabelecimento.
 
   ## Qual foi a nossa ideia?
 - A proposta do projeto vai além de apenas realizar pedidos
@@ -24,13 +24,15 @@
 ## O que já está pronto? 💪
 - [x] Toda estrutura inicial das telas
 - [x] Organização incial do projeto
+- [x] Integração com o Firebase
+- [x] Integração com o FireStore
+- [x] Cadastro, edição e exclusão dos produtos
 
 ## O que precisa ser feito? 😬
-- [ ] estrutura completa do HTML e CSS
-- [ ] Sistema de reservas
-- [ ] Área de delivery
-- [ ] Integração com banco de dados
-- [ ] Sistema operacional interno
+- [ ] Finalização completa dos layouts
+- [ ] Área completa do delivery 
+- [ ] Integração entre pedidos e cozinha
+- [ ] Painel administrativo interno
 
 #### Preview de algumas das telas: 
 <img width="829" height="429" alt="image" src="https://github.com/user-attachments/assets/690deff7-a07d-43d1-85b4-13f717a51365" />
@@ -47,7 +49,7 @@
 [DOM PALLADAR](https://vitor-queiroz.github.io/sistema-gerenciamento-restaurante/)
 
 ## Quem está por trás disso: 🔍
-[LinkedIn Vitor](www.linkedin.com/in/vitor-queiroz-b95224348)
+[LinkedIn Vitor](https://www.linkedin.com/in/vitor-queiroz-b95224348)
 
 ---
 [LinkedIn Kelvin](https://www.linkedin.com/in/kelvin-moises-24a849366/)
