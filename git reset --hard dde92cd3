@@ -1,0 +1,27 @@
+[33mdde92cd3[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m adiciona organização de componentes do setor 'administrativo'
+[33m5269193c[m atualiza componente de 'produtos'
+[33me62f27be[m adiciona CRUD inicial de produtos com o Firestore
+[33m67b33fcc[m implementa funcionalidade de 'reservas' já integrada ao Firestore
+[33m9ffd3698[m Adiciona integração da página de 'reservas'
+[33maa72eb0e[m Implementa integração com 'Firebase Firestore' e as rotas no Angular
+[33m256ae379[m add Firebase
+[33m5b125902[m atualiza local README.md
+[33mea98d7f8[m Merge branch 'main' of https://github.com/vitor-queiroz/sistema-gerenciamento-restaurante
+[33m52b1ed9a[m "migração" do HTML/CSS para o Angular
+[33m73a986d7[m atualiza README.md
+[33mfe852af1[m atualiza README.md
+[33m12013875[m adiciona estilização da seção 'delivery'
+[33mbfe049d4[m adiciona seção 'delivery' no HTML
+[33mb72e1472[m ajustes na seção 'avaliações'
+[33m09084e8d[m adiciona seção de avaliações
+[33m50ad198f[m adiciona seção de cardápio
+[33mb019cb9f[m ajustes e alinhamento do 'sobre'
+[33m9bc1d229[m adiciona seção 'sobre' no HTML
+[33m6cda7b63[m atualiza README.md
+[33m6f11897f[m adiciona estrutura inicial da homepage do restaurante
+[33mda0f003a[m adiciona estrutura html
+[33ma01b1751[m add html + nav
+[33mdc1be518[m atualiza README.md teste1
+[33m5f231479[m atualiza, README.md
+[33m53822503[m Create README.md
+[33m761ba4bd[m Initial commit

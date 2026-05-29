@@ -2,6 +2,7 @@
 
 <input
   type="text"
+  name="nome"
   [(ngModel)]="nome"
   placeholder="Nome do produto">
 
@@ -9,19 +10,20 @@
 
 <input
   type="number"
+  name="preco"
   [(ngModel)]="preco"
   placeholder="Preço">
 
 <br><br>
 
 <textarea
+  name="descricao"
   [(ngModel)]="descricao"
-  placeholder="Descrição do produto">
-</textarea>
+  placeholder="Descrição do produto"></textarea>
 
 <br><br>
 
-<button (click)="salvarProduto()">
+<button type="button" (click)="salvarProduto()">
 
   Salvar Produto
 
