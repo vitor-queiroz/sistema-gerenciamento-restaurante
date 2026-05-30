@@ -5,14 +5,19 @@ import { Reservas } from './pages/reservas/reservas';
 
 // import { Painel } from './admin/painel/painel';
 import { Cozinha } from './admin/cozinha/cozinha';
-import { Garcom } from './admin/cozinha/garcom/garcom';
-import { Estoque } from './admin/cozinha/estoque/estoque';
-import { Esg } from './admin/cozinha/esg/esg';
+import { Garcom } from './admin/cozinha/operacoes/garcom/garcom';
+import { Estoque } from './admin/cozinha/operacoes/estoque/estoque';
+import { Esg } from './admin/cozinha/operacoes/esg/esg';
 
-import { Cliente } from './admin/cozinha/cliente/cliente';
+import { Cliente } from './admin/cozinha/operacoes/cliente/cliente';
 
 // importando rotas para conseguir cadastrar os produtos
-import { Produtos } from './admin/cozinha/produtos/produtos';
+import { Produtos } from './admin/gerente/produtos/produtos';
+import { Pedido } from './admin/cozinha/operacoes/pedidos/pedido';
+import { Acessos } from './admin/gerente/acessos/acessos';
+import { Funcionarios } from './admin/gerente/funcionarios/funcionarios';
+import { Relatorios } from './admin/gerente/relatorios/relatorios';
+
 
 export const routes: Routes=[
     {
@@ -27,33 +32,48 @@ export const routes: Routes=[
         path:'reservas',
         component: Reservas
     },
-    
-    {
-        path: 'admin/produtos',
-        component: Produtos
-    },
 
     {
-        path: 'admin/cozinha',
-        component: Cozinha
-    },
-
-    {
-        path: 'admin/garcom',
+        path: 'admin/cozinha/operacoes/garcom',
         component: Garcom
     },
 
     {
-       path: 'admin/cliente',
+       path: 'admin/cozinha/operacoes/cliente',
        component: Cliente
     },
     {
-       path: 'admin/estoque',
+       path: 'admin/cozinha/operacoes/estoque',
        component: Estoque
     },
     
     {
-       path: 'admin/esg',
+       path: 'admin/cozinha/operacoes/esg',
        component: Esg
+    },
+    {
+       path: 'admin/cozinha/operacoes/pedidos',
+       component: Pedido
+    },
+    {
+        path: 'admin/cozinha',
+        component: Cozinha
+    },
+    
+    {
+       path: 'admin/cozinha/gerente/acessos',
+       component: Acessos
+    },
+    {
+        path: 'admin/cozinha/gerente/produtos',
+        component: Produtos
+    },
+    {
+        path: 'admin/cozinha/gerente/funcionarios',
+        component: Funcionarios
+    },
+    {
+       path: 'admin/cozinha/gerente/relatorios',
+       component: Relatorios
     }
    ];
