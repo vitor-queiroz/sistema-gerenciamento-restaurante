@@ -18,6 +18,9 @@ import { Acessos } from './admin/gerente/acessos/acessos';
 import { Funcionarios } from './admin/gerente/funcionarios/funcionarios';
 import { Relatorios } from './admin/gerente/relatorios/relatorios';
 
+import { Login } from './admin/login/login';
+import { Gerente } from './admin/gerente/gerente';
+
 
 export const routes: Routes=[
     {
@@ -75,5 +78,24 @@ export const routes: Routes=[
     {
        path: 'admin/cozinha/gerente/relatorios',
        component: Relatorios
+    },
+    {
+        path: 'admin/login',
+        component: Login 
+    },
+    // AQUI ABAIXO EU ESTOU ADICIONANDO PARA CONSEGUIR FAZER O LOGIN ASSIM QUE EU ACESSAR O MEU ----SISTEMA ADM-----
+    {
+        path: 'admin/login/operacoes',
+        component: Login
+    },
+    {
+        path: 'admin/login/gerente',
+        component: Login
+    },
+
+    // AQUI SERVE PARA ABRIR A MINHA TELA INCIAL DA PARTE DO GERENTE 
+    {
+        path: 'admin/cozinha/gerente',
+        component: Gerente
     }
    ];
