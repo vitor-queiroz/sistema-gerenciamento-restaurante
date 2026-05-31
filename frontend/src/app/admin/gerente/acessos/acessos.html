@@ -1,1 +1,73 @@
-<p>acessos works!</p>
+<h1>Controle de Acessos</h1>
+
+<div class="cards">
+
+  <div class="card">
+    <h3>Funcionários</h3>
+    <p>12</p>
+  </div>
+
+  <div class="card">
+    <h3>Novos no mês</h3>
+    <p>3</p>
+  </div>
+
+  <div class="card">
+    <h3>Desligamentos</h3>
+    <p>1</p>
+  </div>
+
+</div>
+
+    <h2>Funcionários</h2>
+
+<div *ngFor="let funcionario of funcionarios">
+
+  <h3>{{ funcionario.nome }}</h3>
+
+  <p>{{ funcionario.email }}</p>
+
+  <p>Status: {{ funcionario.status }}</p>
+
+   <label>
+  <input type="checkbox" [(ngModel)]="funcionario.estoque">
+  Estoque
+</label>
+
+<br>
+
+<label>
+  <input type="checkbox" [(ngModel)]="funcionario.pedidos">
+  Pedidos
+</label>
+
+<br>
+
+<label>
+  <input type="checkbox" [(ngModel)]="funcionario.cliente">
+  Cliente
+</label>
+
+<br>
+
+<label>
+  <input type="checkbox" [(ngModel)]="funcionario.garcom">
+  Garçom
+</label>
+
+<br>
+
+<label>
+  <input type="checkbox" [(ngModel)]="funcionario.esg">
+  ESG
+</label>
+
+<br><br>
+
+<button>
+  Aprovar acesso
+</button>
+
+<hr>
+
+</div>

@@ -1,1 +1,33 @@
-<p>funcionarios works!</p>
+<h1>Cadastro de Funcionários</h1>
+
+<input
+  type="text"
+  [(ngModel)]="nome"
+  placeholder="Nome do funcionário">
+
+<br><br>
+
+<input
+  type="email"
+  [(ngModel)]="email"
+  placeholder="E-mail">
+
+<br><br>
+
+<button (click)="salvarFuncionario()">
+  Salvar Funcionário
+</button>
+
+<hr>
+
+<h2>Funcionários cadastrados</h2>
+
+<div *ngFor="let funcionario of funcionarios">
+
+  <h3>{{ funcionario.nome }}</h3>
+
+  <p>{{ funcionario.email }}</p>
+
+  <hr>
+
+</div>
