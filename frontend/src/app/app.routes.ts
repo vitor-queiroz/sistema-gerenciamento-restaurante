@@ -20,6 +20,7 @@ import { Relatorios } from './admin/gerente/relatorios/relatorios';
 
 import { Login } from './admin/login/login';
 import { Gerente } from './admin/gerente/gerente';
+import { Operacoes } from './admin/cozinha/operacoes/operacoes';
 
 
 export const routes: Routes=[
@@ -97,5 +98,9 @@ export const routes: Routes=[
     {
         path: 'admin/cozinha/gerente',
         component: Gerente
+    },
+    {
+        path: 'admin/cozinha/operacoes',
+        component: Operacoes
     }
    ];
