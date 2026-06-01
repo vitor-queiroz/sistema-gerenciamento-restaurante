@@ -19,55 +19,65 @@
 
 </div>
 
-    <h2>Funcionários</h2>
+<h2>Funcionários</h2>
 
 <div *ngFor="let funcionario of funcionarios">
 
   <h3>{{ funcionario.nome }}</h3>
 
-  <p>{{ funcionario.email }}</p>
+  <p><strong>E-mail:</strong> {{ funcionario.email }}</p>
 
-  <p>Status: {{ funcionario.status }}</p>
+  <p><strong>Status:</strong> {{ funcionario.status }}</p>
 
-   <label>
-  <input type="checkbox" [(ngModel)]="funcionario.estoque">
-  Estoque
-</label>
+  <button (click)="abrirPermissoes(funcionario.id)">⚙️ Permissões</button>
 
-<br>
+  <div *ngIf="funcionarioAberto === funcionario.id">
 
-<label>
-  <input type="checkbox" [(ngModel)]="funcionario.pedidos">
-  Pedidos
-</label>
+    <label>
+      <input type="checkbox" [(ngModel)]="funcionario.estoque">
+      Estoque
+    </label>
 
-<br>
+    <br>
 
-<label>
-  <input type="checkbox" [(ngModel)]="funcionario.cliente">
-  Cliente
-</label>
+    <label>
+      <input type="checkbox" [(ngModel)]="funcionario.pedidos">
+      Pedidos
+    </label>
 
-<br>
+    <br>
 
-<label>
-  <input type="checkbox" [(ngModel)]="funcionario.garcom">
-  Garçom
-</label>
+    <label>
+      <input type="checkbox" [(ngModel)]="funcionario.cliente">
+      Cliente
+    </label>
 
-<br>
+    <br>
 
-<label>
-  <input type="checkbox" [(ngModel)]="funcionario.esg">
-  ESG
-</label>
+    <label>
+      <input type="checkbox" [(ngModel)]="funcionario.garcom">
+      Garçom
+    </label>
 
-<br><br>
+    <br>
 
-<button>
-  Aprovar acesso
-</button>
+    <label>
+      <input type="checkbox" [(ngModel)]="funcionario.esg">
+      ESG
+    </label>
 
-<hr>
+    <br><br>
 
+    <button 
+    (click)="aprovarAcesso(funcionario.id)">
+      Aprovar acesso
+    </button>
+
+    <button 
+    (click)="voltarParaPendente(funcionario.id)">
+      Voltar para Pendente
+    </button>
+
+    <hr>
+  </div>
 </div>

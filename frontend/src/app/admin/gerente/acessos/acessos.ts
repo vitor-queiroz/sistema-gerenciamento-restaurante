@@ -10,8 +10,39 @@ import { FormsModule } from '@angular/forms';
 })
 export class Acessos {
 
+  funcionarioAberto = '';
+
+  abrirPermissoes(id: string){
+
+    if(this.funcionarioAberto === id){
+      this.funcionarioAberto = '';
+      return;
+    }
+
+    this.funcionarioAberto = id;
+  }
+
+
+    aprovarAcesso(id: string){
+      const funcionario = this.funcionarios.find(f => f.id === id);
+
+      if(!funcionario) return;
+
+      funcionario.status = 'Ativo'
+    }
+
+
+    voltarParaPendente(id: string) {
+      const funcionario = this.funcionarios.find(f => f.id === id);
+
+      if (!funcionario) return;
+
+      funcionario.status = 'Pendente';
+    }
+
   funcionarios = [
     {
+      id: '1',
       nome: 'Kelvin Moises',
       email: 'kelvin@gmail.com',
       status: 'Ativo',
@@ -23,6 +54,7 @@ export class Acessos {
       esg: false
     },
     {
+      id: '2',
       nome: 'Washington Lopes',
       email: 'washwash@gmail.com',
       status: 'Ativo',
@@ -34,6 +66,7 @@ export class Acessos {
       esg: false
     },
     {
+      id: '3',
       nome: 'Thiago Silva',
       email: 'thiago@gmail.com',
       status: 'Pendente',
