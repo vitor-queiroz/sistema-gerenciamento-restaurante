@@ -54,7 +54,9 @@ export class Acessos {
       const ref = doc(this.firestore, 'funcionarios', id);
 
       await updateDoc(ref, {status: 'Ativo'});
-      
+
+          await this.carregarFuncionarios();
+          this.funcionarioAberto='';
             alert('Acesso aprovado com sucesso!');
     }
 
@@ -63,8 +65,12 @@ export class Acessos {
       const ref = doc(this.firestore, 'funcionarios', id);
 
       await updateDoc(ref, {status: 'Pendente'});
+
+        await this.carregarFuncionarios();
     }
 
+    
+    
     async salvarPermissoes(funcionario: any) {
 
       const ref = doc(this.firestore, 'funcionarios', funcionario.id);
@@ -76,6 +82,8 @@ export class Acessos {
         estoque: funcionario.estoque,
         esg: funcionario.esg
   });
+
+        await this.carregarFuncionarios();
         alert('Permissões salvas com sucesso!')
 }
 
