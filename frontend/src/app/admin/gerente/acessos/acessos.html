@@ -19,15 +19,22 @@
 
 </div>
 
-<h2>Funcionários</h2>
+<h2>FUNCIONARIOS TESTE 1111111111111111</h2>
+<p>Total: {{ funcionarios.length }}</p>
 
-<div *ngFor="let funcionario of funcionarios">
+<div *ngFor="let funcionario of funcionarios">  
 
   <h3>{{ funcionario.nome }}</h3>
 
-  <p><strong>E-mail:</strong> {{ funcionario.email }}</p>
+  <p>
+    <strong>E-mail:</strong> 
+    {{ funcionario.email }}
+  </p>
 
-  <p><strong>Status:</strong> {{ funcionario.status }}</p>
+  <p>
+    <strong>Status:</strong> 
+    {{ funcionario.status }}
+  </p>
 
   <button (click)="abrirPermissoes(funcionario.id)">⚙️ Permissões</button>
 
@@ -77,6 +84,11 @@
     (click)="voltarParaPendente(funcionario.id)">
       Voltar para Pendente
     </button>
+      
+    <button (click)="salvarPermissoes(funcionario)">
+    💾 Salvar permissões
+    </button>
+ 
 
     <hr>
   </div>
