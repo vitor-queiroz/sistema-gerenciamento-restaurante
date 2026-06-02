@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Firestore, collection, doc, updateDoc } from '@angular/fire/firestore';
@@ -12,15 +12,19 @@ import { getDocs } from '@angular/fire/firestore';
   templateUrl: './acessos.html',
   styleUrl: './acessos.css',
 })
-export class Acessos {
+export class Acessos{
 
   funcionarios: any[] = [];
 
   funcionarioAberto = '';
 
-  constructor(private firestore: Firestore){
+  constructor(private firestore: Firestore, private cdr: ChangeDetectorRef){
+  
     this.carregarFuncionarios();
-  }
+  
+}
+
+    pendentes(){return this.funcionarios.filter(f=> f.status === 'Pendente').length}
 
     
   async carregarFuncionarios(){
@@ -34,8 +38,8 @@ export class Acessos {
     this.funcionarios = snapshot.docs.map(item => ({id: item.id, ...item.data()
   }));
 
-      console.log('Length:', this.funcionarios.length);
-      console.log(this.funcionarios);
+      this.cdr.detectChanges();
+      
     }
 
   abrirPermissoes(id: string){
@@ -67,6 +71,9 @@ export class Acessos {
       await updateDoc(ref, {status: 'Pendente'});
 
         await this.carregarFuncionarios();
+        this.funcionarioAberto='';
+
+              alert('Funcionário voltou para pendente!')
     }
 
     
@@ -87,5 +94,20 @@ export class Acessos {
         alert('Permissões salvas com sucesso!')
 }
 
-}
+
+
+      novosNoMes(){
+        const hoje = new Date();
+        const mesAtual = hoje.getMonth();
+        const anoAtual = hoje.getFullYear();
+
+        return this.funcionarios.filter(funcionario => {if (!funcionario.dataCadastro) return false;
+
+          const data = funcionario.dataCadastro.toDate();
+
+          return data.getMonth() === mesAtual && data.getFullYear() === anoAtual;}).length;  
+
+        }
+      }
+
     

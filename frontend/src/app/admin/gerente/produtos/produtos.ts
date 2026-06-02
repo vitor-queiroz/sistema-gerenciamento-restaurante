@@ -49,11 +49,13 @@ export class Produtos {
       };
     });
 
-  }
+        this.cdr.detectChanges();
+
+    }
 
   async salvarProduto() {
 
-    if(!this.nome || !this.preco === null || !this.descricao){
+    if (!this.nome || this.preco === null || !this.descricao){ // Questão de Lógica o this preço nao ter o !. Se não ele iria inverter o valor de this... e depois compara com null, o que acredito na confusão do resultado final.
 
       alert('Preencha todos os campos');
       return;
@@ -87,8 +89,6 @@ export class Produtos {
 
           this.produtoEditandoId = null; /* ----- USO DO ChangeDetectorRef--------*/
 
-          this.cdr.detectChanges();   /* ----- USO DO ChangeDetectorRef--------*/
-          await this.carregarProdutos(); /* ----- USO DO ChangeDetectorRef--------*/
 
   }
 
@@ -113,6 +113,8 @@ export class Produtos {
     this.nome = produto.nome;
     this.preco = produto.preco;
     this.descricao = produto.descricao;
+
+    this.cdr.detectChanges();
 
   };
 }

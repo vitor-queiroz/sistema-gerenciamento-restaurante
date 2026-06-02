@@ -76,7 +76,7 @@ export class Funcionarios {
           // AQUI VAI SERR PARA CADASTRAR O FUNCIONARIO
         const funcionarioRef = collection(this.firestore, 'funcionarios');
 
-        await addDoc(funcionarioRef,{nome: this.nome, email: this.email, status: 'Pendente', estoque:false, pedidos: false, cliente: false, garcom: false, esg: false});
+        await addDoc(funcionarioRef,{nome: this.nome, email: this.email, status: 'Pendente', estoque:false, pedidos: false, cliente: false, garcom: false, esg: false,   dataCadastro: new Date()});
 
         await this.carregarFuncionarios();
         this.cdr.detectChanges();  

@@ -4,22 +4,22 @@
 
   <div class="card">
     <h3>Funcionários</h3>
-    <p>12</p>
+    <p>{{funcionarios.length}}</p>
   </div>
 
   <div class="card">
-    <h3>Novos no mês</h3>
-    <p>3</p>
+    <h3>Novos Usuários</h3>
+    <p>{{ novosNoMes() }}</p>
   </div>
 
   <div class="card">
-    <h3>Desligamentos</h3>
-    <p>1</p>
+    <h3>Usuários Pendentes</h3>
+    <p>{{ pendentes() }}</p>
   </div>
 
 </div>
 
-<h2>FUNCIONARIOS TESTE 11111111111111</h2>
+<h2>FUNCIONARIOS TESTE 1111111111111</h2>
 <p>Total: {{ funcionarios.length }}</p>
 
 <div *ngFor="let funcionario of funcionarios">  
