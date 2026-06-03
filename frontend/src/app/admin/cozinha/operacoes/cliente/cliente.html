@@ -1,1 +1,56 @@
-<p>AQUI VAI FICAR AS MESAS</p>
+<h1>Dom Palladar</h1>
+<p>Selecione uma mesa disponível</p>
+
+<h2>Mesas Disponíveis</h2>
+
+<div class="mesas">
+
+  <div
+    class="mesa"
+    *ngFor="let mesa of mesas"
+    [class.ocupada]="mesa.status === 'Ocupada'"
+    (click)="abrirMesa(mesa)"
+  >
+
+    <h2>Mesa {{ mesa.numero }}</h2>
+
+    <p *ngIf="mesa.status === 'Disponível'">
+      Disponível
+    </p>
+
+    <div *ngIf="mesa.status === 'Ocupada'">
+      <p>{{ mesa.cliente }}</p>
+      <p>{{ mesa.quantidadePessoas }} pessoas</p>
+    </div>
+
+  </div>
+
+</div>
+
+<div class="modal" *ngIf="mesaSelecionada">
+
+  <h2>Mesa {{ mesaSelecionada.numero }}</h2>
+
+  <label>Nome do cliente</label>
+
+  <input
+    type="text"
+    [(ngModel)]="nomeCliente"
+    placeholder="Digite o nome"
+  >
+
+  <br><br>
+
+  <label>Quantidade de pessoas</label>
+
+  <input type="number" [(ngModel)]="quantidadePessoas" placeholder="Ex: 4">
+
+  <br><br>
+
+  <button (click)="fecharModal()"> Cancelar </button>
+
+  <button (click)="ocuparMesa()">
+    {{ mesaSelecionada.status === 'Ocupada' ? 'Atualizar mesa' : 'Continuar'}}
+  </button>
+
+</div>
