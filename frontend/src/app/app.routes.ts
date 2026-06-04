@@ -21,6 +21,7 @@ import { Relatorios } from './admin/gerente/relatorios/relatorios';
 import { Login } from './admin/login/login';
 import { Gerente } from './admin/gerente/gerente';
 import { Operacoes } from './admin/cozinha/operacoes/operacoes';
+import { Cardapio } from './admin/cozinha/operacoes/cardapio/cardapio';
 
 
 export const routes: Routes=[
@@ -102,5 +103,12 @@ export const routes: Routes=[
     {
         path: 'admin/cozinha/operacoes',
         component: Operacoes
+    },
+
+
+
+    {
+        path: 'admin/cozinha/operacoes/cardapio',
+        component: Cardapio
     }
    ];

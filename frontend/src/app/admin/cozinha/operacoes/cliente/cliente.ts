@@ -1,3 +1,4 @@
+import { Router } from '@angular/router';
 import { Component, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -18,7 +19,7 @@ export class Cliente {
   nomeCliente = '';
   quantidadePessoas: number | null = null;
 
-  constructor(private firestore: Firestore, private cdr: ChangeDetectorRef) {
+  constructor(private firestore: Firestore, private cdr: ChangeDetectorRef, private router: Router) {
     this.carregarMesas();
   }
 
