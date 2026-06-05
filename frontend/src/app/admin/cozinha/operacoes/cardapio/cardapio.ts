@@ -1,7 +1,7 @@
 import { Component, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Firestore, collection, getDocs} from '@angular/fire/firestore';
-import { Router } from '@angular/router';
+import { Firestore, collection, getDocs, addDoc, doc, getDoc} from '@angular/fire/firestore';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-cardapio',
@@ -14,8 +14,15 @@ export class Cardapio {
 
   produtos: any[] = [];
 
-  constructor(private firestore: Firestore, private cdr: ChangeDetectorRef, private router: Router){
+  mesaId= '';
+  mesa: any = null;
+
+  constructor(private firestore: Firestore, private cdr: ChangeDetectorRef, private route: ActivatedRoute){
+
+    this.mesaId = this.route.snapshot.paramMap.get('mesaId') || '';
+
     this.carregarProdutos();
+    this.carregarMesa();
   }
 
   async carregarProdutos(){
@@ -33,6 +40,21 @@ export class Cardapio {
 
     console.log(this.produtos);
   }
+
+  async carregarMesa() {
+  const mesaRef = doc(this.firestore, 'mesas', this.mesaId);
+
+  const snapshot = await getDoc(mesaRef);
+
+  if (snapshot.exists()) {
+    this.mesa = {
+      id: snapshot.id,
+      ...snapshot.data()
+    };
+  }
+
+  this.cdr.detectChanges();
+}
 
   // parteee do CARRINHOO
   carrinho: any[] = [];   
@@ -57,7 +79,9 @@ export class Cardapio {
 }
 
 //PARTE DO AUMENTAR E DIMINUIR OS ITENS DO CARRINHOO
-    aumentarQuantidade(item: any){item.quantidade++;}
+    aumentarQuantidade(item: any){item.quantidade++;
+      this.cdr.detectChanges();
+    }
 
     diminuirQuantidade(item: any){
 
@@ -69,5 +93,36 @@ export class Cardapio {
   }
 
   this.cdr.detectChanges();
+}
+
+  //MANDAR PEDIDO PARA A COZINHAAA(NO CASO COMP. PEDIDOS)
+  async enviarParaCozinha() {
+  if (this.carrinho.length === 0) {
+    alert('Adicione pelo menos um item ao pedido');
+    return;
+  }
+
+  if (!this.mesa){
+          alert('Adicione pelo menos um item ao pedido');
+      return;
+  }
+
+  const pedidosRef = collection(this.firestore, 'pedidos');
+
+  await addDoc(pedidosRef, {
+    mesaId: this.mesaId,
+    numeroMesa: this.mesa.numero,
+    cliente: this.mesa.cliente,
+    itens: this.carrinho,
+    total: this.calcularTotal(),
+    status: 'Recebido',
+    origem: 'Mesa',
+    criadoEm: new Date()
+  });
+
+  this.carrinho = [];
+  this.cdr.detectChanges();
+
+  alert('Pedido enviado para a cozinha!');
 }
 }

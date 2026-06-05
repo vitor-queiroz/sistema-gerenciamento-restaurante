@@ -42,3 +42,5 @@
 </div>
 
 <h3>Total: R$ {{ calcularTotal() }}</h3>
+
+  <button *ngIf="carrinho.length > 0" (click)="enviarParaCozinha()">Enviar pedido para cozinha</button>
