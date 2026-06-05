@@ -30,6 +30,10 @@
 <div class="modal" *ngIf="mesaSelecionada">
 
   <h2>Mesa {{ mesaSelecionada.numero }}</h2>
+  <p>
+    <strong>Status:</strong>
+    {{ mesaSelecionada.status }}
+  </p>
 
   <label>Nome do cliente</label>
 
@@ -49,8 +53,13 @@
 
   <button (click)="fecharModal()"> Cancelar </button>
 
-  <button (click)="ocuparMesa()">
-    {{ mesaSelecionada.status === 'Ocupada' ? 'Atualizar mesa' : 'Continuar'}}
-  </button>
+  <button
+  *ngIf="mesaSelecionada.status === 'Ocupada'"
+  (click)="atualizarMesa()">Atualizar Mesa</button>
 
+  <button (click)="ocuparMesa()">Continuar para cardápio</button>
+
+  <button
+  *ngIf="mesaSelecionada.status === 'Ocupada'" 
+  (click)="liberarMesa()">Liberar Mesa</button>
 </div>
