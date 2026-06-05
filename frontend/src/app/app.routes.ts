@@ -106,9 +106,12 @@ export const routes: Routes=[
     },
 
 
-
     {
         path: 'admin/cozinha/operacoes/cardapio',
+        component: Cardapio
+    },
+    {
+        path: 'admin/cozinha/operacoes/cardapio/:mesaId',
         component: Cardapio
     }
    ];

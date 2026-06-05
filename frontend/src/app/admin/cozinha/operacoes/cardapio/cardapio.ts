@@ -33,4 +33,41 @@ export class Cardapio {
 
     console.log(this.produtos);
   }
+
+  // parteee do CARRINHOO
+  carrinho: any[] = [];   
+
+  adicionarAoPedido(produto: any) {
+  const itemExistente = this.carrinho.find(item => item.id === produto.id);
+
+  if (itemExistente) {itemExistente.quantidade++;}
+   else { this.carrinho.push({
+      id: produto.id,
+      nome: produto.nome,
+      preco: produto.preco,
+      quantidade: 1
+    });
+  }
+    this.cdr.detectChanges();
+}
+
+    calcularTotal() {
+      return this.carrinho.reduce((total, item) => {
+        return total + item.preco * item.quantidade;}, 0);
+}
+
+//PARTE DO AUMENTAR E DIMINUIR OS ITENS DO CARRINHOO
+    aumentarQuantidade(item: any){item.quantidade++;}
+
+    diminuirQuantidade(item: any){
+
+  if(item.quantidade > 1){item.quantidade--;}
+   else {
+    this.carrinho = this.carrinho.filter(
+      produto => produto.id !== item.id
+    );
+  }
+
+  this.cdr.detectChanges();
+}
 }

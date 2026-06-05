@@ -10,10 +10,35 @@
     <strong>R$ {{ produto.preco }}</strong>
   </p>
 
-  <button>
-    Adicionar ao pedido 
+  <button (click)="adicionarAoPedido(produto)">
+    Adicionar ao pedido
+  </button>
+
+  <hr>
+</div>
+
+<h2>Pedido</h2>
+
+<div *ngIf="carrinho.length === 0">
+  <p>Nenhum item adicionado ainda</p>
+</div>
+
+<div *ngFor="let item of carrinho">
+  <p>{{ item.nome }}</p>
+  <p>Qtd: {{ item.quantidade }}</p>
+  <p>R$ {{ item.preco * item.quantidade }}</p>
+
+  <button (click)="diminuirQuantidade(item)">
+    ➖
+  </button>
+
+  <button (click)="aumentarQuantidade(item)">
+    ➕
   </button>
 
   <hr>
 
+
 </div>
+
+<h3>Total: R$ {{ calcularTotal() }}</h3>

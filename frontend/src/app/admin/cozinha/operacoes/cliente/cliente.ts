@@ -55,11 +55,16 @@ export class Cliente {
     this.quantidadePessoas = null;
   }
 
+  
+  
+  
   async ocuparMesa() {
     if (!this.nomeCliente || !this.quantidadePessoas) {
       alert('Preencha o nome e a quantidade de pessoas');
       return;
     }
+
+    const mesaId = this.mesaSelecionada.id;
 
     const mesaDoc = doc(this.firestore, 'mesas', this.mesaSelecionada.id);
 
@@ -74,5 +79,8 @@ export class Cliente {
     this.fecharModal();
 
     alert('Mesa atualizada com sucesso!');
+
+    this.router.navigate(['admin/cozinha/operacoes/cardapio', mesaId]);
+
   }
 }
