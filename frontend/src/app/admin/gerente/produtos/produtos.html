@@ -16,6 +16,13 @@
 
 <br><br>
 
+<input
+type="text"
+[(ngModel)]= "imagem"
+placeholder= "Cole aqui a URL">
+
+<br><br>
+
 <textarea
   name="descricao"
   [(ngModel)]="descricao"
@@ -35,6 +42,11 @@
 
 <div
   *ngFor="let produto of produtos">
+
+  <img
+  *ngIf="produto.imagem"
+  [src]="produto.imagem"
+  width="150">
 
   <h3>{{ produto.nome }}</h3>
 

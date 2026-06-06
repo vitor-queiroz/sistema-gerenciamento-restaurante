@@ -18,6 +18,7 @@ export class Produtos {
   nome = '';
   preco: number | null = null;
   descricao= '';
+  imagem= '';
 
   produtos: any[] = [];
 
@@ -45,7 +46,8 @@ export class Produtos {
       id: item.id,
       nome: dados.nome,
       preco: dados.preco,
-      descricao: dados.descricao
+      descricao: dados.descricao,
+      imagem: dados.imagem
       };
     });
 
@@ -69,13 +71,16 @@ export class Produtos {
 
       const produtoDoc = doc(this.firestore, 'produtos', this.produtoEditandoId);
       
-      await updateDoc(produtoDoc,{nome: this.nome,  preco: this.preco,  descricao: this.descricao
-      });
+      
+      
+      await updateDoc(produtoDoc,{nome: this.nome,  preco: this.preco,  descricao: this.descricao, imagem: this.imagem });
 
               alert('Produto atualizado com sucesso!');
     } else {
 
-      await addDoc(produtosRef, {nome: this.nome,  preco: this.preco,  descricao: this.descricao});
+      
+      
+      await addDoc(produtosRef, {nome: this.nome,  preco: this.preco,  descricao: this.descricao, imagem: this.imagem});
 
               alert('Produto dalvo com sucesso!!');
       
@@ -88,6 +93,7 @@ export class Produtos {
           this.descricao = '';
 
           this.produtoEditandoId = null; /* ----- USO DO ChangeDetectorRef--------*/
+          this.imagem='';
 
 
   }
@@ -113,6 +119,7 @@ export class Produtos {
     this.nome = produto.nome;
     this.preco = produto.preco;
     this.descricao = produto.descricao;
+    this.imagem = produto.imagem;
 
     this.cdr.detectChanges();
 
