@@ -1,0 +1,14 @@
+.Recebido {
+  color: red;
+  font-weight: bold;
+}
+
+.Preparando {
+  color: orange;
+  font-weight: bold;
+}
+
+.Finalizado {
+  color: green;
+  font-weight: bold;
+}

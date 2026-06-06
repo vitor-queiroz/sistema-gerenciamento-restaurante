@@ -1,1 +1,52 @@
-<p>AQUI VAI FICAR OS PEDIDOS DA COZINHA</p>
+<h1>Pedidos da Cozinha</h1>
+
+<div *ngIf="pedidos.length === 0">
+    <p>Nenhum pedido recebido ainda.</p>
+</div>
+
+<div *ngFor="let pedido of pedidos">
+
+    <h2>Mesa {{ pedido.numeroMesa }}</h2>
+
+    <p>
+        <strong>Cliente:</strong>
+        {{ pedido.cliente }}
+    </p>
+
+    <p>
+        <strong>Pessoas:</strong>
+        {{ pedido.quantidadePessoas }}
+    </p>
+
+    <p>
+        <strong>Status:</strong>
+        <span [ngClass]="pedido.status">
+            {{ pedido.status }}
+        </span>
+    </p>
+
+    <h3>Itens</h3>
+
+    <div *ngFor="let item of pedido.itens">
+        <p>
+            {{ item.nome }} - Qtd: {{ item.quantidade }}
+        </p>
+    </div>
+
+    <h3>Total: R$ {{ pedido.total }}</h3>
+
+    <button 
+        *ngIf="pedido.status === 'Recebido'"
+    (click)="atualizarStatus(pedido.id, 'Preparando')">
+        Iniciar preparo
+    </button>
+
+    <button 
+    *ngIf="pedido.status === 'Preparando'"
+    (click)="atualizarStatus(pedido.id, 'Finalizado')">
+        Finalizar pedido
+    </button>
+
+    <hr>
+
+</div>
