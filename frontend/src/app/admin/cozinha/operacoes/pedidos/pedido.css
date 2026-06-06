@@ -1,3 +1,4 @@
+/*PARTEEE STATUS DOS PRATOS DA COZINHA*/
 .Recebido {
   color: red;
   font-weight: bold;
@@ -10,5 +11,21 @@
 
 .Finalizado {
   color: green;
+  font-weight: bold;
+}
+
+/*PARTEE DO HORARIO COZINHAAA*/
+.pedido-recente{
+  color: green;
+  font-weight: bold;
+}
+
+.pedido-atencao{
+  color: orange;
+  font-weight: bold;
+}
+
+.pedido-atrasado{
+  color: red;
   font-weight: bold;
 }

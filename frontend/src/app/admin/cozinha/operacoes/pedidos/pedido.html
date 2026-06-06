@@ -39,6 +39,19 @@
         </span>
     </p>
 
+    <p>
+        <strong>Entrou às:</strong>
+        {{ mostrarHorarioPedido(pedido.criadoEm) }}
+    </p>
+
+    <p>
+        <strong>Tempo:</strong>
+
+        <span [ngClass]="verificarUrgenciaPedido(pedido)">
+            {{ calcularMinutosPedido(pedido) }} min
+        </span>
+    </p>
+
     <h3>Itens</h3>
 
     <div *ngFor="let item of pedido.itens">
