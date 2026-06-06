@@ -44,4 +44,31 @@ export class Pedido {
 
     alert('Status do pedido atualizado!');
   }
+
+
+
+  //aqui vai uma ideia maluca que eu "tentei aplicar"
+  producaoPrioritaria() {
+  const agrupados: any[] = [];
+
+  this.pedidos.forEach(pedido => {
+    if (pedido.status === 'Finalizado') return;
+    if (!pedido.itens) return;
+
+    pedido.itens.forEach((item: any) => {
+      const existente = agrupados.find(p => p.nome === item.nome);
+
+      if (existente) {
+        existente.quantidade += item.quantidade;
+      } else {
+        agrupados.push({
+          nome: item.nome,
+          quantidade: item.quantidade
+        });
+      }
+    });
+  });
+
+  return agrupados.filter(item => item.quantidade >= 3);
+}
 }

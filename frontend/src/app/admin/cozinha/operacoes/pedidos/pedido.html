@@ -1,5 +1,19 @@
 <h1>Pedidos da Cozinha</h1>
 
+
+<div *ngIf="producaoPrioritaria().length > 0">
+
+    <h2>🔥 Produção Pé na Porta</h2>
+    <p>Ativem o modo turbo e mão na massa!</p>
+
+    <div *ngFor="let item of producaoPrioritaria()">
+        <h3>{{ item.quantidade }}x {{ item.nome }}</h3>
+    </div>
+
+</div>
+
+
+
 <div *ngIf="pedidos.length === 0">
     <p>Nenhum pedido recebido ainda.</p>
 </div>
@@ -35,15 +49,11 @@
 
     <h3>Total: R$ {{ pedido.total }}</h3>
 
-    <button 
-        *ngIf="pedido.status === 'Recebido'"
-    (click)="atualizarStatus(pedido.id, 'Preparando')">
+    <button *ngIf="pedido.status === 'Recebido'" (click)="atualizarStatus(pedido.id, 'Preparando')">
         Iniciar preparo
     </button>
 
-    <button 
-    *ngIf="pedido.status === 'Preparando'"
-    (click)="atualizarStatus(pedido.id, 'Finalizado')">
+    <button *ngIf="pedido.status === 'Preparando'" (click)="atualizarStatus(pedido.id, 'Finalizado')">
         Finalizar pedido
     </button>
 
