@@ -1,1 +1,95 @@
-<p>garcom works!</p>
+<div class="topo">
+    <h1>Área do Garçom</h1>
+
+    <button (click)="alternarHistorico()">
+        {{mostrarHistorico? 'Fechar histórico' : 'Histórico'}}
+    </button>
+</div>
+
+
+<div *ngIf="pedidos.length === 0">
+    <p>Nenhum pedido finalizado pela cozinha.</p>
+</div>
+
+<div *ngFor="let pedido of pedidos">
+
+    <h2>Mesa {{ pedido.numeroMesa }}</h2>
+
+    <p>
+        <strong>Cliente:</strong>
+        {{ pedido.cliente }}
+    </p>
+
+    <h3>Itens</h3>
+
+    <div *ngFor="let item of pedido.itens">
+        <p>{{ item.nome }} - Qtd: {{ item.quantidade }}</p>
+    </div>
+
+    <h3>Total: R$ {{ pedido.total }}</h3>
+
+    <button *ngIf="pedido.status === 'Finalizado'" (click)="marcarComoEntregue(pedido.id)">
+        Marcar como entregue
+    </button>
+
+    <div *ngIf="pedido.status === 'Entregue'">
+
+        <h3>Pagamento</h3>
+
+        <select [(ngModel)]="pedido.formaPagamento" 
+        (ngModelChange)="selecionarFormaPagamento(pedido, $event)">
+            <option value="">Selecione</option>
+            <option value="Pix">Pix</option>
+            <option value="Crédito">Crédito</option>
+            <option value="Débito">Débito</option>
+            <option value="Dinheiro">Dinheiro</option>
+        </select>
+
+        <br><br>
+
+        <button (click)="finalizarPagamento(pedido)">
+            Finalizar pagamento
+        </button>
+
+    </div>
+
+    <hr>
+</div>
+
+
+<div *ngIf="mostrarHistorico">
+
+<h2>Histórico de Pagamentos</h2>
+
+  <div *ngIf="historicoPedidos.length === 0">
+    <p>Nenhum pagamento finalizado ainda.</p>
+  </div>
+
+  <div *ngFor="let pedido of historicoPedidos">
+
+    <h3>Mesa {{ pedido.numeroMesa }}</h3>
+
+    <p>
+        <strong>Cliente:</strong>
+        {{ pedido.cliente }}
+    </p>
+
+    <p>
+        <strong>Total pago:</strong>
+        R$ {{ pedido.total }}
+    </p>
+
+    <p>
+        <strong>Forma de pagamento:</strong>
+        {{ pedido.pagamento?.forma }}
+    </p>
+
+    <p>
+        <strong>Pago em:</strong>
+        {{ pedido.pagamento?.pagoEm?.toDate() | date:'dd/MM/yyyy HH:mm' }}
+    </p>
+
+    <hr>
+
+  </div>
+</div>
