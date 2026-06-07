@@ -1,0 +1,257 @@
+.container-cliente-login {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #8b5a2b 0%, #5d4037 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.header-login {
+  width: 100%;
+  max-width: 500px;
+  margin-bottom: 30px;
+  position: relative;
+}
+
+.btn-voltar {
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 193, 7, 0.5);
+  color: #ffc107;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  margin-bottom: 20px;
+}
+
+.btn-voltar:hover {
+  background-color: rgba(255, 193, 7, 0.2);
+  border-color: #ffc107;
+}
+
+.titulo-login {
+  text-align: center;
+  color: #ffc107;
+  font-size: 36px;
+  font-weight: bold;
+  letter-spacing: 2px;
+  margin: 0;
+}
+
+.card-login {
+  background: linear-gradient(to bottom, #1a1a1a, #2a2a2a);
+  border-radius: 10px;
+  padding: 40px;
+  width: 100%;
+  max-width: 500px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  border: 2px solid #ffc107;
+}
+
+/* ABAS */
+.abas {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 30px;
+  border-bottom: 2px solid rgba(255, 193, 7, 0.2);
+}
+
+.aba {
+  flex: 1;
+  padding: 12px 20px;
+  background: none;
+  border: none;
+  color: rgba(255, 193, 7, 0.6);
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  transition: all 0.3s ease;
+  position: relative;
+  bottom: -2px;
+}
+
+.aba:hover {
+  color: #ffc107;
+}
+
+.aba.ativa {
+  color: #ffc107;
+  border-bottom-color: #ffc107;
+}
+
+/* FORMULÁRIOS */
+.formulario {
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.formulario h2 {
+  text-align: center;
+  color: #ffffff;
+  font-size: 24px;
+  margin-bottom: 25px;
+  margin-top: 0;
+}
+
+.titulo-secao {
+  color: #ffc107;
+  font-size: 16px;
+  font-weight: 700;
+  margin-top: 25px;
+  margin-bottom: 15px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid rgba(255, 193, 7, 0.3);
+}
+
+.grupo-input {
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.row-inputs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.grupo-input label {
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.input-campo {
+  padding: 12px 16px;
+  background-color: rgba(255, 193, 7, 0.05);
+  border: 2px solid #ffc107;
+  border-radius: 5px;
+  color: #ffffff;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  font-family: inherit;
+}
+
+.input-campo:focus {
+  outline: none;
+  background-color: rgba(255, 193, 7, 0.1);
+  border-color: #ffc107;
+  box-shadow: 0 0 10px rgba(255, 193, 7, 0.3);
+}
+
+.input-campo::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* BOTÕES */
+.btn-primario {
+  width: 100%;
+  padding: 14px 20px;
+  background-color: #ffc107;
+  border: none;
+  border-radius: 5px;
+  color: #1a1a1a;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.btn-primario:hover {
+  background-color: #ffb300;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(255, 193, 7, 0.4);
+}
+
+.btn-primario:active {
+  transform: translateY(0);
+}
+
+/* TEXTO DE AJUDA */
+.texto-ajuda {
+  text-align: center;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 14px;
+  margin-top: 20px;
+  margin-bottom: 0;
+}
+
+.link-aba {
+  color: #ffc107;
+  cursor: pointer;
+  font-weight: 600;
+  transition: color 0.3s ease;
+}
+
+.link-aba:hover {
+  color: #ffb300;
+  text-decoration: underline;
+}
+
+/* RESPONSIVO */
+@media (max-width: 600px) {
+  .container-cliente-login {
+    padding: 15px;
+  }
+
+  .card-login {
+    padding: 30px 20px;
+    max-width: 100%;
+  }
+
+  .titulo-login {
+    font-size: 28px;
+  }
+
+  .btn-voltar {
+    font-size: 12px;
+    padding: 8px 15px;
+  }
+
+  .aba {
+    font-size: 14px;
+    padding: 10px 15px;
+  }
+
+  .formulario h2 {
+    font-size: 20px;
+  }
+
+  .input-campo {
+    font-size: 13px;
+  }
+
+  .btn-primario {
+    font-size: 14px;
+    padding: 12px 15px;
+  }
+
+  .row-inputs {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+}

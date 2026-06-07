@@ -1,0 +1,125 @@
+<div class="container-pedidos">
+  <!-- HEADER -->
+  <header class="header-pedidos">
+    <div class="header-conteudo">
+      <div class="header-esquerda">
+        <button class="btn-voltar" (click)="voltarHome()">
+          🏠 Início
+        </button>
+        <h1 class="logo">DOM PALLADAR</h1>
+      </div>
+
+      <div class="header-direita">
+        <span class="usuario-info" *ngIf="usuarioLogado">
+          👤 {{ usuarioLogado.nome }}
+        </span>
+        <button class="btn-carrinho" [class.tem-itens]="carrinho.length > 0">
+          🛒 Sacola
+          <span class="badge" *ngIf="carrinho.length > 0">
+            {{ carrinho.length }}
+          </span>
+        </button>
+        <button class="btn-logout" (click)="logout()">Sair</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- CONTEÚDO PRINCIPAL -->
+  <main class="main-pedidos">
+    <!-- TÍTULO E LOCALIZAÇÃO -->
+    <div class="secao-titulo">
+      <h2 class="titulo-cardapio">Cardápio</h2>
+      <p class="localizacao">Bairro do Limoeiro</p>
+    </div>
+
+    <!-- CATEGORIAS (ABAS) -->
+    <div class="container-categorias">
+      <div class="categorias">
+        <button
+          *ngFor="let cat of categorias"
+          class="categoria-btn"
+          [class.ativa]="categoriaSelecionada === cat"
+          (click)="categoriaSelecionada = cat"
+        >
+          {{ cat }}
+        </button>
+      </div>
+    </div>
+
+    <!-- TÍTULO DA CATEGORIA -->
+    <div class="titulo-categoria">
+      <h3>{{ categoriaSelecionada }}</h3>
+    </div>
+
+    <!-- GRID DE PRATOS -->
+    <div class="grid-pratos">
+      <div class="card-prato" *ngFor="let prato of pratosFiltrados">
+        <div class="imagem-prato">
+          <img [src]="prato.imagem" [alt]="prato.nome" />
+        </div>
+
+        <div class="info-prato">
+          <h4 class="nome-prato">{{ prato.nome }}</h4>
+          <p class="descricao-prato">{{ prato.descricao }}</p>
+          <p class="peso-prato">{{ prato.peso }}</p>
+
+          <div class="footer-prato">
+            <span class="preco-prato">R$ {{ prato.preco.toFixed(2) }}</span>
+            <button
+              class="btn-adicionar"
+              (click)="adicionarAoCarrinho(prato)"
+            >
+              Adicionar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RESUMO DO CARRINHO (FLUTUANTE) -->
+    <div
+      class="resumo-carrinho"
+      *ngIf="carrinho.length > 0"
+    >
+      <div class="carrinho-header">
+        <h3>Meu Carrinho</h3>
+        <p class="total-itens">{{ carrinho.length }} item(ns)</p>
+      </div>
+
+      <div class="lista-carrinho">
+        <div class="item-carrinho" *ngFor="let item of carrinho">
+          <div class="info-item">
+            <p class="nome-item">{{ item.prato.nome }}</p>
+            <p class="preco-item">R$ {{ (item.prato.preco * item.quantidade).toFixed(2) }}</p>
+          </div>
+
+          <div class="controles-quantidade">
+            <button (click)="diminuirQuantidade(item.prato.id)" class="btn-qtd">
+              -
+            </button>
+            <span class="quantidade">{{ item.quantidade }}</span>
+            <button (click)="aumentarQuantidade(item.prato.id)" class="btn-qtd">
+              +
+            </button>
+            <button
+              (click)="removerDoCarrinho(item.prato.id)"
+              class="btn-remover"
+            >
+              ✕
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="carrinho-footer">
+        <div class="total">
+          <span>Total:</span>
+          <span class="valor-total">R$ {{ totalCarrinho.toFixed(2) }}</span>
+        </div>
+        <button class="btn-finalizar" (click)="fazerPedido()">
+          Fazer Pedido
+        </button>
+      </div>
+    </div>
+  </main>
+</div>

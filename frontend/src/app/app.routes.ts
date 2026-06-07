@@ -2,6 +2,8 @@ import { Routes } from '@angular/router';
 
 import { Home } from './pages/home/home';
 import { Reservas } from './pages/reservas/reservas';
+import { ClienteLogin } from './pages/cliente-login/cliente-login';
+import { ClientePedidos } from './pages/cliente-pedidos/cliente-pedidos';
 
 // import { Painel } from './admin/painel/painel';
 import { Cozinha } from './admin/cozinha/cozinha';
@@ -36,6 +38,14 @@ export const routes: Routes=[
     {
         path:'reservas',
         component: Reservas
+    },
+    {
+        path:'cliente-login',
+        component: ClienteLogin
+    },
+    {
+        path:'cliente-pedidos',
+        component: ClientePedidos
     },
 
     {

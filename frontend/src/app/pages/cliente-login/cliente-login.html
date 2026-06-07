@@ -1,0 +1,189 @@
+<div class="container-cliente-login">
+  <div class="header-login">
+    <button class="btn-voltar" (click)="voltarHome()">
+      ← Voltar ao Início
+    </button>
+    <h1 class="titulo-login">DOM PALLADAR</h1>
+  </div>
+
+  <div class="card-login">
+    <!-- Abas de navegação -->
+    <div class="abas">
+      <button
+        class="aba"
+        [class.ativa]="abaSelecionada === 'login'"
+        (click)="trocarAba('login')"
+      >
+        Entrar
+      </button>
+      <button
+        class="aba"
+        [class.ativa]="abaSelecionada === 'cadastro'"
+        (click)="trocarAba('cadastro')"
+      >
+        Cadastro
+      </button>
+    </div>
+
+    <!-- FORMULÁRIO DE LOGIN -->
+    <div *ngIf="abaSelecionada === 'login'" class="formulario login">
+      <h2>Faça Login</h2>
+
+      <div class="grupo-input">
+        <label for="login-email">Email</label>
+        <input
+          id="login-email"
+          type="email"
+          [(ngModel)]="loginEmail"
+          placeholder="seu@email.com"
+          class="input-campo"
+        />
+      </div>
+
+      <div class="grupo-input">
+        <label for="login-senha">Senha</label>
+        <input
+          id="login-senha"
+          type="password"
+          [(ngModel)]="loginSenha"
+          placeholder="Sua senha"
+          class="input-campo"
+        />
+      </div>
+
+      <button class="btn-primario" (click)="entrar()">
+        Entrar
+      </button>
+
+      <p class="texto-ajuda">
+        Não tem conta? <a class="link-aba" (click)="trocarAba('cadastro')">Cadastre-se aqui</a>
+      </p>
+    </div>
+
+    <!-- FORMULÁRIO DE CADASTRO -->
+    <div *ngIf="abaSelecionada === 'cadastro'" class="formulario cadastro">
+      <h2>Crie sua Conta</h2>
+
+      <div class="grupo-input">
+        <label for="cadastro-nome">Nome Completo</label>
+        <input
+          id="cadastro-nome"
+          type="text"
+          [(ngModel)]="cadastroNome"
+          placeholder="Seu nome"
+          class="input-campo"
+        />
+      </div>
+
+      <div class="grupo-input">
+        <label for="cadastro-email">Email</label>
+        <input
+          id="cadastro-email"
+          type="email"
+          [(ngModel)]="cadastroEmail"
+          placeholder="seu@email.com"
+          class="input-campo"
+        />
+      </div>
+
+      <div class="grupo-input">
+        <label for="cadastro-telefone">Telefone</label>
+        <input
+          id="cadastro-telefone"
+          type="tel"
+          [(ngModel)]="cadastroTelefone"
+          placeholder="(11) 98765-4321"
+          class="input-campo"
+        />
+      </div>
+
+      <!-- SEÇÃO DE ENDEREÇO -->
+      <h3 class="titulo-secao">📍 Endereço de Entrega</h3>
+
+      <div class="row-inputs">
+        <div class="grupo-input">
+          <label for="cadastro-cep">CEP</label>
+          <input
+            id="cadastro-cep"
+            type="text"
+            [(ngModel)]="cadastroCEP"
+            placeholder="00000-000"
+            class="input-campo"
+          />
+        </div>
+        <div class="grupo-input">
+          <label for="cadastro-estado">Estado</label>
+          <input
+            id="cadastro-estado"
+            type="text"
+            [(ngModel)]="cadastroEstado"
+            placeholder="SP"
+            class="input-campo"
+          />
+        </div>
+      </div>
+
+      <div class="grupo-input">
+        <label for="cadastro-cidade">Cidade</label>
+        <input
+          id="cadastro-cidade"
+          type="text"
+          [(ngModel)]="cadastroCidade"
+          placeholder="Sua cidade"
+          class="input-campo"
+        />
+      </div>
+
+      <div class="grupo-input">
+        <label for="cadastro-endereco">Endereço</label>
+        <input
+          id="cadastro-endereco"
+          type="text"
+          [(ngModel)]="cadastroEndereco"
+          placeholder="Rua, número"
+          class="input-campo"
+        />
+      </div>
+
+      <div class="grupo-input">
+        <label for="cadastro-complemento">Complemento</label>
+        <input
+          id="cadastro-complemento"
+          type="text"
+          [(ngModel)]="cadastroComplemento"
+          placeholder="Apto, bloco, etc (opcional)"
+          class="input-campo"
+        />
+
+      <div class="grupo-input">
+        <label for="cadastro-senha">Senha</label>
+        <input
+          id="cadastro-senha"
+          type="password"
+          [(ngModel)]="cadastroSenha"
+          placeholder="Crie uma senha"
+          class="input-campo"
+        />
+      </div>
+
+      <div class="grupo-input">
+        <label for="cadastro-confirma-senha">Confirmar Senha</label>
+        <input
+          id="cadastro-confirma-senha"
+          type="password"
+          [(ngModel)]="cadastroConfirmaSenha"
+          placeholder="Confirme sua senha"
+          class="input-campo"
+        />
+      </div>
+
+      <button class="btn-primario" (click)="realizarCadastro()">
+        Cadastrar
+      </button>
+
+      <p class="texto-ajuda">
+        Já tem conta? <a class="link-aba" (click)="trocarAba('login')">Faça login aqui</a>
+      </p>
+    </div>
+  </div>
+</div>
