@@ -7,7 +7,6 @@
   </div>
 
   <div class="card-login">
-    <!-- Abas de navegação -->
     <div class="abas">
       <button
         class="aba"
@@ -16,6 +15,7 @@
       >
         Entrar
       </button>
+
       <button
         class="aba"
         [class.ativa]="abaSelecionada === 'cadastro'"
@@ -25,7 +25,6 @@
       </button>
     </div>
 
-    <!-- FORMULÁRIO DE LOGIN -->
     <div *ngIf="abaSelecionada === 'login'" class="formulario login">
       <h2>Faça Login</h2>
 
@@ -56,11 +55,13 @@
       </button>
 
       <p class="texto-ajuda">
-        Não tem conta? <a class="link-aba" (click)="trocarAba('cadastro')">Cadastre-se aqui</a>
+        Não tem conta?
+        <a class="link-aba" (click)="trocarAba('cadastro')">
+          Cadastre-se aqui
+        </a>
       </p>
     </div>
 
-    <!-- FORMULÁRIO DE CADASTRO -->
     <div *ngIf="abaSelecionada === 'cadastro'" class="formulario cadastro">
       <h2>Crie sua Conta</h2>
 
@@ -92,12 +93,13 @@
           id="cadastro-telefone"
           type="tel"
           [(ngModel)]="cadastroTelefone"
-          placeholder="(11) 98765-4321"
+          (input)="formatarTelefone()"
+          maxlength="14"
+          placeholder="(11)98765-4321"
           class="input-campo"
         />
       </div>
 
-      <!-- SEÇÃO DE ENDEREÇO -->
       <h3 class="titulo-secao">📍 Endereço de Entrega</h3>
 
       <div class="row-inputs">
@@ -111,6 +113,7 @@
             class="input-campo"
           />
         </div>
+
         <div class="grupo-input">
           <label for="cadastro-estado">Estado</label>
           <input
@@ -154,6 +157,7 @@
           placeholder="Apto, bloco, etc (opcional)"
           class="input-campo"
         />
+      </div>
 
       <div class="grupo-input">
         <label for="cadastro-senha">Senha</label>
@@ -161,7 +165,7 @@
           id="cadastro-senha"
           type="password"
           [(ngModel)]="cadastroSenha"
-          placeholder="Crie uma senha"
+          placeholder="Mín. 6 caracteres, 1 maiúscula e 1 especial"
           class="input-campo"
         />
       </div>
@@ -182,7 +186,10 @@
       </button>
 
       <p class="texto-ajuda">
-        Já tem conta? <a class="link-aba" (click)="trocarAba('login')">Faça login aqui</a>
+        Já tem conta?
+        <a class="link-aba" (click)="trocarAba('login')">
+          Faça login aqui
+        </a>
       </p>
     </div>
   </div>
