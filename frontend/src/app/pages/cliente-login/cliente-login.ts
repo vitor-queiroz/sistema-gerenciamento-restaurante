@@ -2,6 +2,14 @@ import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import {
+  Firestore,
+  collection,
+  addDoc,
+  query,
+  where,
+  getDocs,
+} from '@angular/fire/firestore';
 
 @Component({
   selector: 'app-cliente-login',
@@ -11,63 +19,62 @@ import { CommonModule } from '@angular/common';
   styleUrl: './cliente-login.css',
 })
 export class ClienteLogin {
-  // Estado para controlar qual aba está ativa
   abaSelecionada: 'login' | 'cadastro' = 'login';
 
-  // Dados de login
   loginEmail = '';
   loginSenha = '';
 
-  // Dados de cadastro
   cadastroNome = '';
   cadastroEmail = '';
   cadastroSenha = '';
   cadastroConfirmaSenha = '';
   cadastroTelefone = '';
-  
-  // Dados de endereço
+
   cadastroCEP = '';
   cadastroEstado = '';
   cadastroCidade = '';
   cadastroEndereco = '';
   cadastroComplemento = '';
 
-  // Armazenar clientes (em produção, seria em banco de dados)
-  clientes: any[] = JSON.parse(localStorage.getItem('clientes') || '[]');
+  constructor(private router: Router, private firestore: Firestore) {}
 
-  constructor(private router: Router) {}
-
-  // Alternar entre abas
   trocarAba(aba: 'login' | 'cadastro') {
     this.abaSelecionada = aba;
   }
 
-  // Método para login
-  entrar() {
+  async entrar() {
     if (!this.loginEmail || !this.loginSenha) {
       alert('Por favor, preencha email e senha');
       return;
     }
 
-    // Procurar cliente no localStorage
-    const clienteEncontrado = this.clientes.find(
-      (c) => c.email === this.loginEmail && c.senha === this.loginSenha
-    );
+    try {
+      const clientesRef = collection(this.firestore, 'clientes');
+      const q = query(
+        clientesRef,
+        where('email', '==', this.loginEmail),
+        where('senha', '==', this.loginSenha)
+      );
 
-    if (clienteEncontrado) {
-      console.log('Cliente logado com sucesso:', clienteEncontrado);
-      // Salvar dados do cliente logado
-      localStorage.setItem('usuarioLogado', JSON.stringify(clienteEncontrado));
-      // Redirecionar para página de pedidos
-      this.router.navigate(['/cliente-pedidos']);
-    } else {
-      alert('Email ou senha inválidos');
+      const querySnapshot = await getDocs(q);
+
+      if (!querySnapshot.empty) {
+        const clienteDoc = querySnapshot.docs[0];
+        const clienteEncontrado = { id: clienteDoc.id, ...clienteDoc.data() };
+
+        console.log('Cliente logado com sucesso:', clienteEncontrado);
+        localStorage.setItem('usuarioLogado', JSON.stringify(clienteEncontrado));
+        this.router.navigate(['/cliente-pedidos']);
+      } else {
+        alert('Email ou senha inválidos');
+      }
+    } catch (error) {
+      console.error('Erro ao fazer login:', error);
+      alert('Erro ao fazer login. Tente novamente.');
     }
   }
 
-  // Método para cadastro
-  realizarCadastro() {
-    // Validações
+  async realizarCadastro() {
     if (
       !this.cadastroNome ||
       !this.cadastroEmail ||
@@ -88,61 +95,61 @@ export class ClienteLogin {
       return;
     }
 
-    // Verificar se email já existe
-    const emailExistente = this.clientes.find(
-      (c) => c.email === this.cadastroEmail
-    );
-    if (emailExistente) {
-      alert('Este email já está cadastrado');
-      return;
+    try {
+      // Verificar se email já existe no Firestore
+      const clientesRef = collection(this.firestore, 'clientes');
+      const q = query(clientesRef, where('email', '==', this.cadastroEmail));
+      const querySnapshot = await getDocs(q);
+
+      if (!querySnapshot.empty) {
+        alert('Este email já está cadastrado');
+        return;
+      }
+
+      // Criar novo cliente
+      const novoCliente = {
+        nome: this.cadastroNome,
+        email: this.cadastroEmail,
+        senha: this.cadastroSenha,
+        telefone: this.cadastroTelefone,
+        endereco: {
+          cep: this.cadastroCEP,
+          estado: this.cadastroEstado,
+          cidade: this.cadastroCidade,
+          rua: this.cadastroEndereco,
+          complemento: this.cadastroComplemento,
+        },
+        dataCadastro: new Date().toLocaleDateString('pt-BR'),
+      };
+
+      // Salvar no Firestore
+      const docRef = await addDoc(clientesRef, novoCliente);
+      const clienteComId = { id: docRef.id, ...novoCliente };
+
+      console.log('Cliente cadastrado com sucesso:', clienteComId);
+      alert('Cadastro realizado com sucesso! Você será redirecionado para fazer seu pedido.');
+
+      localStorage.setItem('usuarioLogado', JSON.stringify(clienteComId));
+
+      // Limpar formulário
+      this.cadastroNome = '';
+      this.cadastroEmail = '';
+      this.cadastroSenha = '';
+      this.cadastroConfirmaSenha = '';
+      this.cadastroTelefone = '';
+      this.cadastroCEP = '';
+      this.cadastroEstado = '';
+      this.cadastroCidade = '';
+      this.cadastroEndereco = '';
+      this.cadastroComplemento = '';
+
+      this.router.navigate(['/cliente-pedidos']);
+    } catch (error) {
+      console.error('Erro ao cadastrar cliente:', error);
+      alert('Erro ao realizar cadastro. Tente novamente.');
     }
-
-    // Criar novo cliente
-    const novoCliente = {
-      id: Date.now(),
-      nome: this.cadastroNome,
-      email: this.cadastroEmail,
-      senha: this.cadastroSenha,
-      telefone: this.cadastroTelefone,
-      endereco: {
-        cep: this.cadastroCEP,
-        estado: this.cadastroEstado,
-        cidade: this.cadastroCidade,
-        rua: this.cadastroEndereco,
-        complemento: this.cadastroComplemento,
-      },
-      dataCadastro: new Date().toLocaleDateString('pt-BR'),
-    };
-
-    // Adicionar cliente ao array
-    this.clientes.push(novoCliente);
-
-    // Salvar no localStorage
-    localStorage.setItem('clientes', JSON.stringify(this.clientes));
-
-    console.log('Cliente cadastrado com sucesso:', novoCliente);
-    alert('Cadastro realizado com sucesso! Você será redirecionado para fazer seu pedido.');
-
-    // Salvar cliente como logado
-    localStorage.setItem('usuarioLogado', JSON.stringify(novoCliente));
-
-    // Limpar formulário
-    this.cadastroNome = '';
-    this.cadastroEmail = '';
-    this.cadastroSenha = '';
-    this.cadastroConfirmaSenha = '';
-    this.cadastroTelefone = '';
-    this.cadastroCEP = '';
-    this.cadastroEstado = '';
-    this.cadastroCidade = '';
-    this.cadastroEndereco = '';
-    this.cadastroComplemento = '';
-
-    // Redirecionar para página de pedidos
-    this.router.navigate(['/cliente-pedidos']);
   }
 
-  // Voltar para home
   voltarHome() {
     this.router.navigate(['/home']);
   }
