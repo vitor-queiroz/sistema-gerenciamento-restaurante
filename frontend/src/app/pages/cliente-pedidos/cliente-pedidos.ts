@@ -3,7 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
-import {Firestore, collection, getDocs} from '@angular/fire/firestore';
+import {Firestore, collection, getDocs, addDoc} from '@angular/fire/firestore';
 
 interface Prato {
   id: string;
@@ -116,37 +116,37 @@ export class ClientePedidos implements OnInit {
     }
   }
 
-  fazerPedido() {
+  async fazerPedido() {
     if (this.carrinho.length === 0) {
       alert('Adicione itens ao carrinho antes de fazer o pedido!');
       return;
     }
+  
+      const pedidosRef = collection(this.firestore, 'pedidos');
 
-    const pedido = {
-      id: Date.now(),
-      cliente: this.usuarioLogado,
-      itens: this.carrinho,
-      total: this.totalCarrinho,
-      status: 'Recebido',
-      dataPedido: new Date().toLocaleString('pt-BR'),
-      dataEntrega: new Date(Date.now() + 60 * 60 * 1000).toLocaleTimeString('pt-BR')
-    };
+      const pedidoCriado = await addDoc(pedidosRef, {
+        origem: 'Delivery', 
+        cliente: this.usuarioLogado.nome,
+        telefone: this.usuarioLogado.telefone, 
+        endereco: this.usuarioLogado.endereco, 
+        itens: this.carrinho.map(item => ({ 
+          
+        id: item.prato.id,
+        nome: item.prato.nome,
+        preco: item.prato.preco,
+        quantidade: item.quantidade})),
 
-    const pedidos = JSON.parse(localStorage.getItem('pedidos') || '[]');
+        total: this.totalCarrinho,
+        status: 'Recebido',
+        criadoEm: new Date()
+      });
 
-    pedidos.push(pedido);
-
-    localStorage.setItem('pedidos', JSON.stringify(pedidos));
-
-    console.log('Pedido realizado:', pedido);
-
-    alert(
-      `Pedido realizado com sucesso! Número do pedido: ${pedido.id}\nTempo estimado: 1 hora`
-    );
+    alert('Pedido enviado para a cozinha!!');
 
     this.carrinho = [];
+    this.cdr.detectChanges();
 
-    this.router.navigate(['/cliente-acompanhamento', pedido.id]);
+    this.router.navigate(['/cliente-acompanhamento', pedidoCriado.id]);
   }
 
   voltarHome() {

@@ -20,14 +20,35 @@
 
 <div *ngFor="let pedido of pedidos">
 
-    <h2>Mesa {{ pedido.numeroMesa }}</h2>
+    <h2>
+        <span *ngIf="pedido.origem === 'Delivery'">
+            🛵 Delivery
+        </span>
+
+        <span *ngIf="pedido.origem !== 'Delivery' && pedido.numeroMesa">
+            Mesa {{ pedido.numeroMesa }}
+        </span>
+
+    </h2>
 
     <p>
         <strong>Cliente:</strong>
         {{ pedido.cliente }}
     </p>
 
-    <p>
+    <p *ngIf="pedido.origem === 'Delivery' ">
+        <strong>Telefone:</strong>
+        {{ pedido.telefone }}
+    </p>
+
+    <p *ngIf="pedido.origem === 'Delivery'">
+        <strong>Endereço:</strong>
+        {{ pedido.endereco?.rua }},
+        {{ pedido.endereco?.numero }},
+        {{ pedido.endereco?.bairro }}
+    </p>
+
+    <p *ngIf="pedido.origem !== 'Delivery'">
         <strong>Pessoas:</strong>
         {{ pedido.quantidadePessoas }}
     </p>
@@ -67,7 +88,11 @@
     </button>
 
     <button *ngIf="pedido.status === 'Preparando'" (click)="atualizarStatus(pedido.id, 'Finalizado')">
-        Finalizar pedido
+            Finalizar pedido
+    </button>
+
+    <button *ngIf="pedido.status === 'Finalizado'" (click)="atualizarStatus(pedido.id, 'Pronto para entrega')">
+        Pronto para entrega
     </button>
 
     <hr>

@@ -26,7 +26,12 @@ export class Pedido {
     this.pedidos = snapshot.docs.map(item => ({
       id: item.id,
       ...item.data()
-    }));
+    }))
+
+    .filter((pedido: any) => 
+    pedido.status === 'Recebido' || 
+    pedido.status === 'Preparando' ||
+    pedido.status === 'Finalizado');
 
     this.cdr.detectChanges();
   }
@@ -40,6 +45,10 @@ export class Pedido {
     
     if(status === 'Finalizado'){
       dadosAtualizados.finalizadoEm = new Date();
+    }
+
+    if(status === 'Pronto para entrega') {
+      dadosAtualizados.prontoEm = new Date();
     }
     
     await updateDoc(pedidoDoc, dadosAtualizados); 

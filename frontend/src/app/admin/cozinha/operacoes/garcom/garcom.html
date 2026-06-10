@@ -28,7 +28,7 @@
 
     <h3>Total: R$ {{ pedido.total }}</h3>
 
-    <button *ngIf="pedido.status === 'Finalizado'" (click)="marcarComoEntregue(pedido.id)">
+    <button *ngIf="pedido.status === 'Pronto para entrega'" (click)="marcarComoEntregue(pedido.id)">
         Marcar como entregue
     </button>
 

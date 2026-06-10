@@ -32,7 +32,7 @@ export class Garcom {
     const todosPedidos = snapshot.docs.map(item => ({ id: item.id, ...item.data() }));
 
     this.pedidos = todosPedidos.filter((pedido: any) =>
-      pedido.status === 'Finalizado' || pedido.status === 'Entregue');
+      pedido.status === 'Pronto para entrega' || pedido.status === 'Entregue');
     
     this.historicoPedidos = todosPedidos.filter((pedido: any) =>
       pedido.status === 'Pago');
