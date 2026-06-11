@@ -1,1 +1,64 @@
-<p>estoque works!</p>
+<h1>Controle de Estoque</h1>
+
+<h2>Cadastrar item</h2>
+
+<input type="text" [(ngModel)]="nome" placeholder="Nome do item">
+<br><br>
+
+<input type="text" [(ngModel)]="marca" placeholder="Marca">
+<br><br>
+
+<input type="text" [(ngModel)]="categoria" placeholder="Categoria">
+<br><br>
+
+<input type="text" [(ngModel)]="unidade" placeholder="Unidade: kg, g, L, un...">
+<br><br>
+
+<input type="number" [(ngModel)]="quantidadeAtual" placeholder="Quantidade atual">
+<br><br>
+
+<input type="number" [(ngModel)]="quantidadeMinima" placeholder="Quantidade mínima">
+<br><br>
+
+<input type="number" [(ngModel)]="quantidadeMaxima" placeholder="Quantidade máxima">
+<br><br>
+
+<button (click)="salvarItem()">
+  Salvar item
+</button>
+
+<hr>
+
+<h2>Itens cadastrados</h2>
+
+<div *ngFor="let item of itensEstoque">
+
+  <h3>{{ item.nome }}</h3>
+
+  <p><strong>Marca:</strong> {{ item.marca }}</p>
+  <p><strong>Categoria:</strong> {{ item.categoria }}</p>
+  <p><strong>Unidade:</strong> {{ item.unidade }}</p>
+
+  <p>
+    <strong>Estoque atual:</strong>
+    {{ item.quantidadeAtual }} {{ item.unidade }}
+  </p>
+
+  <p>
+    <strong>Mínimo:</strong>
+    {{ item.quantidadeMinima }} {{ item.unidade }}
+  </p>
+
+  <p>
+    <strong>Máximo:</strong>
+    {{ item.quantidadeMaxima }} {{ item.unidade }}
+  </p>
+
+  <p>
+    <strong>Status:</strong>
+    {{ verificarStatus(item) }}
+  </p>
+
+  <hr>
+
+</div>
