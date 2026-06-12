@@ -81,8 +81,11 @@ export class Estoque {
     this.quantidadeMaxima = null;
 
     await this.carregarItens();
+    this.fecharModalCadastro();
 
-    alert('Item cadastrado com sucesso!');
+    this.cdr.detectChanges();
+
+    console.log('Item cadastrado com sucesso!');
   }
 
 
@@ -101,5 +104,17 @@ export class Estoque {
     }
 
     return 'Normal';
+  }
+
+  mostrarModalCadastro = false;
+
+  abrirModalCadastro() {
+    this.mostrarModalCadastro = true;
+    this.cdr.detectChanges();
+  }
+
+  fecharModalCadastro() {
+    this.mostrarModalCadastro = false;
+    this.cdr.detectChanges();
   }
 }

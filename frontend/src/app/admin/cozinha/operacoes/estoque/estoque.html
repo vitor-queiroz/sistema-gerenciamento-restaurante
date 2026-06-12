@@ -1,31 +1,99 @@
 <h1>Controle de Estoque</h1>
 
-<h2>Cadastrar item</h2>
-
-<input type="text" [(ngModel)]="nome" placeholder="Nome do item">
-<br><br>
-
-<input type="text" [(ngModel)]="marca" placeholder="Marca">
-<br><br>
-
-<input type="text" [(ngModel)]="categoria" placeholder="Categoria">
-<br><br>
-
-<input type="text" [(ngModel)]="unidade" placeholder="Unidade: kg, g, L, un...">
-<br><br>
-
-<input type="number" [(ngModel)]="quantidadeAtual" placeholder="Quantidade atual">
-<br><br>
-
-<input type="number" [(ngModel)]="quantidadeMinima" placeholder="Quantidade mínima">
-<br><br>
-
-<input type="number" [(ngModel)]="quantidadeMaxima" placeholder="Quantidade máxima">
-<br><br>
-
-<button (click)="salvarItem()">
-  Salvar item
+<button (click)="abrirModalCadastro()">
+  + Cadastrar Novo Produto
 </button>
+
+<div class="modal" *ngIf="mostrarModalCadastro">
+
+  <h2>Adicionar Novo Produto </h2>
+
+  <input type="text" [(ngModel)]="nome" placeholder="Nome do item">
+  <br><br>
+
+  <input type="text" [(ngModel)]="marca" placeholder="Marca">
+  <br><br>
+
+
+  <select [(ngModel)]="categoria">
+
+    <option value="">
+      Selecione uma categoria
+    </option>
+
+    <option value="Massa">
+      Massa
+    </option>
+
+    <option value="Proteína">
+      Proteína
+    </option>
+
+    <option value="Aves">
+      Aves
+    </option>
+
+    <option value="Peixe">
+      Peixe
+    </option>
+
+    <option value="Guarnição">
+      Guarnição
+    </option>
+
+    <option value="Sobremesa">
+      Sobremesa
+    </option>
+
+    <option value="Bebida">
+      Bebida
+    </option>
+
+    <option value="Tempero">
+      Tempero
+    </option>
+  </select>
+
+  <br><br>
+
+  <select [(ngModel)]="unidade">
+
+    <option value="">
+      Unidade de medida
+    </option>
+
+    <option value="kg">kg</option>
+    <option value="g">g</option>
+    <option value="L">L</option>
+    <option value="ml">ml</option>
+    <option value="un">Unidades</option>
+    <option value="porção">Porções</option>
+    <option value="garrafa">Garrafas</option>
+    <option value="dose">Doses</option>
+    <option value="lata">Latas</option>
+    <option value="caixa">Caixas</option>
+
+  </select>
+
+  <br><br>
+
+  <input type="number" [(ngModel)]="quantidadeAtual" placeholder="Quantidade inicial">
+  <br><br>
+
+  <input type="number" [(ngModel)]="quantidadeMinima" placeholder="Quantidade mínima">
+  <br><br>
+
+  <input type="number" [(ngModel)]="quantidadeMaxima" placeholder="Quantidade máxima">
+  <br><br>
+
+  <button (click)="fecharModalCadastro()">
+    Cancelar
+  </button>
+
+  <button (click)="salvarItem()">
+    Adicionar
+  </button>
+</div>
 
 <hr>
 
