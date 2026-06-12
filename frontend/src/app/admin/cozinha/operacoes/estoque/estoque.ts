@@ -17,6 +17,9 @@ export class Estoque {
     this.carregarItens();
   }
 
+  buscaProduto = '';
+  categoriaSelecionada = '';
+  nivelSelecionado = '';
 
   nome = '';
   marca = '';
@@ -116,5 +119,56 @@ export class Estoque {
   fecharModalCadastro() {
     this.mostrarModalCadastro = false;
     this.cdr.detectChanges();
+  }
+
+
+  //AQUII VAI SER PARA OS ICONES FIXADOS DOS PRODUTOS/ESTOQUE
+  totalItens() {
+    return this.itensEstoque.length;
+  }
+
+  totalCriticos() {
+    return this.itensEstoque.filter(
+      item => this.verificarStatus(item) === 'Crítico'
+    ).length;
+  }
+
+  totalAtencao() {
+    return this.itensEstoque.filter(
+      item => this.verificarStatus(item) === 'Atenção'
+    ).length;
+  }
+
+  totalNormais() {
+    return this.itensEstoque.filter(
+      item => this.verificarStatus(item) === 'Normal'
+    ).length;
+  }
+
+  totalAcimaMedia() {
+    return this.itensEstoque.filter(
+      item => this.verificarStatus(item) === 'Acima da média'
+    ).length;
+  }
+
+
+
+  //AQUI VAI SER PARA A PESQUISA DOS PRODUTOS 
+  itensFiltrados() {
+    return this.itensEstoque.filter(item => {
+      const busca = item.nome
+        .toLowerCase()
+        .includes(this.buscaProduto.toLowerCase());
+
+      const categoria =
+        !this.categoriaSelecionada ||
+        item.categoria === this.categoriaSelecionada;
+
+      const nivel =
+        !this.nivelSelecionado ||
+        this.verificarStatus(item) === this.nivelSelecionado;
+
+      return busca && categoria && nivel;
+    });
   }
 }

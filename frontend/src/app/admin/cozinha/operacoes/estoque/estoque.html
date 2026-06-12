@@ -1,5 +1,59 @@
 <h1>Controle de Estoque</h1>
 
+<div class="cards-estoque">
+
+  <div class="card-estoque">
+    <p>Total de Itens</p>
+    <h2>{{ totalItens() }}</h2>
+  </div>
+
+  <div class="card-estoque">
+    <p>Crítico</p>
+    <h2>{{ totalCriticos() }}</h2>
+  </div>
+
+  <div class="card-estoque">
+    <p>Atenção</p>
+    <h2>{{ totalAtencao() }}</h2>
+  </div>
+
+  <div class="card-estoque">
+    <p>Normal</p>
+    <h2>{{ totalNormais() }}</h2>
+  </div>
+
+  <div class="card-estoque">
+    <p>Acima Média</p>
+    <h2>{{ totalAcimaMedia() }}</h2>
+  </div>
+
+</div>
+
+<input
+  type="text"
+  [(ngModel)]="buscaProduto"
+  placeholder="Buscar produto...">
+
+<select [(ngModel)]="categoriaSelecionada">
+  <option value="">Todas as categorias</option>
+  <option value="Massa">Massa</option>
+  <option value="Proteína">Proteína</option>
+  <option value="Aves">Aves</option>
+  <option value="Peixe">Peixe</option>
+  <option value="Guarnição">Guarnição</option>
+  <option value="Sobremesa">Sobremesa</option>
+  <option value="Bebida">Bebida</option>
+  <option value="Tempero">Tempero</option>
+</select>
+
+<select [(ngModel)]="nivelSelecionado">
+  <option value="">Todos os níveis</option>
+  <option value="Crítico">🔴 Crítico</option>
+  <option value="Atenção">⚠️ Atenção</option>
+  <option value="Normal">✓ Normal</option>
+  <option value="Acima da média">↗ Alto</option>
+</select>
+
 <button (click)="abrirModalCadastro()">
   + Cadastrar Novo Produto
 </button>
@@ -99,7 +153,7 @@
 
 <h2>Itens cadastrados</h2>
 
-<div *ngFor="let item of itensEstoque">
+<div *ngFor="let item of itensFiltrados()">
 
   <h3>{{ item.nome }}</h3>
 
