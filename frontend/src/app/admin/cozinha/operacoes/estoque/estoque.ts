@@ -31,6 +31,13 @@ export class Estoque {
   quantidadeMaxima: number | null = null;
 
   itensEstoque: any[] = [];
+  itemSelecionado: any = null;
+
+  mostrarModalAjuste = false;
+
+  quantidadeAjuste: number | null = null;
+
+  tipoMovimentacao = '';
 
 
   async carregarItens() {
@@ -121,6 +128,26 @@ export class Estoque {
     this.cdr.detectChanges();
   }
 
+  abrirModalAjuste(item: any) {
+
+    this.itemSelecionado = item;
+    this.quantidadeAjuste = null;
+    this.tipoMovimentacao = '';
+
+    this.mostrarModalAjuste = true;
+    this.cdr.detectChanges();
+  }
+
+  fecharModalAjuste() {
+
+    this.mostrarModalAjuste = false;
+
+    this.itemSelecionado = null;
+    this.quantidadeAjuste = null;
+    this.tipoMovimentacao = '';
+    this.cdr.detectChanges();
+  }
+
 
   //AQUII VAI SER PARA OS ICONES FIXADOS DOS PRODUTOS/ESTOQUE
   totalItens() {
@@ -170,5 +197,43 @@ export class Estoque {
 
       return busca && categoria && nivel;
     });
+  }
+
+
+  //BOTAO DE CONFIRMARR O AJUSTE DOS PRODUTOS
+  async confirmarAjuste() {
+    if (!this.itemSelecionado || !this.tipoMovimentacao || this.quantidadeAjuste === null) {
+      alert('Preencha todos os campos do ajuste');
+      return;
+    }
+
+    let novaQuantidade = this.itemSelecionado.quantidadeAtual;
+
+    if (this.tipoMovimentacao === 'entrada') {
+      novaQuantidade += this.quantidadeAjuste;
+    }
+
+    if (this.tipoMovimentacao === 'saida') {
+      novaQuantidade -= this.quantidadeAjuste;
+    }
+
+    if (novaQuantidade < 0) {
+      alert('O estoque não pode ficar negativo');
+      return;
+    }
+
+    const itemDoc = doc(this.firestore, 'estoque', this.itemSelecionado.id);
+
+    await updateDoc(itemDoc, {
+      quantidadeAtual: novaQuantidade
+    });
+
+    await this.carregarItens();
+
+    this.fecharModalAjuste();
+
+    this.cdr.detectChanges();
+
+    console.log('Estoque ajustado com sucesso!');
   }
 }

@@ -1,0 +1,27 @@
+.barra-estoque {
+  width: 100%;
+  height: 12px;
+  background: #ddd;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.progresso-estoque {
+  height: 100%;
+}
+
+.barra-critico {
+  background: red;
+}
+
+.barra-atencao {
+  background: orange;
+}
+
+.barra-normal {
+  background: green;
+}
+
+.barra-acima {
+  background: blue;
+}

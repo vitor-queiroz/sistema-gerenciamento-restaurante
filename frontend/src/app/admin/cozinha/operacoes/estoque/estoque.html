@@ -29,10 +29,7 @@
 
 </div>
 
-<input
-  type="text"
-  [(ngModel)]="buscaProduto"
-  placeholder="Buscar produto...">
+<input type="text" [(ngModel)]="buscaProduto" placeholder="Buscar produto...">
 
 <select [(ngModel)]="categoriaSelecionada">
   <option value="">Todas as categorias</option>
@@ -149,38 +146,98 @@
   </button>
 </div>
 
+
+<div class="modal" *ngIf="mostrarModalAjuste">
+
+  <h2>Ajustar Estoque</h2>
+
+  <p>
+    <strong>Produto:</strong>
+    {{ itemSelecionado?.nome }}
+  </p>
+
+  <p>
+    <strong>Estoque atual:</strong>
+    {{ itemSelecionado?.quantidadeAtual }} {{ itemSelecionado?.unidade }}
+  </p>
+
+  <select [(ngModel)]="tipoMovimentacao">
+    <option value="">Selecione o tipo</option>
+    <option value="entrada">Entrada</option>
+    <option value="saida">Saída</option>
+  </select>
+
+  <br><br>
+
+  <input type="number" [(ngModel)]="quantidadeAjuste" placeholder="Quantidade">
+
+  <br><br>
+
+  <button (click)="fecharModalAjuste()">
+    Cancelar
+  </button>
+
+  <button (click)="confirmarAjuste()">
+    Confirmar ajuste
+  </button>
+
+</div>
 <hr>
 
 <h2>Itens cadastrados</h2>
 
-<div *ngFor="let item of itensFiltrados()">
+<div class="lista-estoque">
 
-  <h3>{{ item.nome }}</h3>
+  <div class="card-produto" *ngFor="let item of itensFiltrados()">
 
-  <p><strong>Marca:</strong> {{ item.marca }}</p>
-  <p><strong>Categoria:</strong> {{ item.categoria }}</p>
-  <p><strong>Unidade:</strong> {{ item.unidade }}</p>
+    <div class="topo-card-produto">
+      <h3>{{ item.nome }}</h3>
 
-  <p>
-    <strong>Estoque atual:</strong>
-    {{ item.quantidadeAtual }} {{ item.unidade }}
-  </p>
+      <span>{{ verificarStatus(item) }}</span>
+    </div>
 
-  <p>
-    <strong>Mínimo:</strong>
-    {{ item.quantidadeMinima }} {{ item.unidade }}
-  </p>
+    <p><strong>Marca:</strong> {{ item.marca }}</p>
+    <p><strong>Categoria:</strong> {{ item.categoria }}</p>
 
-  <p>
-    <strong>Máximo:</strong>
-    {{ item.quantidadeMaxima }} {{ item.unidade }}
-  </p>
+    <p>
+      <strong>Estoque atual:</strong>
+      {{ item.quantidadeAtual }} {{ item.unidade }}
+    </p>
 
-  <p>
-    <strong>Status:</strong>
-    {{ verificarStatus(item) }}
-  </p>
 
-  <hr>
+    <!-- BARRA 'FACILITADORA PARA OS FUNCIONARIOS DO ESTOQUE'-->
+    <div class="barra-estoque">
+
+      <div class="progresso-estoque" [ngClass]="{'barra-critico': verificarStatus(item) === 'Crítico',
+            'barra-atencao': verificarStatus(item) === 'Atenção',
+            'barra-normal': verificarStatus(item) === 'Normal',
+            'barra-acima': verificarStatus(item) === 'Acima da média'}"
+        [style.width.%]="(item.quantidadeAtual / item.quantidadeMaxima) * 100">
+      </div>
+
+    </div>
+
+
+
+    <p>
+      <strong>Mínimo:</strong>
+      {{ item.quantidadeMinima }} {{ item.unidade }}
+    </p>
+
+    <p>
+      <strong>Máximo:</strong>
+      {{ item.quantidadeMaxima }} {{ item.unidade }}
+    </p>
+
+    <button (click)="abrirModalAjuste(item)">
+      Ajustar
+    </button>
+
+
+    <button>
+      Transferir
+    </button>
+
+  </div>
 
 </div>
