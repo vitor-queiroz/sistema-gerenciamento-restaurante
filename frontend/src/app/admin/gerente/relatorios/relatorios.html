@@ -11,6 +11,14 @@
 <h3>Prato Mais Vendido</h3>
 <p>{{ pratoMaisVendido }}</p>
 
+<h3>Ranking de Pratos</h3>
+
+<ul>
+  <li *ngFor="let prato of rankingPratos">
+    {{ prato.nome }} - {{ prato.quantidade }} vendas
+  </li>
+</ul>
+
 <hr>
 
 <h2>Pedidos Pagos</h2>

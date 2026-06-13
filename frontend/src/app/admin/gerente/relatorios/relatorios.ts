@@ -16,7 +16,8 @@ export class Relatorios implements OnInit {
   faturamentoTotal = 0;
   totalPedidos = 0;
   pratoMaisVendido = '';
-
+  rankingPratos: { nome: string; quantidade: number }[] = [];
+  
   constructor(
   private relatoriosService: RelatoriosService,
   private cdr: ChangeDetectorRef
@@ -79,11 +80,17 @@ console.log('Pedidos recebidos para processar:', this.pedidos);
   });
 
   const ranking = Object.entries(contadorPratos)
-    .sort((a: any, b: any) => Number(b[1]) - Number(a[1]));
+  .sort((a: any, b: any) => Number(b[1]) - Number(a[1]));
 
-  if (ranking.length > 0) {
-    this.pratoMaisVendido = ranking[0][0] as string;
-  }
+  this.rankingPratos = ranking.map((item: any) => ({
+  nome: item[0],
+  quantidade: Number(item[1])
+}));
+
+  if (this.rankingPratos.length > 0) {
+  this.pratoMaisVendido = this.rankingPratos[0].nome;
+}
+
 console.log('Total pedidos:', this.totalPedidos);
 console.log('Faturamento:', this.faturamentoTotal);
 console.log('Prato mais vendido:', this.pratoMaisVendido);
