@@ -1,4 +1,5 @@
 import Chart from 'chart.js/auto';
+import { FormsModule } from '@angular/forms';
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
@@ -7,17 +8,24 @@ import { RelatoriosService } from './relatorios.service';
 @Component({
   selector: 'app-relatorios',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './relatorios.html',
   styleUrl: './relatorios.css',
+  
 })
 export class Relatorios implements OnInit {
 
   pedidos: any[] = [];
-  
+  todosPedidos: any[] = [];
+  faturamentoPorDia: any[] = [];
+  graficoFaturamento: any;
+
   faturamentoTotal = 0;
   totalPedidos = 0;
   pratoMaisVendido = '';
+  filtroPeriodo = 'todos';
+
+
   rankingPratos: { nome: string; quantidade: number }[] = [];
   
   graficoPratos: any;
@@ -41,9 +49,11 @@ if (pedidos.length > 0) {
 
     console.log('TODOS OS PEDIDOS:', JSON.stringify(pedidos, null, 2));
 
-    this.pedidos = pedidos.filter(
+    this.todosPedidos = pedidos.filter(
   (pedido: any) => pedido.status === 'Pago'
 );
+
+this.pedidos = [...this.todosPedidos];
 
     console.log('PEDIDOS PAGOS:', this.pedidos);
 
@@ -105,6 +115,9 @@ if (this.rankingPratos.length > 0) {
 
 this.criarGraficoPratos();
 
+this.processarFaturamentoDiario();
+this.criarGraficoFaturamento();
+
 }
 
 criarGraficoPratos() {
@@ -136,4 +149,133 @@ criarGraficoPratos() {
 
 }
 
+filtrarPeriodo() {
+
+  const hoje = new Date();
+
+  switch (this.filtroPeriodo) {
+
+    case 'hoje':
+
+      this.pedidos = this.todosPedidos.filter((pedido: any) => {
+
+        const data = pedido.pagamento?.pagoEm?.toDate
+          ? pedido.pagamento.pagoEm.toDate()
+          : new Date(
+              pedido.pagamento?.pagoEm?.seconds * 1000
+            );
+
+        return (
+          data.getDate() === hoje.getDate() &&
+          data.getMonth() === hoje.getMonth() &&
+          data.getFullYear() === hoje.getFullYear()
+        );
+
+      });
+
+      break;
+
+    case 'semana':
+
+      const inicioSemana = new Date();
+      inicioSemana.setDate(hoje.getDate() - 7);
+
+      this.pedidos = this.todosPedidos.filter((pedido: any) => {
+
+        const data = pedido.pagamento?.pagoEm?.toDate
+          ? pedido.pagamento.pagoEm.toDate()
+          : new Date(
+              pedido.pagamento?.pagoEm?.seconds * 1000
+            );
+
+        return data >= inicioSemana;
+
+      });
+
+      break;
+
+    case 'mes':
+
+      this.pedidos = this.todosPedidos.filter((pedido: any) => {
+
+        const data = pedido.pagamento?.pagoEm?.toDate
+          ? pedido.pagamento.pagoEm.toDate()
+          : new Date(
+              pedido.pagamento?.pagoEm?.seconds * 1000
+            );
+
+        return (
+          data.getMonth() === hoje.getMonth() &&
+          data.getFullYear() === hoje.getFullYear()
+        );
+
+      });
+
+      break;
+
+    default:
+
+      this.pedidos = [...this.todosPedidos];
+
+  }
+
+  this.processarRelatorio();
+
+}
+
+processarFaturamentoDiario() {
+
+  const faturamentoMap: any = {};
+
+  this.pedidos.forEach((pedido: any) => {
+
+    if (!pedido.pagamento?.pagoEm) return;
+
+    const data = pedido.pagamento.pagoEm.toDate
+      ? pedido.pagamento.pagoEm.toDate()
+      : new Date(pedido.pagamento.pagoEm.seconds * 1000);
+
+    const chave = data.toLocaleDateString('pt-BR');
+
+    if (!faturamentoMap[chave]) {
+      faturamentoMap[chave] = 0;
+    }
+
+    faturamentoMap[chave] += pedido.total || 0;
+
+  });
+
+  this.faturamentoPorDia = Object.entries(faturamentoMap)
+    .map(([data, valor]) => ({
+      data,
+      valor
+    }));
+
+}
+criarGraficoFaturamento() {
+
+  const labels = this.faturamentoPorDia.map(item => item.data);
+
+  const dados = this.faturamentoPorDia.map(item => item.valor);
+
+  if (this.graficoFaturamento) {
+    this.graficoFaturamento.destroy();
+  }
+
+  this.graficoFaturamento = new Chart('graficoFaturamento', {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [{
+        label: 'Faturamento Diário (R$)',
+        data: dados
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false
+    }
+  });
+
+}
 }
