@@ -1,3 +1,4 @@
+import Chart from 'chart.js/auto';
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
@@ -13,11 +14,14 @@ import { RelatoriosService } from './relatorios.service';
 export class Relatorios implements OnInit {
 
   pedidos: any[] = [];
+  
   faturamentoTotal = 0;
   totalPedidos = 0;
   pratoMaisVendido = '';
   rankingPratos: { nome: string; quantidade: number }[] = [];
   
+  graficoPratos: any;
+
   constructor(
   private relatoriosService: RelatoriosService,
   private cdr: ChangeDetectorRef
@@ -94,5 +98,42 @@ console.log('Pedidos recebidos para processar:', this.pedidos);
 console.log('Total pedidos:', this.totalPedidos);
 console.log('Faturamento:', this.faturamentoTotal);
 console.log('Prato mais vendido:', this.pratoMaisVendido);
+
+if (this.rankingPratos.length > 0) {
+  this.pratoMaisVendido = this.rankingPratos[0].nome;
 }
+
+this.criarGraficoPratos();
+
+}
+
+criarGraficoPratos() {
+
+  const top5 = this.rankingPratos.slice(0, 5);
+
+  const labels = top5.map(prato => prato.nome);
+
+  const dados = top5.map(prato => prato.quantidade);
+
+  if (this.graficoPratos) {
+    this.graficoPratos.destroy();
+  }
+
+  this.graficoPratos = new Chart('graficoPratos', {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: 'Quantidade Vendida',
+        data: dados
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false
+    }
+  });
+
+}
+
 }
