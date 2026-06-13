@@ -1,1 +1,22 @@
-<p>relatorios works!</p>
+<h1>Relatórios Dom Palladar</h1>
+
+<hr>
+
+<h3>Faturamento Total</h3>
+<p>R$ {{ faturamentoTotal }}</p>
+
+<h3>Pedidos Pagos</h3>
+<p>{{ totalPedidos }}</p>
+
+<h3>Prato Mais Vendido</h3>
+<p>{{ pratoMaisVendido }}</p>
+
+<hr>
+
+<h2>Pedidos Pagos</h2>
+
+<div *ngFor="let pedido of pedidos">
+  <p>
+    {{ pedido.cliente }} - R$ {{ pedido.total }}
+  </p>
+</div>
