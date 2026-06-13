@@ -1,4 +1,12 @@
-<h1>Controle de Estoque</h1>
+<div class="cabecalho-estoque">
+
+  <h1>Controle de Estoque</h1>
+
+  <button (click)="abrirModalHistorico()">
+    📋 Histórico ({{ movimentacoesEstoque.length }})
+  </button>
+
+</div>
 
 <div class="cards-estoque">
 
@@ -241,3 +249,37 @@
   </div>
 
 </div>
+
+<!-- Aqui entra as movimentações de entrada e saída de mercadorias-->
+<!--TEM UM BOTAO LA EM CIMA, NO TOPO DO HTML-->
+<div class="modal" *ngIf="mostrarModalHistorico">
+  <h2>Histórico de movimentações</h2>
+
+  <div *ngIf="movimentacoesEstoque.length === 0">
+    <p>Nenhuma movimentação registrada ainda</p>
+  </div>
+
+  <div *ngFor="let mov of movimentacoesEstoque">
+
+    <p>
+      <strong>{{ mov.nome }}</strong>
+    </p>
+
+    <p>
+      {{ mov.tipo }} de {{ mov.quantidade }} {{ mov.unidade }}
+    </p>
+
+    <p>
+      {{ mov.quantidadeAnterior }} → {{ mov.quantidadeNova }} {{ mov.unidade }}
+    </p>
+
+    <p>
+      {{ mov.criadoEm?.toDate() | date:'dd/MM/yyyy HH:mm' }}
+    </p>
+
+    <hr>
+  </div>
+
+    <button (click)="fecharModalHistorico()"> Fechar </button>
+
+  </div>

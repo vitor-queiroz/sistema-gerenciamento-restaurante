@@ -15,6 +15,7 @@ export class Estoque {
 
   constructor(private firestore: Firestore, private cdr: ChangeDetectorRef) {
     this.carregarItens();
+    this.carregarMovimentacoes();
   }
 
   buscaProduto = '';
@@ -149,6 +150,21 @@ export class Estoque {
   }
 
 
+
+  //ABRIRRR MODAL APENAS DO HISTORICO DE MOVIMENTAÇÕES DO ESTOQUEE
+  mostrarModalHistorico = false;
+
+  abrirModalHistorico() {
+    this.mostrarModalHistorico = true;
+    this.cdr.detectChanges();
+  }
+
+  fecharModalHistorico() {
+    this.mostrarModalHistorico = false;
+    this.cdr.detectChanges();
+  }
+
+
   //AQUII VAI SER PARA OS ICONES FIXADOS DOS PRODUTOS/ESTOQUE
   totalItens() {
     return this.itensEstoque.length;
@@ -222,18 +238,57 @@ export class Estoque {
       return;
     }
 
+    //Aqui é um método para salvar vidas haha
+    const confirmar = confirm(`Deseja realmente registrar uma ${this.tipoMovimentacao} de ${this.quantidadeAjuste} ${this.itemSelecionado.unidade} para item ${this.itemSelecionado.nome}?`
+    );
+
+    if (!confirmar) {
+      return;
+    }
+
     const itemDoc = doc(this.firestore, 'estoque', this.itemSelecionado.id);
 
     await updateDoc(itemDoc, {
       quantidadeAtual: novaQuantidade
     });
 
+
+    const movimentacoesRef = collection(this.firestore, 'movimentacoesEstoque');
+
+    await addDoc(movimentacoesRef, {
+      itemId: this.itemSelecionado.id,
+      nome: this.itemSelecionado.nome,
+      tipo: this.tipoMovimentacao,
+      quantidade: this.quantidadeAjuste,
+      unidade: this.itemSelecionado.unidade,
+      quantidadeAnterior: this.itemSelecionado.quantidadeAtual,
+      quantidadeNova: novaQuantidade,
+      criadoEm: new Date()
+    });
+
     await this.carregarItens();
+    await this.carregarMovimentacoes();
 
     this.fecharModalAjuste();
 
     this.cdr.detectChanges();
 
-    console.log('Estoque ajustado com sucesso!');
+    console.log('Estoque ajustado e movimentação registrada!');
+  }
+
+
+  movimentacoesEstoque: any[] = [];
+
+  async carregarMovimentacoes() {
+    const movimentacoesRef = collection(this.firestore, 'movimentacoesEstoque');
+
+    const snapshot = await getDocs(movimentacoesRef);
+
+    this.movimentacoesEstoque = snapshot.docs.map(item => ({
+      id: item.id,
+      ...item.data()
+    }));
+
+    this.cdr.detectChanges();
   }
 }
