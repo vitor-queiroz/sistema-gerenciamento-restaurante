@@ -13,11 +13,20 @@
 
 <div *ngFor="let pedido of pedidos">
 
-    <h2>Mesa {{ pedido.numeroMesa }}</h2>
+    <h2 *ngIf="pedido.origem?.toLowerCase() !== 'delivery'">
+        Mesa {{ pedido.numeroMesa }}
+    </h2>
+
+    <h2 *ngIf="pedido.origem?.toLowerCase() === 'delivery'">
+        🛵 Pedido Delivery
+    </h2>
 
     <p>
         <strong>Cliente:</strong>
         {{ pedido.cliente }}
+    </p>
+    <p>
+        <strong>Origem:</strong> {{ pedido.origem }}
     </p>
 
     <h3>Itens</h3>
@@ -122,14 +131,29 @@
 
     <h2>Histórico de Pagamentos</h2>
 
-    <div *ngIf="historicoPedidos.length === 0">
-        <p>Nenhum pagamento finalizado ainda.</p>
+
+    <button (click)="filtroHistorico = 'presencial'">
+        Presencial
+    </button>
+
+    <button (click)="filtroHistorico = 'delivery'">
+        Delivery
+    </button>
+
+
+    <div *ngIf="historicoFiltrado().length === 0">
+        <p>Nenhum pagamento encontrado para este filtro.</p>
     </div>
 
-    <div *ngFor="let pedido of historicoPedidos">
+    <div *ngFor="let pedido of historicoFiltrado()">
 
-        <h3>Mesa {{ pedido.numeroMesa }}</h3>
+        <h3 *ngIf="pedido.origem?.toLowerCase() !== 'delivery'">
+            Mesa {{ pedido.numeroMesa }}
+        </h3>
 
+        <h3 *ngIf="pedido.origem?.toLowerCase() === 'delivery'">
+            🛵 Pedido Delivery
+        </h3>
         <p>
             <strong>Cliente:</strong>
             {{ pedido.cliente }}
@@ -159,7 +183,7 @@
             <h4>Pagamentos divididos</h4>
 
             <div *ngFor="let pagamento of pedido.pagamento?.pagamentos">
-                <p> {{ pagamento.forma }} - R$ {{ pagamento.valor | number:'1.2-2'  }}</p>
+                <p> {{ pagamento.forma }} - R$ {{ pagamento.valor | number:'1.2-2' }}</p>
 
             </div>
 

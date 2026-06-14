@@ -39,10 +39,13 @@ export class Garcom {
 
     this.pedidos = todosPedidos.filter((pedido: any) =>
       pedido.status === 'Pronto para entrega' || pedido.status === 'Entregue')
-    .map((pedido: any) => ({...pedido, incluirTaxaGarcom: true}));
+      .map((pedido: any) => ({ ...pedido, incluirTaxaGarcom: true }));
 
     this.historicoPedidos = todosPedidos.filter((pedido: any) =>
       pedido.status === 'Pago');
+
+    console.log('Histórico completo:', this.historicoPedidos);
+    console.log('Histórico filtrado:', this.historicoFiltrado());
 
     this.cdr.detectChanges();
   }
@@ -76,6 +79,7 @@ export class Garcom {
 
     await updateDoc(pedidoDoc, {
       status: 'Pago',
+      origem: pedido.origem || 'presencial',
       pagamento: {
         forma: pedido.formaPagamento,
         valor: this.calcularTotalFinal(pedido),
@@ -191,8 +195,9 @@ export class Garcom {
 
     await updateDoc(pedidoDoc, {
       status: 'Pago',
+      origem: pedido.origem || 'presencial',
       pagamento: {
-        forma:'Dividido',
+        forma: 'Dividido',
         valor: this.calcularTotalFinal(pedido),
         subtotal: pedido.total,
         taxaGarcomIncluida: pedido.incluirTaxaGarcom,
@@ -213,7 +218,7 @@ export class Garcom {
     this.processandoPagamento = false;
     this.cdr.detectChanges();
 
-             alert('Pagamento dividido registrado com sucesso!');
+    alert('Pagamento dividido registrado com sucesso!');
   }
 
 
@@ -221,15 +226,34 @@ export class Garcom {
   incluirTaxaGarcom = true;
 
   calcularTaxaGarcom(pedido: any) {
-    if(!pedido.incluirTaxaGarcom) {
-        return 0;
-  }
-
-     return pedido.total * 0.10;
-}
-
-  calcularTotalFinal(pedido: any) {
-      return pedido.total + this.calcularTaxaGarcom(pedido);
+    if (!pedido.incluirTaxaGarcom) {
+      return 0;
     }
 
+    return pedido.total * 0.10;
+  }
+
+  calcularTotalFinal(pedido: any) {
+    return pedido.total + this.calcularTaxaGarcom(pedido);
+  }
+
+
+
+  filtroHistorico = 'presencial';
+
+  historicoFiltrado() {
+    return this.historicoPedidos.filter((pedido: any) => {
+      const origem = (pedido.origem || '').toLowerCase().trim();
+
+      if (this.filtroHistorico === 'presencial') {
+        return origem !== 'delivery';
+      }
+
+      if (this.filtroHistorico === 'delivery') {
+        return origem === 'delivery';
+      }
+
+      return true;
+    });
+  }
 }

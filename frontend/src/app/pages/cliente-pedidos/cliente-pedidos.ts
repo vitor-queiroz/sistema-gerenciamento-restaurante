@@ -125,12 +125,16 @@ export class ClientePedidos implements OnInit {
       const pedidosRef = collection(this.firestore, 'pedidos');
 
       const pedidoCriado = await addDoc(pedidosRef, {
-        origem: 'Delivery', 
+        origem: 'delivery',
+        tipoPedido: 'Delivery',
+        taxaEntrega: 8,
+        statusEntrega: 'Aguardando preparo',
+         
         cliente: this.usuarioLogado.nome,
         telefone: this.usuarioLogado.telefone, 
         endereco: this.usuarioLogado.endereco, 
+        
         itens: this.carrinho.map(item => ({ 
-          
         id: item.prato.id,
         nome: item.prato.nome,
         preco: item.prato.preco,
