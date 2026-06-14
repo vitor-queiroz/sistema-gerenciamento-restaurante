@@ -12,14 +12,31 @@
 
 <hr>
 
-<h3>Faturamento Total</h3>
-<p>R$ {{ faturamentoTotal }}</p>
+<div class="dashboard-cards">
 
-<h3>Pedidos Pagos</h3>
-<p>{{ totalPedidos }}</p>
+  <div class="card">
+    <h3>💰 Faturamento</h3>
+    <p>R$ {{ faturamentoTotal.toFixed(2) }}</p>
+  </div>
 
-<h3>Prato Mais Vendido</h3>
-<p>{{ pratoMaisVendido }}</p>
+  <div class="card">
+    <h3>📦 Pedidos</h3>
+    <p>{{ totalPedidos }}</p>
+  </div>
+
+  <div class="card">
+    <h3>🍽 Mais Vendido</h3>
+    <p>{{ pratoMaisVendido }}</p>
+  </div>
+
+  <div class="card">
+    <h3>🎯 Ticket Médio</h3>
+    <p>R$ {{ ticketMedio.toFixed(2) }}</p>
+  </div>
+
+</div>
+
+<hr>
 
 <h3>Ranking de Pratos</h3>
 
@@ -58,6 +75,24 @@
 
 <hr>
 
+<h2>Formas de Pagamento</h2>
+
+<div class="graficos-pagamento">
+
+  <div class="grafico-pizza">
+    <h3>Quantidade de Pagamentos</h3>
+    <canvas id="graficoPagamentoQtd"></canvas>
+  </div>
+
+  <div class="grafico-pizza">
+    <h3>Valor Recebido por Forma</h3>
+    <canvas id="graficoPagamentoValor"></canvas>
+  </div>
+
+</div>
+
+<hr>
+
 <h2>Pedidos Pagos</h2>
 
 <div *ngFor="let pedido of pedidos">
@@ -65,3 +100,4 @@
     {{ pedido.cliente }} - R$ {{ pedido.total }}
   </p>
 </div>
+

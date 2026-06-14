@@ -19,11 +19,16 @@ export class Relatorios implements OnInit {
   todosPedidos: any[] = [];
   faturamentoPorDia: any[] = [];
   graficoFaturamento: any;
+  graficoPagamentoQtd: any;
+  graficoPagamentoValor: any;
+  formasPagamento: any[] = [];
 
   faturamentoTotal = 0;
   totalPedidos = 0;
   pratoMaisVendido = '';
   filtroPeriodo = 'todos';
+  ticketMedio = 0;
+
 
 
   rankingPratos: { nome: string; quantidade: number }[] = [];
@@ -118,6 +123,15 @@ this.criarGraficoPratos();
 this.processarFaturamentoDiario();
 this.criarGraficoFaturamento();
 
+this.ticketMedio =
+  this.totalPedidos > 0
+    ? this.faturamentoTotal / this.totalPedidos
+    : 0;
+
+this.processarFormasPagamento();
+
+this.criarGraficoPagamentoQtd();
+this.criarGraficoPagamentoValor();
 }
 
 criarGraficoPratos() {
@@ -278,4 +292,92 @@ criarGraficoFaturamento() {
   });
 
 }
+
+processarFormasPagamento() {
+
+  const formas: any = {};
+
+  this.pedidos.forEach((pedido: any) => {
+
+    const forma = pedido.pagamento?.forma || 'Não informado';
+
+    if (!formas[forma]) {
+
+      formas[forma] = {
+        quantidade: 0,
+        valor: 0
+      };
+
+    }
+
+    formas[forma].quantidade++;
+
+    formas[forma].valor += pedido.total || 0;
+
+  });
+
+  this.formasPagamento = Object.entries(formas).map(
+    ([nome, dados]: any) => ({
+      nome,
+      quantidade: dados.quantidade,
+      valor: dados.valor
+    })
+  );
+
+}
+
+criarGraficoPagamentoQtd() {
+
+  const labels = this.formasPagamento.map(f => f.nome);
+
+  const dados = this.formasPagamento.map(
+    f => f.quantidade
+  );
+
+  if (this.graficoPagamentoQtd) {
+    this.graficoPagamentoQtd.destroy();
+  }
+
+  this.graficoPagamentoQtd = new Chart(
+    'graficoPagamentoQtd',
+    {
+      type: 'pie',
+      data: {
+        labels,
+        datasets: [{
+          data: dados
+        }]
+      }
+    }
+  );
+
+}
+
+criarGraficoPagamentoValor() {
+
+  const labels = this.formasPagamento.map(f => f.nome);
+
+  const dados = this.formasPagamento.map(
+    f => f.valor
+  );
+
+  if (this.graficoPagamentoValor) {
+    this.graficoPagamentoValor.destroy();
+  }
+
+  this.graficoPagamentoValor = new Chart(
+    'graficoPagamentoValor',
+    {
+      type: 'pie',
+      data: {
+        labels,
+        datasets: [{
+          data: dados
+        }]
+      }
+    }
+  );
+
+}
+
 }
