@@ -36,8 +36,7 @@
 
         <h3>Pagamento</h3>
 
-        <select [(ngModel)]="pedido.formaPagamento" 
-        (ngModelChange)="selecionarFormaPagamento(pedido, $event)">
+        <select [(ngModel)]="pedido.formaPagamento" (ngModelChange)="selecionarFormaPagamento(pedido, $event)">
             <option value="">Selecione</option>
             <option value="Pix">Pix</option>
             <option value="Crédito">Crédito</option>
@@ -51,45 +50,102 @@
             Finalizar pagamento
         </button>
 
-    </div>
+        <button (click)="alternarPagamentoDividido()">
+            {{ mostrarPagamentoDividido ? 'Fechar pagamento dividido' : 'Dividir pagamento' }}
+        </button>
 
+        <hr>
+
+        <div *ngIf="mostrarPagamentoDividido">
+
+            <h3>Pagamento dividido</h3>
+
+            <select [(ngModel)]="formaPagamentoParcial">
+                <option value="">Forma de pagamento</option>
+                <option value="Pix">Pix</option>
+                <option value="Crédito">Crédito</option>
+                <option value="Débito">Débito</option>
+                <option value="Dinheiro">Dinheiro</option>
+            </select>
+
+            <br><br>
+
+            <input type="number" [(ngModel)]="valorPagamentoParcial" placeholder="Valor pago">
+
+            <br><br>
+
+            <button (click)="adicionarPagamentoParcial(pedido)">
+                Adicionar pagamento
+            </button>
+
+            <button (click)="finalizarRestante(pedido)">
+                Finalizar restante
+            </button>
+
+            <button *ngIf="calcularRestante(pedido) <= 0.01" 
+            [disabled]="processandoPagamento"
+            (click)="finalizarPagamentoDividido(pedido)">
+            {{ processandoPagamento? 'Finalizando...' : 'Finalizar pagamento dividido'}}
+            </button>
+
+            <h4>Pagamentos adicionados</h4>
+
+            <div *ngFor="let pagamento of pagamentosParciais">
+                <p>{{ pagamento.forma }} - R$ {{ pagamento.valor }}</p>
+            </div>
+
+            <p><strong>Total pago:</strong> R$ {{ calcularTotalPago() | number:'1.2-2' }}</p>
+
+            <p><strong>Restante:</strong> R$ {{ calcularRestante(pedido) | number:'1.2-2' }}</p>
+        </div>
+    </div>
     <hr>
 </div>
 
 
 <div *ngIf="mostrarHistorico">
 
-<h2>Histórico de Pagamentos</h2>
+    <h2>Histórico de Pagamentos</h2>
 
-  <div *ngIf="historicoPedidos.length === 0">
-    <p>Nenhum pagamento finalizado ainda.</p>
-  </div>
+    <div *ngIf="historicoPedidos.length === 0">
+        <p>Nenhum pagamento finalizado ainda.</p>
+    </div>
 
-  <div *ngFor="let pedido of historicoPedidos">
+    <div *ngFor="let pedido of historicoPedidos">
 
-    <h3>Mesa {{ pedido.numeroMesa }}</h3>
+        <h3>Mesa {{ pedido.numeroMesa }}</h3>
 
-    <p>
-        <strong>Cliente:</strong>
-        {{ pedido.cliente }}
-    </p>
+        <p>
+            <strong>Cliente:</strong>
+            {{ pedido.cliente }}
+        </p>
 
-    <p>
-        <strong>Total pago:</strong>
-        R$ {{ pedido.total }}
-    </p>
+        <p>
+            <strong>Total pago:</strong>
+            R$ {{ pedido.total }}
+        </p>
 
-    <p>
-        <strong>Forma de pagamento:</strong>
-        {{ pedido.pagamento?.forma }}
-    </p>
+        <p>
+            <strong>Forma de pagamento:</strong>
+            {{ pedido.pagamento?.forma }}
+        </p>
 
-    <p>
-        <strong>Pago em:</strong>
-        {{ pedido.pagamento?.pagoEm?.toDate() | date:'dd/MM/yyyy HH:mm' }}
-    </p>
+        <div *ngIf="pedido.pagamento?.dividido">
+            <h4>Pagamentos divididos</h4>
 
-    <hr>
+            <div *ngFor="let pagamento of pedido.pagamento?.pagamentos">
+                <p> {{ pagamento.forma }} - R$ {{ pagamento.valor }}</p>
 
-  </div>
+            </div>
+
+        </div>
+
+        <p>
+            <strong>Pago em:</strong>
+            {{ pedido.pagamento?.pagoEm?.toDate() | date:'dd/MM/yyyy HH:mm' }}
+        </p>
+
+        <hr>
+
+    </div>
 </div>

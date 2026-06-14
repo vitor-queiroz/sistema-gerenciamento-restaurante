@@ -20,6 +20,12 @@ export class Garcom {
 
   formaPagamento = '';
 
+  formaPagamentoParcial = '';
+  valorPagamentoParcial: number | null = null;
+  pagamentosParciais: any[] = [];
+
+  processandoPagamento = false;
+
   constructor(private firestore: Firestore, private cdr: ChangeDetectorRef) {
     this.carregarPedidos();
   }
@@ -33,29 +39,29 @@ export class Garcom {
 
     this.pedidos = todosPedidos.filter((pedido: any) =>
       pedido.status === 'Pronto para entrega' || pedido.status === 'Entregue');
-    
+
     this.historicoPedidos = todosPedidos.filter((pedido: any) =>
       pedido.status === 'Pago');
 
-            this.cdr.detectChanges();
+    this.cdr.detectChanges();
   }
 
   async marcarComoEntregue(id: string) {
     const pedidoDoc = doc(this.firestore, 'pedidos', id);
 
-        await updateDoc(pedidoDoc, {
-        status: 'Entregue',
-        entregueEm: new Date()
+    await updateDoc(pedidoDoc, {
+      status: 'Entregue',
+      entregueEm: new Date()
     });
 
-       await this.carregarPedidos();
-       this.cdr.detectChanges();
+    await this.carregarPedidos();
+    this.cdr.detectChanges();
   }
 
 
-      selecionarFormaPagamento(pedido: any, forma: string) {
-      pedido.formaPagamento = forma;
-      this.cdr.detectChanges();
+  selecionarFormaPagamento(pedido: any, forma: string) {
+    pedido.formaPagamento = forma;
+    this.cdr.detectChanges();
   }
 
 
@@ -83,10 +89,124 @@ export class Garcom {
     alert('Pagamento registrado com sucesso!');
   }
 
-    //aqui alterna a visualização do histórico de pagamentos
-   alternarHistorico() {
+  //aqui alterna a visualização do histórico de pagamentos
+  alternarHistorico() {
     this.mostrarHistorico = !this.mostrarHistorico;
 
     this.cdr.detectChanges();
   }
+
+  //''METODO'' DE PAGAMENTO (DIVISAO)
+
+  adicionarPagamentoParcial(pedido: any) {
+    if (!this.formaPagamentoParcial || this.valorPagamentoParcial === null) {
+      alert('Informe a forma e o valor do pagamento');
+      return;
+    }
+
+    if (this.valorPagamentoParcial <= 0) {
+      alert('O valor precisa ser maior que zero');
+      return;
+    }
+
+    const restante = this.calcularRestante(pedido);
+
+    if (this.valorPagamentoParcial > restante) {
+      alert('O valor informado é maior que o restante da conta');
+      return;
+    }
+
+    this.pagamentosParciais.push({
+      forma: this.formaPagamentoParcial,
+      valor: this.valorPagamentoParcial
+    });
+
+    this.formaPagamentoParcial = '';
+    this.valorPagamentoParcial = null;
+
+    this.cdr.detectChanges();
+  }
+
+  calcularTotalPago() {
+    return this.pagamentosParciais.reduce((total, pagamento) => {
+      return total + pagamento.valor;
+    }, 0);
+  }
+
+  calcularRestante(pedido: any) {
+    return pedido.total - this.calcularTotalPago();
+  }
+
+  //AQUI VAI SER PARA APENAS ABRIR O PAGAM
+  mostrarPagamentoDividido = false;
+
+  alternarPagamentoDividido() {
+    this.mostrarPagamentoDividido = !this.mostrarPagamentoDividido;
+    this.cdr.detectChanges();
+  }
+
+  //UMA IDEIA QUE EU ADICIONEI AQUI PARA A FINALIZAÇÃO DE CONTAS COMPARTILHADAS
+  finalizarRestante(pedido: any) {
+    if (!this.formaPagamentoParcial) {
+      alert('Selecione a forma de pagamento');
+      return;
+    }
+
+    const restante = this.calcularRestante(pedido);
+
+    if (restante <= 0) {
+      alert('A conta já está quitada');
+      return;
+    }
+
+    this.pagamentosParciais.push({
+      forma: this.formaPagamentoParcial,
+      valor: restante
+    });
+
+    this.formaPagamentoParcial = '';
+    this.valorPagamentoParcial = null;
+
+    this.cdr.detectChanges();
+  }
+
+  
+
+  async finalizarPagamentoDividido(pedido: any) {
+    const restante = Number(this.calcularRestante(pedido).toFixed(2));
+
+    if (restante > 0) {
+      alert('Ainda existe valor restante para pagar');
+      return;
+    }
+
+    this.processandoPagamento = true;
+    this.cdr.detectChanges();
+
+    const pedidoDoc = doc(this.firestore, 'pedidos', pedido.id);
+
+    await updateDoc(pedidoDoc, {
+      status: 'Pago',
+      pagamento: {
+        forma: 'Dividido',
+        valor: pedido.total,
+        dividido: true,
+        pagamentos: this.pagamentosParciais,
+        pagoEm: new Date()
+      }
+    });
+
+    this.pagamentosParciais = [];
+    this.formaPagamentoParcial = '';
+    this.valorPagamentoParcial = null;
+    this.mostrarPagamentoDividido = false;
+
+    await this.carregarPedidos();
+
+    this.processandoPagamento = false;
+    this.cdr.detectChanges();
+
+                 alert('Pagamento dividido registrado com sucesso!');
+  }
+
 }
