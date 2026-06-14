@@ -2,7 +2,7 @@ import { Component, ChangeDetectorRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
-import { Firestore, collection, addDoc, getDocs, updateDoc, deleteDoc, doc } from '@angular/fire/firestore';
+import { Firestore, collection, addDoc, getDocs, updateDoc, doc } from '@angular/fire/firestore';
 
 @Component({
   selector: 'app-estoque',
@@ -39,6 +39,12 @@ export class Estoque {
   quantidadeAjuste: number | null = null;
 
   tipoMovimentacao = '';
+
+  //PARTE DE TRANSFERENCIA ESTOQUE
+  itemTransferencia: any = null;
+  mostrarModalTransferencia = false;
+  quantidadeTransferencia: number | null = null;
+  destinoTransferencia = '';
 
 
   async carregarItens() {
@@ -288,6 +294,80 @@ export class Estoque {
       id: item.id,
       ...item.data()
     }));
+
+    this.cdr.detectChanges();
+  }
+
+  //parte de transferência de estoque
+  abrirModalTransferencia(item: any) {
+    this.itemTransferencia = item;
+
+    this.quantidadeTransferencia = null;
+    this.destinoTransferencia = '';
+
+    this.mostrarModalTransferencia = true;
+
+    this.cdr.detectChanges();
+  }
+
+  fecharModalTransferencia() {
+    this.mostrarModalTransferencia = false;
+
+    this.itemTransferencia = null;
+    this.quantidadeTransferencia = null;
+    this.destinoTransferencia = '';
+
+    this.cdr.detectChanges();
+  }
+  //AQUI VAI CONFRIMAR A TRANSFERENCIA PARA A OUTRA UNIDADE
+  async confirmarTransferencia() {
+
+    if (!this.itemTransferencia || !this.destinoTransferencia || this.quantidadeTransferencia === null) {
+
+      alert('Preencha todos os campos');
+      return;
+    }
+
+    let novaQuantidade = this.itemTransferencia.quantidadeAtual - this.quantidadeTransferencia;
+
+    if (novaQuantidade < 0) {
+      alert('Estoque insuficiente para transferência');
+      return;
+    }
+
+    const confirmar = confirm(`Transferir ${this.quantidadeTransferencia} ${this.itemTransferencia.unidade} de ${this.itemTransferencia.nome} para ${this.destinoTransferencia}?`);
+
+    if (!confirmar) {
+      return;
+    }
+
+    const itemDoc = doc(this.firestore, 'estoque', this.itemTransferencia.id);
+
+    await updateDoc(itemDoc, {
+      quantidadeAtual: novaQuantidade
+    });
+
+    const movimentacoesRef = collection(this.firestore, 'movimentacoesEstoque');
+
+    //AQUI SALVA NO HISTÓRICO 
+    await addDoc(movimentacoesRef, {
+      itemId: this.itemTransferencia.id,
+      nome: this.itemTransferencia.nome,
+      tipo: 'transferencia',
+      quantidade: this.quantidadeTransferencia,
+      unidade: this.itemTransferencia.unidade,
+      destino: this.destinoTransferencia,
+      quantidadeAnterior: this.itemTransferencia.quantidadeAtual,
+      quantidadeNova: novaQuantidade,
+      criadoEm: new Date()
+    });
+
+    alert('Transferência realizada com sucesso!');
+
+    await this.carregarItens();
+    await this.carregarMovimentacoes();
+
+    this.fecharModalTransferencia();
 
     this.cdr.detectChanges();
   }

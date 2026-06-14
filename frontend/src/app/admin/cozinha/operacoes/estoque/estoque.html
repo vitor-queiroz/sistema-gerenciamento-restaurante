@@ -190,6 +190,46 @@
   </button>
 
 </div>
+
+<!--MODALL DE TRANSFERENCIAAA-->
+<div class="modal" *ngIf="mostrarModalTransferencia">
+
+  <h2>Transferir Estoque</h2>
+
+  <p>
+    <strong>Produto:</strong>
+    {{ itemTransferencia?.nome }}
+  </p>
+
+  <p>
+    <strong>Estoque atual:</strong>
+    {{ itemTransferencia?.quantidadeAtual }}
+    {{ itemTransferencia?.unidade }}
+  </p>
+
+  <select [(ngModel)]="destinoTransferencia">
+    <option value="">Selecione o destino</option>
+    <option value="Dom Palladar Centro">Dom Palladar Centro</option>
+    <option value="Dom Palladar Zona Sul">Dom Palladar Zona Sul</option>
+    <option value="Dom Palladar Zona Norte">Dom Palladar Zona Norte</option>
+  </select>
+
+  <br><br>
+
+  <input type="number" [(ngModel)]="quantidadeTransferencia" placeholder="Quantidade para transferir">
+
+  <br><br>
+
+  <button (click)="fecharModalTransferencia()">
+    Cancelar
+  </button>
+
+  <button (click)="confirmarTransferencia()">
+    Confirmar transferência
+  </button>
+
+</div>
+
 <hr>
 
 <h2>Itens cadastrados</h2>
@@ -242,7 +282,7 @@
     </button>
 
 
-    <button>
+    <button (click)="abrirModalTransferencia(item)">
       Transferir
     </button>
 
@@ -261,25 +301,25 @@
 
   <div *ngFor="let mov of movimentacoesEstoque">
 
-    <p>
-      <strong>{{ mov.nome }}</strong>
-    </p>
+    <p> <strong>{{ mov.nome }}</strong> </p>
 
-    <p>
+    <p *ngIf="mov.tipo !== 'transferencia'">
       {{ mov.tipo }} de {{ mov.quantidade }} {{ mov.unidade }}
     </p>
 
-    <p>
-      {{ mov.quantidadeAnterior }} → {{ mov.quantidadeNova }} {{ mov.unidade }}
+    <p *ngIf="mov.tipo === 'transferencia'">
+      Transferência de {{ mov.quantidade }} {{ mov.unidade }}
+      para a unidade
+      <strong>{{ mov.destino }}</strong>
     </p>
 
-    <p>
-      {{ mov.criadoEm?.toDate() | date:'dd/MM/yyyy HH:mm' }}
-    </p>
+    <p> {{ mov.quantidadeAnterior }} → {{ mov.quantidadeNova }} {{ mov.unidade }}</p>
+
+    <p> {{ mov.criadoEm?.toDate() | date:'dd/MM/yyyy HH:mm' }}</p>
 
     <hr>
   </div>
 
-    <button (click)="fecharModalHistorico()"> Fechar </button>
+  <button (click)="fecharModalHistorico()"> Fechar </button>
 
-  </div>
+</div>
