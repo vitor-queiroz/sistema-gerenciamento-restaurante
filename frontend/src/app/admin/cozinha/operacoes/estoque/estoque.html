@@ -230,6 +230,70 @@
 
 </div>
 
+
+<!--MODALL DE EDIÇÃO DOS PRODUTOS = EDITAR--> 
+<div class="modal" *ngIf="mostrarModalEdicao">
+
+  <h2>Editar Produto</h2>
+
+  <input type="text" [(ngModel)]="nome" placeholder="Nome do item">
+
+  <br><br>
+
+  <input type="text" [(ngModel)]="marca" placeholder="Marca">
+
+  <br><br>
+
+  <select [(ngModel)]="categoria">
+
+    <option value="Massa">Massa</option>
+    <option value="Proteína">Proteína</option>
+    <option value="Aves">Aves</option>
+    <option value="Peixe">Peixe</option>
+    <option value="Guarnição">Guarnição</option>
+    <option value="Sobremesa">Sobremesa</option>
+    <option value="Bebida">Bebida</option>
+    <option value="Tempero">Tempero</option>
+
+  </select>
+
+  <br><br>
+
+  <select [(ngModel)]="unidade">
+
+    <option value="kg">kg</option>
+    <option value="g">g</option>
+    <option value="L">L</option>
+    <option value="ml">ml</option>
+    <option value="un">Unidades</option>
+    <option value="porção">Porções</option>
+    <option value="garrafa">Garrafas</option>
+    <option value="dose">Doses</option>
+    <option value="lata">Latas</option>
+    <option value="caixa">Caixas</option>
+
+  </select>
+
+  <br><br>
+
+  <input type="number" [(ngModel)]="quantidadeMinima" placeholder="Quantidade mínima">
+
+  <br><br>
+
+  <input type="number" [(ngModel)]="quantidadeMaxima" placeholder="Quantidade máxima">
+
+  <br><br>
+
+  <button (click)="fecharModalEdicao()">
+    Cancelar
+  </button>
+
+  <button (click)="salvarEdicao()">
+    Salvar alterações
+  </button>
+
+</div>
+
 <hr>
 
 <h2>Itens cadastrados</h2>
@@ -284,6 +348,16 @@
 
     <button (click)="abrirModalTransferencia(item)">
       Transferir
+    </button>
+
+
+    <button (click)="abrirModalEdicao(item)">
+      Editar
+    </button>
+
+
+    <button (click)="excluirItem(item)">
+      Excluir
     </button>
 
   </div>

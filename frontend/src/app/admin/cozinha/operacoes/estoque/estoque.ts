@@ -2,7 +2,7 @@ import { Component, ChangeDetectorRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
-import { Firestore, collection, addDoc, getDocs, updateDoc, doc } from '@angular/fire/firestore';
+import { Firestore, collection, addDoc, getDocs, updateDoc, deleteDoc, doc } from '@angular/fire/firestore';
 
 @Component({
   selector: 'app-estoque',
@@ -298,6 +298,7 @@ export class Estoque {
     this.cdr.detectChanges();
   }
 
+
   //parte de transferência de estoque
   abrirModalTransferencia(item: any) {
     this.itemTransferencia = item;
@@ -319,6 +320,8 @@ export class Estoque {
 
     this.cdr.detectChanges();
   }
+
+
   //AQUI VAI CONFRIMAR A TRANSFERENCIA PARA A OUTRA UNIDADE
   async confirmarTransferencia() {
 
@@ -370,5 +373,90 @@ export class Estoque {
     this.fecharModalTransferencia();
 
     this.cdr.detectChanges();
+  }
+
+  // AQUI VAI VIR O EDITAR E EXCLUIR DOS MEUS PEDIDOS
+  async excluirItem(item: any) {
+
+    const confirmar = confirm(`Deseja REALMENTE exluir o item ${item.nome}?`);
+
+    if (!confirmar) {
+      return;
+    }
+
+    const itemDoc = doc(this.firestore, 'estoque', item.id);
+
+    await deleteDoc(itemDoc);
+
+    await this.carregarItens();
+
+    alert('Item excluído com sucesso!');
+
+    this.cdr.detectChanges();
+  }
+
+  //EDITARRR PRODUTOS
+  itemEditandoId: string | null = null;
+  mostrarModalEdicao = false;
+
+  abrirModalEdicao(item: any) {
+    this.itemEditandoId = item.id;
+
+    this.nome = item.nome;
+    this.marca = item.marca;
+    this.categoria = item.categoria;
+    this.unidade = item.unidade;
+    this.quantidadeMinima = item.quantidadeMinima;
+    this.quantidadeMaxima = item.quantidadeMaxima;
+
+    this.mostrarModalEdicao = true;
+
+    this.cdr.detectChanges();
+  }
+
+  fecharModalEdicao() {
+    this.itemEditandoId = null;
+    this.mostrarModalEdicao = false;
+
+    this.nome = '';
+    this.marca = '';
+    this.categoria = '';
+    this.unidade = '';
+    this.quantidadeMinima = null;
+    this.quantidadeMaxima = null;
+
+    this.cdr.detectChanges();
+  }
+
+  async salvarEdicao() {
+    if (
+      !this.itemEditandoId ||
+      !this.nome ||
+      !this.marca ||
+      !this.categoria ||
+      !this.unidade ||
+      this.quantidadeMinima === null ||
+      this.quantidadeMaxima === null
+    ) {
+                alert('Preencha todos os campos');
+      return;
+    }
+
+    const itemDoc = doc(this.firestore, 'estoque', this.itemEditandoId);
+
+    await updateDoc(itemDoc, {
+      nome: this.nome,
+      marca: this.marca,
+      categoria: this.categoria,
+      unidade: this.unidade,
+      quantidadeMinima: this.quantidadeMinima,
+      quantidadeMaxima: this.quantidadeMaxima
+    });
+
+    await this.carregarItens();
+
+    this.fecharModalEdicao();
+
+              alert('Item atualizado com sucesso!');
   }
 }
