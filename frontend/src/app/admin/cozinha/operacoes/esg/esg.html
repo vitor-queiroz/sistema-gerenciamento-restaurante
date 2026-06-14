@@ -1,1 +1,266 @@
-<p>esg works!</p>
+<div class="esg-container">
+
+  <!-- Cabeçalho -->
+  <div class="header">
+    <div class="header-titulo">
+      <div class="icone-shield">🛡️</div>
+      <div>
+        <h1>ANVISA e Vigilância Sanitária</h1>
+        <p>Conformidade, Inspeção e BPF</p>
+      </div>
+    </div>
+
+    <div class="header-acoes">
+      <button class="btn btn-historico" (click)="abrirHistorico()">🕐 Histórico</button>
+      <button class="btn btn-exportar" (click)="exportarRelatorio()">⬇ Exportar Relatório</button>
+    </div>
+  </div>
+
+  <!-- Modal de Histórico de Checklists -->
+  <div class="modal-overlay" *ngIf="mostrarHistorico" (click)="fecharHistorico()">
+    <div class="modal-box" (click)="$event.stopPropagation()">
+
+      <div class="modal-header">
+        <div>
+          <h2>Histórico de Checklists</h2>
+          <p>Visualize os checklists anteriores e suas taxas de conclusão</p>
+        </div>
+        <button class="modal-close" (click)="fecharHistorico()">✕</button>
+      </div>
+
+      <div class="modal-body">
+
+        <div *ngIf="carregandoHistorico" class="carregando">Carregando histórico...</div>
+
+        <div *ngIf="!carregandoHistorico && historico.length === 0" class="vazio">
+          Nenhum histórico salvo ainda.
+        </div>
+
+        <div *ngFor="let registro of historico" class="historico-item">
+
+          <div class="historico-header">
+            <span class="historico-data">📅 {{ registro.dataObj | date:'dd/MM/yyyy' }}</span>
+            <span class="badge" [ngClass]="registro.progresso === 100 ? 'badge-ok' : 'badge-urgente'">
+              {{ registro.progresso }}% Concluído
+            </span>
+          </div>
+
+          <div class="historico-tarefas">
+            <div *ngFor="let tarefa of registro.checklist" class="historico-tarefa">
+              <span class="historico-icone">{{ tarefa.concluido ? '✅' : '⬜' }}</span>
+              <div>
+                <p [class.concluido]="tarefa.concluido">{{ tarefa.item }}</p>
+                <small *ngIf="tarefa.concluido">
+                  Concluído às {{ tarefa.concluidoEm }} por {{ tarefa.concluidoPor }}
+                </small>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="carregando" class="carregando">Carregando dados...</div>
+
+  <ng-container *ngIf="!carregando">
+
+    <!-- Alertas -->
+    <div class="alertas" *ngIf="alertasVencimento.length > 0 || tarefasPendentesCount > 0">
+
+      <div
+        *ngFor="let doc of alertasVencimento"
+        class="alerta"
+        [ngClass]="doc.diasRestantes <= 15 ? 'alerta-vermelho' : 'alerta-amarelo'"
+      >
+        <span class="alerta-icone">⚠️</span>
+        <div>
+          <strong>
+            {{ doc.nome }}
+            <ng-container *ngIf="doc.diasRestantes >= 0">vence em {{ doc.diasRestantes }} dia{{ doc.diasRestantes === 1 ? '' : 's' }}</ng-container>
+            <ng-container *ngIf="doc.diasRestantes < 0">está vencido há {{ doc.diasRestantes * -1 }} dia{{ (doc.diasRestantes * -1) === 1 ? '' : 's' }}</ng-container>
+          </strong>
+          <p>Providencie a renovação para evitar interdição.</p>
+        </div>
+      </div>
+
+      <div *ngIf="tarefasPendentesCount > 0" class="alerta alerta-amarelo">
+        <span class="alerta-icone">⚠️</span>
+        <div>
+          <strong>
+            {{ tarefasPendentesCount }} tarefa{{ tarefasPendentesCount === 1 ? '' : 's' }} pendente{{ tarefasPendentesCount === 1 ? '' : 's' }} no checklist
+          </strong>
+          <p>Revisar até o fim do dia.</p>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Documentação e Licenças -->
+    <div class="secao">
+
+      <div class="secao-header">
+        <h2>📄 Documentação e Licenças</h2>
+        <button class="btn btn-adicionar" (click)="abrirFormNovoDocumento()">+ Adicionar Documento</button>
+      </div>
+
+      <div *ngIf="mostrarFormDocumento" class="form-inline">
+        <input type="text" placeholder="Nome do documento" [(ngModel)]="novoDocumento.nome">
+        <input type="date" [(ngModel)]="novoDocumento.validade">
+        <button class="btn btn-salvar" (click)="salvarDocumento()">Salvar</button>
+        <button class="btn btn-cancelar" (click)="cancelarFormDocumento()">Cancelar</button>
+      </div>
+
+      <div class="lista-documentos">
+
+        <div *ngFor="let doc of documentos" class="item-documento">
+          <span class="icone-shield-cinza">🛡️</span>
+
+          <div class="item-info">
+            <strong>{{ doc.nome }}</strong>
+            <p>Válida até: {{ doc.validadeFormatada }} — {{ doc.diasRestantes }} dias</p>
+          </div>
+
+          <span class="badge" [ngClass]="doc.statusInfo.classe">{{ doc.statusInfo.label }}</span>
+
+          <div class="acoes">
+            <button (click)="editarDocumento(doc)" title="Editar">✏️</button>
+            <button (click)="excluirDocumento(doc.id)" title="Excluir">🗑️</button>
+          </div>
+        </div>
+
+        <p *ngIf="documentos.length === 0" class="vazio">Nenhum documento cadastrado.</p>
+
+      </div>
+
+    </div>
+
+    <!-- Checklist BPF -->
+    <div class="secao">
+
+      <div class="secao-header">
+        <h2>📅 Checklist BPF — Hoje</h2>
+        <span class="progresso">Progresso: <strong>{{ progresso }}%</strong></span>
+        <button class="btn btn-adicionar-verde" (click)="abrirFormNovaTarefa()">+ Adicionar Tarefa</button>
+      </div>
+
+      <div *ngIf="mostrarFormTarefa" class="form-inline">
+        <input type="text" placeholder="Nome da tarefa" [(ngModel)]="novaTarefa.item">
+        <input type="text" placeholder="Responsável" [(ngModel)]="novaTarefa.responsavel">
+        <input type="time" [(ngModel)]="novaTarefa.horario">
+        <button class="btn btn-salvar" (click)="salvarTarefa()">Salvar</button>
+        <button class="btn btn-cancelar" (click)="cancelarFormTarefa()">Cancelar</button>
+      </div>
+
+      <table class="tabela-checklist">
+        <thead>
+          <tr>
+            <th></th>
+            <th>ITEM</th>
+            <th>RESPONSÁVEL</th>
+            <th>HORÁRIO</th>
+            <th>STATUS</th>
+            <th>CONCLUÍDO</th>
+            <th>AÇÕES</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let tarefa of checklist">
+            <td>
+              <input
+                type="checkbox"
+                [checked]="tarefa.concluido"
+                (change)="toggleTarefa(tarefa)"
+              >
+            </td>
+            <td [class.concluido]="tarefa.concluido">{{ tarefa.item }}</td>
+            <td>{{ tarefa.responsavel }}</td>
+            <td>🕐 {{ tarefa.horario }}</td>
+            <td>
+              <span class="badge" [ngClass]="statusTarefa(tarefa).classe">
+                {{ statusTarefa(tarefa).label }}
+              </span>
+            </td>
+            <td>
+              <ng-container *ngIf="tarefa.concluido">
+                {{ tarefa.concluidoEm }}<br>
+                <small>por {{ tarefa.concluidoPor }}</small>
+              </ng-container>
+            </td>
+            <td>
+              <button (click)="excluirTarefa(tarefa.id)" title="Excluir">🗑️</button>
+            </td>
+          </tr>
+
+          <tr *ngIf="checklist.length === 0">
+            <td colspan="7" class="vazio">Nenhuma tarefa cadastrada para hoje.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="resumo-checklist" *ngIf="checklist.length > 0">
+        <div class="resumo-info">
+          <span class="resumo-icone">✅</span>
+          <div>
+            <strong>{{ tarefasConcluidasCount }} de {{ checklist.length }} tarefas concluídas</strong>
+            <p>{{ tarefasAtrasadasCount }} pendentes • {{ tarefasAguardandoCount }} aguardando horário</p>
+          </div>
+        </div>
+
+        <div class="resumo-acoes">
+          <button class="btn btn-salvar-historico" (click)="salvarHistorico()">💾 Salvar Histórico</button>
+          <button class="btn btn-exportar-verde" (click)="exportarRelatorio()">⬇ Exportar</button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Compromisso ESG -->
+    <div class="compromisso-esg">
+
+      <div class="compromisso-header">
+        <span class="compromisso-icone">🛡️</span>
+        <h2>🌱 Compromisso ESG - Dom Palladar</h2>
+      </div>
+
+      <p>
+        Nosso compromisso com o meio ambiente, responsabilidade social e governança transparente.
+        Mantemos os mais altos padrões de higiene, segurança alimentar e conformidade com todas
+        as normas da ANVISA.
+      </p>
+
+      <div class="compromisso-colunas">
+
+        <div class="compromisso-coluna">
+          <span class="icone-verde">✅</span>
+          <div>
+            <strong>Ambiental</strong>
+            <p>Gestão sustentável de recursos</p>
+          </div>
+        </div>
+
+        <div class="compromisso-coluna">
+          <span class="icone-azul">👤</span>
+          <div>
+            <strong>Social</strong>
+            <p>Treinamento contínuo da equipe</p>
+          </div>
+        </div>
+
+        <div class="compromisso-coluna">
+          <span class="icone-roxo">📄</span>
+          <div>
+            <strong>Governança</strong>
+            <p>Transparência total nas operações</p>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </ng-container>
+
+</div>
