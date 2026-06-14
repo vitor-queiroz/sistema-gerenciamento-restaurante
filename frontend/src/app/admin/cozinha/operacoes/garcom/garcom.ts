@@ -38,7 +38,8 @@ export class Garcom {
     const todosPedidos = snapshot.docs.map(item => ({ id: item.id, ...item.data() }));
 
     this.pedidos = todosPedidos.filter((pedido: any) =>
-      pedido.status === 'Pronto para entrega' || pedido.status === 'Entregue');
+      pedido.status === 'Pronto para entrega' || pedido.status === 'Entregue')
+    .map((pedido: any) => ({...pedido, incluirTaxaGarcom: true}));
 
     this.historicoPedidos = todosPedidos.filter((pedido: any) =>
       pedido.status === 'Pago');
@@ -77,7 +78,10 @@ export class Garcom {
       status: 'Pago',
       pagamento: {
         forma: pedido.formaPagamento,
-        valor: pedido.total,
+        valor: this.calcularTotalFinal(pedido),
+        subtotal: pedido.total,
+        taxaGarcomIncluida: pedido.incluirTaxaGarcom,
+        valorTaxaGarcom: this.calcularTaxaGarcom(pedido),
         dividido: false,
         pagoEm: new Date()
       }
@@ -134,7 +138,7 @@ export class Garcom {
   }
 
   calcularRestante(pedido: any) {
-    return pedido.total - this.calcularTotalPago();
+    return this.calcularTotalFinal(pedido) - this.calcularTotalPago();
   }
 
   //AQUI VAI SER PARA APENAS ABRIR O PAGAM
@@ -170,7 +174,7 @@ export class Garcom {
     this.cdr.detectChanges();
   }
 
-  
+
 
   async finalizarPagamentoDividido(pedido: any) {
     const restante = Number(this.calcularRestante(pedido).toFixed(2));
@@ -188,8 +192,11 @@ export class Garcom {
     await updateDoc(pedidoDoc, {
       status: 'Pago',
       pagamento: {
-        forma: 'Dividido',
-        valor: pedido.total,
+        forma:'Dividido',
+        valor: this.calcularTotalFinal(pedido),
+        subtotal: pedido.total,
+        taxaGarcomIncluida: pedido.incluirTaxaGarcom,
+        valorTaxaGarcom: this.calcularTaxaGarcom(pedido),
         dividido: true,
         pagamentos: this.pagamentosParciais,
         pagoEm: new Date()
@@ -206,7 +213,23 @@ export class Garcom {
     this.processandoPagamento = false;
     this.cdr.detectChanges();
 
-                 alert('Pagamento dividido registrado com sucesso!');
+             alert('Pagamento dividido registrado com sucesso!');
   }
+
+
+
+  incluirTaxaGarcom = true;
+
+  calcularTaxaGarcom(pedido: any) {
+    if(!pedido.incluirTaxaGarcom) {
+        return 0;
+  }
+
+     return pedido.total * 0.10;
+}
+
+  calcularTotalFinal(pedido: any) {
+      return pedido.total + this.calcularTaxaGarcom(pedido);
+    }
 
 }

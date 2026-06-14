@@ -26,7 +26,23 @@
         <p>{{ item.nome }} - Qtd: {{ item.quantidade }}</p>
     </div>
 
+    <!--taxaa garcommm-->
     <h3>Total: R$ {{ pedido.total }}</h3>
+
+    <label *ngIf="pedido.status === 'Entregue'">
+        <input type="checkbox" [(ngModel)]="pedido.incluirTaxaGarcom">
+        Incluir taxa de serviço (10%)
+    </label>
+
+    <p *ngIf="pedido.status === 'Entregue'">
+        <strong>Taxa de serviço:</strong>
+        R$ {{ calcularTaxaGarcom(pedido) | number:'1.2-2' }}
+    </p>
+
+    <h3 *ngIf="pedido.status === 'Entregue'">
+        Total Final:
+        R$ {{ calcularTotalFinal(pedido) | number:'1.2-2' }}
+    </h3>
 
     <button *ngIf="pedido.status === 'Pronto para entrega'" (click)="marcarComoEntregue(pedido.id)">
         Marcar como entregue
@@ -82,10 +98,9 @@
                 Finalizar restante
             </button>
 
-            <button *ngIf="calcularRestante(pedido) <= 0.01" 
-            [disabled]="processandoPagamento"
-            (click)="finalizarPagamentoDividido(pedido)">
-            {{ processandoPagamento? 'Finalizando...' : 'Finalizar pagamento dividido'}}
+            <button *ngIf="calcularRestante(pedido) <= 0.01" [disabled]="processandoPagamento"
+                (click)="finalizarPagamentoDividido(pedido)">
+                {{ processandoPagamento? 'Finalizando...' : 'Finalizar pagamento dividido'}}
             </button>
 
             <h4>Pagamentos adicionados</h4>
@@ -122,7 +137,17 @@
 
         <p>
             <strong>Total pago:</strong>
-            R$ {{ pedido.total }}
+            R$ {{ pedido.pagamento?.valor | number:'1.2-2' }}
+        </p>
+
+        <p>
+            <strong>Subtotal:</strong>
+            R$ {{ pedido.pagamento?.subtotal | number:'1.2-2' }}
+        </p>
+
+        <p>
+            <strong>Taxa garçom:</strong>
+            R$ {{ pedido.pagamento?.valorTaxaGarcom | number:'1.2-2' }}
         </p>
 
         <p>
@@ -134,7 +159,7 @@
             <h4>Pagamentos divididos</h4>
 
             <div *ngFor="let pagamento of pedido.pagamento?.pagamentos">
-                <p> {{ pagamento.forma }} - R$ {{ pagamento.valor }}</p>
+                <p> {{ pagamento.forma }} - R$ {{ pagamento.valor | number:'1.2-2'  }}</p>
 
             </div>
 
