@@ -19,11 +19,14 @@ import { Pedido } from './admin/cozinha/operacoes/pedidos/pedido';
 import { Acessos } from './admin/gerente/acessos/acessos';
 import { Funcionarios } from './admin/gerente/funcionarios/funcionarios';
 import { Relatorios } from './admin/gerente/relatorios/relatorios';
+import { Mesas } from './admin/gerente/mesas/mesas';
 
 import { Login } from './admin/login/login';
 import { Gerente } from './admin/gerente/gerente';
 import { Operacoes } from './admin/cozinha/operacoes/operacoes';
 import { Cardapio } from './admin/cozinha/operacoes/cardapio/cardapio';
+
+import { logadoGuard, gerenteGuard, permissaoGuard } from './shared/guards/auth.guards';
 
 
 export const routes: Routes=[
@@ -50,25 +53,30 @@ export const routes: Routes=[
 
     {
         path: 'admin/cozinha/operacoes/garcom',
-        component: Garcom
+        component: Garcom,
+        canActivate: [permissaoGuard('garcom')]
     },
 
     {
        path: 'admin/cozinha/operacoes/cliente',
-       component: Cliente
+       component: Cliente,
+       canActivate: [permissaoGuard('cliente')]
     },
     {
        path: 'admin/cozinha/operacoes/estoque',
-       component: Estoque
+       component: Estoque,
+       canActivate: [permissaoGuard('estoque')]
     },
     
     {
        path: 'admin/cozinha/operacoes/esg',
-       component: Esg
+       component: Esg,
+       canActivate: [permissaoGuard('esg')]
     },
     {
        path: 'admin/cozinha/operacoes/pedidos',
-       component: Pedido
+       component: Pedido,
+       canActivate: [permissaoGuard('pedidos')]
     },
     {
         path: 'admin/cozinha',
@@ -77,19 +85,28 @@ export const routes: Routes=[
     
     {
        path: 'admin/cozinha/gerente/acessos',
-       component: Acessos
+       component: Acessos,
+       canActivate: [gerenteGuard]
     },
     {
         path: 'admin/cozinha/gerente/produtos',
-        component: Produtos
+        component: Produtos,
+        canActivate: [gerenteGuard]
     },
     {
         path: 'admin/cozinha/gerente/funcionarios',
-        component: Funcionarios
+        component: Funcionarios,
+        canActivate: [gerenteGuard]
     },
     {
        path: 'admin/cozinha/gerente/relatorios',
-       component: Relatorios
+       component: Relatorios,
+       canActivate: [gerenteGuard]
+    },
+    {
+       path: 'admin/cozinha/gerente/mesas',
+       component: Mesas,
+       canActivate: [gerenteGuard]
     },
     {
         path: 'admin/login',
@@ -108,20 +125,24 @@ export const routes: Routes=[
     // AQUI SERVE PARA ABRIR A MINHA TELA INCIAL DA PARTE DO GERENTE 
     {
         path: 'admin/cozinha/gerente',
-        component: Gerente
+        component: Gerente,
+        canActivate: [gerenteGuard]
     },
     {
         path: 'admin/cozinha/operacoes',
-        component: Operacoes
+        component: Operacoes,
+        canActivate: [logadoGuard]
     },
 
 
     {
         path: 'admin/cozinha/operacoes/cardapio',
-        component: Cardapio
+        component: Cardapio,
+        canActivate: [permissaoGuard('cliente')]
     },
     {
         path: 'admin/cozinha/operacoes/cardapio/:mesaId',
-        component: Cardapio
+        component: Cardapio,
+        canActivate: [permissaoGuard('cliente')]
     }
    ];

@@ -3,17 +3,19 @@
 <input
   type="email"
   [(ngModel)]="email"
-  placeholder="E-mail">
+  placeholder="E-mail"
+  [disabled]="carregando">
 
 <br><br>
 
 <input
   type="password"
   [(ngModel)]="senha"
-  placeholder="Senha">
+  placeholder="Senha"
+  [disabled]="carregando">
 
 <br><br>
 
-<button (click)="entrar()">
-  Entrar
+<button (click)="entrar()" [disabled]="carregando">
+  {{ carregando ? 'Entrando...' : 'Entrar' }}
 </button>

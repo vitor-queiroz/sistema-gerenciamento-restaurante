@@ -1,27 +1,42 @@
 <h1>Painel de Operações</h1>
 
-<h2>Mesas</h2>
-<button routerLink="/admin/cozinha/operacoes/cliente">
-  Clientes
-</button>
+<button (click)="sair()">Sair</button>
 
-<h2>Cozinha</h2>
-<button routerLink="/admin/cozinha/operacoes/pedidos">
-  Pedidos
-</button>
+<div *ngIf="auth.temPermissao('cliente')">
+  <h2>Mesas</h2>
+  <button routerLink="/admin/cozinha/operacoes/cliente">
+    Clientes
+  </button>
+</div>
 
-<h2>Garçom</h2>
-<button routerLink="/admin/cozinha/operacoes/garcom">
-  Garçom
-</button>
+<div *ngIf="auth.temPermissao('pedidos')">
+  <h2>Cozinha</h2>
+  <button routerLink="/admin/cozinha/operacoes/pedidos">
+    Pedidos
+  </button>
+</div>
 
-<h2>Estoque</h2>
-<button routerLink="/admin/cozinha/operacoes/estoque">
-  Estoque
-</button>
+<div *ngIf="auth.temPermissao('garcom')">
+  <h2>Garçom</h2>
+  <button routerLink="/admin/cozinha/operacoes/garcom">
+    Garçom
+  </button>
+</div>
 
+<div *ngIf="auth.temPermissao('estoque')">
+  <h2>Estoque</h2>
+  <button routerLink="/admin/cozinha/operacoes/estoque">
+    Estoque
+  </button>
+</div>
 
-<h2>ESG</h2>
-<button routerLink="/admin/cozinha/operacoes/esg">
-  ESG
-</button>
+<div *ngIf="auth.temPermissao('esg')">
+  <h2>ESG</h2>
+  <button routerLink="/admin/cozinha/operacoes/esg">
+    ESG
+  </button>
+</div>
+
+<p *ngIf="!auth.temPermissao('cliente') && !auth.temPermissao('pedidos') && !auth.temPermissao('garcom') && !auth.temPermissao('estoque') && !auth.temPermissao('esg')">
+  Você ainda não tem acesso a nenhum módulo. Fale com o gerente para liberar suas permissões.
+</p>

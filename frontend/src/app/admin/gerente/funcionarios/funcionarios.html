@@ -14,8 +14,19 @@
 
 <br><br>
 
+<input
+  type="password"
+  [(ngModel)]="senha"
+  [placeholder]="idFuncionarioEditando ? 'Nova senha (deixe em branco para manter)' : 'Senha'">
+
+<br><br>
+
 <button (click)="salvarFuncionario()">
   Salvar Funcionário
+</button>
+
+<button *ngIf="idFuncionarioEditando" (click)="cancelarEdicao()">
+  Cancelar edição
 </button>
 
 <hr>
@@ -28,9 +39,16 @@
 
   <p>{{ funcionario.email }}</p>
 
+  <p>
+    <strong>Senha:</strong>
+    {{ funcionario.senha ? 'Definida' : 'Não definida' }}
+  </p>
+
   <button (click)="editarFuncionario(funcionario)"> Editar </button>
 
   <button (click)="excluirFuncionario(funcionario.id)"> Excluir </button>
+
+  <button (click)="redefinirSenha(funcionario)"> Redefinir senha </button>
 
   <hr>
 

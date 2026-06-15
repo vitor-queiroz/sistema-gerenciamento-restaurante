@@ -1,0 +1,47 @@
+<h1>Gerenciar Mesas</h1>
+
+<div class="form-nova-mesa">
+  <input
+    type="number"
+    [(ngModel)]="novoNumero"
+    placeholder="Número da nova mesa"
+    min="1">
+
+  <button (click)="adicionarMesa()">+ Adicionar Mesa</button>
+</div>
+
+<hr>
+
+<h2>Mesas cadastradas</h2>
+
+<div class="lista-mesas">
+
+  <div
+    *ngFor="let mesa of mesas"
+    class="mesa-item"
+    [class.ocupada]="mesa.status === 'Ocupada'">
+
+    <div class="mesa-info">
+      <h3>Mesa {{ mesa.numero }}</h3>
+
+      <span
+        class="status-badge"
+        [class.disponivel]="mesa.status === 'Disponível'"
+        [class.ocupada-badge]="mesa.status === 'Ocupada'">
+        {{ mesa.status }}
+      </span>
+    </div>
+
+    <div *ngIf="mesa.status === 'Ocupada'" class="mesa-cliente">
+      <p>{{ mesa.cliente }} — {{ mesa.quantidadePessoas }} pessoa(s)</p>
+    </div>
+
+    <button class="btn-excluir" (click)="excluirMesa(mesa)">
+      Remover Mesa
+    </button>
+
+  </div>
+
+  <p *ngIf="mesas.length === 0" class="vazio">Nenhuma mesa cadastrada.</p>
+
+</div>

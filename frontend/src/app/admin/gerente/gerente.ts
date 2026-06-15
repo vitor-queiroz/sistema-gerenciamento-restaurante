@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
-import { RouterLink} from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
+
+import { AuthService } from '../../shared/services/auth.service';
 
 @Component({
   selector: 'app-gerente',
@@ -8,4 +10,15 @@ import { RouterLink} from '@angular/router';
   templateUrl: './gerente.html',
   styleUrl: './gerente.css',
 })
-export class Gerente {}
+export class Gerente {
+
+  constructor(
+    private auth: AuthService,
+    private router: Router
+  ) {}
+
+  sair() {
+    this.auth.logout();
+    this.router.navigate(['/admin/login']);
+  }
+}
