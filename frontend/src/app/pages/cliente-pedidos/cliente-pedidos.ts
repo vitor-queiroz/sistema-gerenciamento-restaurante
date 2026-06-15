@@ -3,7 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
-import {Firestore, collection, getDocs, addDoc} from '@angular/fire/firestore';
+import { Firestore, collection, getDocs, addDoc } from '@angular/fire/firestore';
 
 interface Prato {
   id: string;
@@ -31,7 +31,10 @@ export class ClientePedidos implements OnInit {
 
   pratos: Prato[] = [];
 
-  constructor( private router: Router, private firestore: Firestore, private cdr: ChangeDetectorRef) {}
+  formaPagamentoDelivery = '';
+  taxaEntrega = 8;
+
+  constructor(private router: Router, private firestore: Firestore, private cdr: ChangeDetectorRef) { }
 
   async ngOnInit() {
     const usuario = localStorage.getItem('usuarioLogado');
@@ -121,29 +124,40 @@ export class ClientePedidos implements OnInit {
       alert('Adicione itens ao carrinho antes de fazer o pedido!');
       return;
     }
-  
-      const pedidosRef = collection(this.firestore, 'pedidos');
+    if (!this.formaPagamentoDelivery) {
+      alert('Selecione a forma de pagamento');
+      return;
+    }
 
-      const pedidoCriado = await addDoc(pedidosRef, {
-        origem: 'delivery',
-        tipoPedido: 'Delivery',
-        taxaEntrega: 8,
-        statusEntrega: 'Aguardando preparo',
-         
-        cliente: this.usuarioLogado.nome,
-        telefone: this.usuarioLogado.telefone, 
-        endereco: this.usuarioLogado.endereco, 
-        
-        itens: this.carrinho.map(item => ({ 
+    const pedidosRef = collection(this.firestore, 'pedidos');
+
+    const pedidoCriado = await addDoc(pedidosRef, {
+      origem: 'delivery',
+
+      cliente: this.usuarioLogado.nome,
+      telefone: this.usuarioLogado.telefone,
+      endereco: this.usuarioLogado.endereco,
+
+      itens: this.carrinho.map(item => ({
         id: item.prato.id,
         nome: item.prato.nome,
         preco: item.prato.preco,
-        quantidade: item.quantidade})),
+        quantidade: item.quantidade
+      })),
 
-        total: this.totalCarrinho,
-        status: 'Recebido',
-        criadoEm: new Date()
-      });
+      total: this.totalCarrinho,
+
+         pagamento: {
+        forma: this.formaPagamentoDelivery,
+        subtotal: this.totalCarrinho,
+        valorTaxaEntrega: this.taxaEntrega,
+        valor: this.totalCarrinho + this.taxaEntrega,
+        pagoEm: new Date()
+      },
+
+      status: 'Recebido',
+      criadoEm: new Date()
+    });
 
     alert('Pedido enviado para a cozinha!!');
 

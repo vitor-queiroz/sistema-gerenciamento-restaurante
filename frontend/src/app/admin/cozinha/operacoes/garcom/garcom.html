@@ -38,14 +38,19 @@
     <!--taxaa garcommm-->
     <h3>Total: R$ {{ pedido.total }}</h3>
 
-    <label *ngIf="pedido.status === 'Entregue'">
+    <label *ngIf="pedido.status === 'Entregue' && pedido.origem?.toLowerCase() !== 'delivery'">
         <input type="checkbox" [(ngModel)]="pedido.incluirTaxaGarcom">
         Incluir taxa de serviço (10%)
     </label>
 
-    <p *ngIf="pedido.status === 'Entregue'">
+    <p *ngIf="pedido.status === 'Entregue' && pedido.origem?.toLowerCase() !== 'delivery'">
         <strong>Taxa de serviço:</strong>
         R$ {{ calcularTaxaGarcom(pedido) | number:'1.2-2' }}
+    </p>
+
+    <p *ngIf="pedido.status === 'Entregue' && pedido.origem?.toLowerCase() === 'delivery'">
+        <strong>Taxa de entrega:</strong>
+        R$ {{ calcularTaxaEntrega(pedido) | number:'1.2-2' }}
     </p>
 
     <h3 *ngIf="pedido.status === 'Entregue'">
@@ -53,8 +58,14 @@
         R$ {{ calcularTotalFinal(pedido) | number:'1.2-2' }}
     </h3>
 
-    <button *ngIf="pedido.status === 'Pronto para entrega'" (click)="marcarComoEntregue(pedido.id)">
+    <button *ngIf="pedido.status === 'Pronto para entrega' && pedido.origem?.toLowerCase() !== 'delivery'"
+        (click)="marcarComoEntregue(pedido.id)">
         Marcar como entregue
+    </button>
+
+    <button *ngIf="pedido.status === 'Pronto para entrega' && pedido.origem?.toLowerCase() === 'delivery'"
+        (click)="confirmarEntregaMotoboy(pedido)">
+        🛵 Entregue pelo motoboy
     </button>
 
     <div *ngIf="pedido.status === 'Entregue'">

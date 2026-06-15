@@ -99,6 +99,28 @@
           </span>
         </div>
 
+
+        <h4>Forma de pagamento</h4>
+
+        <select [(ngModel)]="formaPagamentoDelivery">
+          <option value="">Selecione</option>
+          <option value="Pix">Pix</option>
+          <option value="Crédito">Crédito</option>
+          <option value="Débito">Débito</option>
+          <option value="Dinheiro">Dinheiro</option>
+        </select>
+
+        <p>
+          <strong>Taxa de entrega:</strong>
+          R$ 8,00
+        </p>
+
+        <p>
+          <strong>Total Final:</strong>
+          R$ {{ (totalCarrinho + 8).toFixed(2) }}
+        </p>
+
+
         <button class="btn-finalizar" (click)="fazerPedido()">
           Fazer Pedido
         </button>
