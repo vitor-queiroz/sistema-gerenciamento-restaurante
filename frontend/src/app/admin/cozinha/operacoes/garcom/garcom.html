@@ -25,9 +25,33 @@
         <strong>Cliente:</strong>
         {{ pedido.cliente }}
     </p>
-    <p>
-        <strong>Origem:</strong> {{ pedido.origem }}
-    </p>
+
+
+    <div *ngIf="pedido.origem?.toLowerCase() === 'delivery'">
+
+        <p>
+            <strong>Telefone:</strong>
+            {{ pedido.telefone }}
+        </p>
+
+        <p>
+            <strong>Endereço:</strong>
+            {{ pedido.endereco?.rua }},
+            {{ pedido.endereco?.numero }},
+            {{ pedido.endereco?.bairro }}
+        </p>
+
+        <p>
+            <strong>Taxa de entrega:</strong>
+            R$ {{ pedido.pagamento?.valorTaxaEntrega | number:'1.2-2' }}
+        </p>
+
+        <p>
+            <strong>Status da entrega:</strong>
+            {{ pedido.statusEntrega }}
+        </p>
+
+    </div>
 
     <h3>Itens</h3>
 
@@ -36,16 +60,23 @@
     </div>
 
     <!--taxaa garcommm-->
-    <h3>Total: R$ {{ pedido.total }}</h3>
+    <h3 *ngIf="pedido.origem?.toLowerCase() !== 'delivery'">
+        Total: R$ {{ pedido.total | number:'1.2-2' }}
+    </h3>
 
-    <label *ngIf="pedido.status === 'Entregue'">
+    <label *ngIf="pedido.status === 'Entregue' && pedido.origem?.toLowerCase() !== 'delivery'">
         <input type="checkbox" [(ngModel)]="pedido.incluirTaxaGarcom">
         Incluir taxa de serviço (10%)
     </label>
 
-    <p *ngIf="pedido.status === 'Entregue'">
+    <p *ngIf="pedido.status === 'Entregue' && pedido.origem?.toLowerCase() !== 'delivery'">
         <strong>Taxa de serviço:</strong>
         R$ {{ calcularTaxaGarcom(pedido) | number:'1.2-2' }}
+    </p>
+
+    <p *ngIf="pedido.status === 'Entregue' && pedido.origem?.toLowerCase() === 'delivery'">
+        <strong>Taxa de entrega:</strong>
+        R$ {{ calcularTaxaEntrega(pedido) | number:'1.2-2' }}
     </p>
 
     <h3 *ngIf="pedido.status === 'Entregue'">
@@ -53,11 +84,35 @@
         R$ {{ calcularTotalFinal(pedido) | number:'1.2-2' }}
     </h3>
 
-    <button *ngIf="pedido.status === 'Pronto para entrega'" (click)="marcarComoEntregue(pedido.id)">
+    <button *ngIf="pedido.status === 'Pronto para entrega' && pedido.origem?.toLowerCase() !== 'delivery'"
+        (click)="marcarComoEntregue(pedido.id)">
         Marcar como entregue
     </button>
 
-    <div *ngIf="pedido.status === 'Entregue'">
+    <div *ngIf="pedido.origem?.toLowerCase() === 'delivery'">
+
+        <p>
+            <strong>Status da entrega:</strong>
+            {{ pedido.statusEntrega || 'Aguardando motoboy' }}
+        </p>
+
+        <button *ngIf="pedido.status === 'Pronto para entrega'
+         && pedido.statusEntrega !== 'Motoboy chegou' 
+         && pedido.statusEntrega !== 'Saiu para entrega'" (click)="motoboyChegou(pedido)">
+            🛵 Motoboy chegou
+        </button>
+
+        <button *ngIf="pedido.statusEntrega === 'Motoboy chegou'" (click)="saiuParaEntrega(pedido)">
+            Saiu para entrega
+        </button>
+
+        <button *ngIf="pedido.statusEntrega === 'Saiu para entrega'" (click)="finalizarEntregaDelivery(pedido)">
+            Finalizar entrega
+        </button>
+
+    </div>
+
+    <div *ngIf="pedido.status === 'Entregue' && pedido.origem?.toLowerCase() !== 'delivery'">
 
         <h3>Pagamento</h3>
 
@@ -145,6 +200,8 @@
         <p>Nenhum pagamento encontrado para este filtro.</p>
     </div>
 
+
+
     <div *ngFor="let pedido of historicoFiltrado()">
 
         <h3 *ngIf="pedido.origem?.toLowerCase() !== 'delivery'">
@@ -159,20 +216,39 @@
             {{ pedido.cliente }}
         </p>
 
+        <div *ngIf="pedido.origem?.toLowerCase() === 'delivery'">
+
+            <p>
+                <strong>Telefone:</strong>
+                {{ pedido.telefone }}
+            </p>
+
+            <p>
+                <strong>Endereço:</strong>
+                {{ pedido.endereco?.rua }},
+                {{ pedido.endereco?.numero }},
+                {{ pedido.endereco?.bairro }}
+            </p>
+
+
+        </div>
+
         <p>
             <strong>Total pago:</strong>
             R$ {{ pedido.pagamento?.valor | number:'1.2-2' }}
         </p>
 
-        <p>
-            <strong>Subtotal:</strong>
-            R$ {{ pedido.pagamento?.subtotal | number:'1.2-2' }}
-        </p>
+        <div *ngIf="pedido.origem?.toLowerCase() !== 'delivery'">
+            <p>
+                <strong>Subtotal:</strong>
+                R$ {{ pedido.pagamento?.subtotal | number:'1.2-2' }}
+            </p>
 
-        <p>
-            <strong>Taxa garçom:</strong>
-            R$ {{ pedido.pagamento?.valorTaxaGarcom | number:'1.2-2' }}
-        </p>
+            <p>
+                <strong>Taxa garçom:</strong>
+                R$ {{ pedido.pagamento?.valorTaxaGarcom | number:'1.2-2' }}
+            </p>
+        </div>
 
         <p>
             <strong>Forma de pagamento:</strong>

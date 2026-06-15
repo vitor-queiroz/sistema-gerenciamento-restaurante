@@ -20,37 +20,17 @@
 
 <div *ngFor="let pedido of pedidos">
 
-    <h2>
-        <span *ngIf="pedido.origem === 'Delivery'">
-            🛵 Delivery
-        </span>
+    <h3 *ngIf="pedido.origem?.toLowerCase() !== 'delivery'">
+        Mesa {{ pedido.numeroMesa }}
+    </h3>
 
-        <span *ngIf="pedido.origem !== 'Delivery' && pedido.numeroMesa">
-            Mesa {{ pedido.numeroMesa }}
-        </span>
-
-    </h2>
+    <h3 *ngIf="pedido.origem?.toLowerCase() === 'delivery'">
+        🛵 DELIVERY - {{ pedido.cliente }}
+    </h3>
 
     <p>
         <strong>Cliente:</strong>
         {{ pedido.cliente }}
-    </p>
-
-    <p *ngIf="pedido.origem === 'Delivery' ">
-        <strong>Telefone:</strong>
-        {{ pedido.telefone }}
-    </p>
-
-    <p *ngIf="pedido.origem === 'Delivery'">
-        <strong>Endereço:</strong>
-        {{ pedido.endereco?.rua }},
-        {{ pedido.endereco?.numero }},
-        {{ pedido.endereco?.bairro }}
-    </p>
-
-    <p *ngIf="pedido.origem !== 'Delivery'">
-        <strong>Pessoas:</strong>
-        {{ pedido.quantidadePessoas }}
     </p>
 
     <p>
@@ -67,7 +47,6 @@
 
     <p>
         <strong>Tempo:</strong>
-
         <span [ngClass]="verificarUrgenciaPedido(pedido)">
             {{ calcularMinutosPedido(pedido) }} min
         </span>
@@ -81,14 +60,37 @@
         </p>
     </div>
 
-    <h3>Total: R$ {{ pedido.total }}</h3>
+    <h3 *ngIf="pedido.origem?.toLowerCase() !== 'delivery'">
+        Total: R$ {{ pedido.total | number:'1.2-2' }}
+    </h3>
+
+    <div *ngIf="pedido.origem?.toLowerCase() === 'delivery'">
+        <h3>
+            Subtotal: R$ {{ pedido.total | number:'1.2-2' }}
+        </h3>
+
+        <p>
+            <strong>Taxa de entrega:</strong>
+            R$ {{ pedido.taxaEntrega | number:'1.2-2' }}
+        </p>
+
+        <h3>
+            Total pago:
+            R$ {{ pedido.pagamento?.valor | number:'1.2-2' }}
+        </h3>
+
+        <p>
+            <strong>Pagamento:</strong>
+            {{ pedido.pagamento?.forma }} - Pago
+        </p>
+    </div>
 
     <button *ngIf="pedido.status === 'Recebido'" (click)="atualizarStatus(pedido.id, 'Preparando')">
         Iniciar preparo
     </button>
 
     <button *ngIf="pedido.status === 'Preparando'" (click)="atualizarStatus(pedido.id, 'Finalizado')">
-            Finalizar pedido
+        Finalizar pedido
     </button>
 
     <button *ngIf="pedido.status === 'Finalizado'" (click)="atualizarStatus(pedido.id, 'Pronto para entrega')">
@@ -96,5 +98,3 @@
     </button>
 
     <hr>
-
-</div>

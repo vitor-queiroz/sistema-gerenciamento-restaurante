@@ -86,6 +86,7 @@ export class Garcom {
         subtotal: pedido.total,
         taxaGarcomIncluida: pedido.incluirTaxaGarcom,
         valorTaxaGarcom: this.calcularTaxaGarcom(pedido),
+        valorTaxaEntrega: this.calcularTaxaEntrega(pedido),
         dividido: false,
         pagoEm: new Date()
       }
@@ -202,6 +203,7 @@ export class Garcom {
         subtotal: pedido.total,
         taxaGarcomIncluida: pedido.incluirTaxaGarcom,
         valorTaxaGarcom: this.calcularTaxaGarcom(pedido),
+        valorTaxaEntrega: this.calcularTaxaEntrega(pedido),
         dividido: true,
         pagamentos: this.pagamentosParciais,
         pagoEm: new Date()
@@ -226,6 +228,10 @@ export class Garcom {
   incluirTaxaGarcom = true;
 
   calcularTaxaGarcom(pedido: any) {
+    if (pedido.origem?.toLowerCase() === 'delivery') {
+      return 0;
+    }
+
     if (!pedido.incluirTaxaGarcom) {
       return 0;
     }
@@ -233,8 +239,17 @@ export class Garcom {
     return pedido.total * 0.10;
   }
 
+  calcularTaxaEntrega(pedido: any) {
+    if (pedido.origem?.toLowerCase() === 'delivery') {
+      return pedido.taxaEntrega || 8;
+    }
+
+    return 0;
+
+  }
+
   calcularTotalFinal(pedido: any) {
-    return pedido.total + this.calcularTaxaGarcom(pedido);
+    return pedido.total + this.calcularTaxaGarcom(pedido) + this.calcularTaxaEntrega(pedido);
   }
 
 
@@ -255,5 +270,47 @@ export class Garcom {
 
       return true;
     });
+  }
+
+
+
+  async motoboyChegou(pedido: any) {
+    const pedidoDoc = doc(this.firestore, 'pedidos', pedido.id);
+
+    await updateDoc(pedidoDoc, {
+      statusEntrega: 'Motoboy chegou',
+      motoboyChegouEm: new Date()
+    });
+
+    await this.carregarPedidos();
+    this.cdr.detectChanges();
+  }
+
+  async saiuParaEntrega(pedido: any) {
+    const pedidoDoc = doc(this.firestore, 'pedidos', pedido.id);
+
+    await updateDoc(pedidoDoc, {
+      statusEntrega: 'Saiu para entrega',
+      saiuParaEntregaEm: new Date()
+    });
+
+    await this.carregarPedidos();
+    this.cdr.detectChanges();
+  }
+
+  async finalizarEntregaDelivery(pedido: any) {
+    const pedidoDoc = doc(this.firestore, 'pedidos', pedido.id);
+
+    await updateDoc(pedidoDoc, {
+      status: 'Pago',
+      origem: 'delivery',
+      statusEntrega: 'Entregue ao cliente',
+      entregueClienteEm: new Date()
+    });
+
+    await this.carregarPedidos();
+    this.cdr.detectChanges();
+
+    alert('Entrega finalizada com sucesso!');
   }
 }
