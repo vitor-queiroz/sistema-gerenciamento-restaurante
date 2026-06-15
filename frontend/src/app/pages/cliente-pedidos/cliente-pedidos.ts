@@ -1,9 +1,17 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
-import { Firestore, collection, getDocs, addDoc } from '@angular/fire/firestore';
+import {
+  Firestore,
+  collection,
+  getDocs,
+  addDoc,
+  query,
+  where,
+  onSnapshot
+} from '@angular/fire/firestore';
 
 interface Prato {
   id: string;
@@ -18,6 +26,19 @@ interface ItemCarrinho {
   quantidade: number;
 }
 
+interface PassoStatus {
+  chave: string;
+  label: string;
+  icone: string;
+}
+
+const PASSOS: PassoStatus[] = [
+  { chave: 'Recebido', label: 'Recebido', icone: '🧾' },
+  { chave: 'Preparando', label: 'Em preparo', icone: '👨‍🍳' },
+  { chave: 'Pronto para entrega', label: 'Saiu p/ entrega', icone: '🛵' },
+  { chave: 'Entregue', label: 'Entregue', icone: '✅' }
+];
+
 @Component({
   selector: 'app-cliente-pedidos',
   standalone: true,
@@ -25,7 +46,7 @@ interface ItemCarrinho {
   templateUrl: './cliente-pedidos.html',
   styleUrl: './cliente-pedidos.css',
 })
-export class ClientePedidos implements OnInit {
+export class ClientePedidos implements OnInit, OnDestroy {
   carrinho: ItemCarrinho[] = [];
   usuarioLogado: any = null;
 
@@ -33,6 +54,17 @@ export class ClientePedidos implements OnInit {
 
   formaPagamentoDelivery = '';
   taxaEntrega = 8;
+  mostrarCarrinho = true;
+
+  // ---------- Acompanhamento de pedidos ----------
+
+  passos = PASSOS;
+
+  meusPedidos: any[] = [];
+  mostrarPedidos = false;
+  abaPedidos: 'andamento' | 'historico' = 'andamento';
+
+  private cancelarListenerPedidos: (() => void) | null = null;
 
   constructor(private router: Router, private firestore: Firestore, private cdr: ChangeDetectorRef) { }
 
@@ -47,6 +79,13 @@ export class ClientePedidos implements OnInit {
     }
 
     await this.carregarProdutos();
+    this.observarMeusPedidos();
+  }
+
+  ngOnDestroy() {
+    if (this.cancelarListenerPedidos) {
+      this.cancelarListenerPedidos();
+    }
   }
 
   async carregarProdutos() {
@@ -71,6 +110,128 @@ export class ClientePedidos implements OnInit {
     this.cdr.detectChanges();
   }
 
+  // ---------- Acompanhamento de pedidos ----------
+
+  /**
+   * Escuta em tempo real todos os pedidos feitos pelo telefone do
+   * cliente logado. Qualquer mudança de status feita pela cozinha
+   * ou pelo garçom aparece automaticamente aqui.
+   */
+  observarMeusPedidos() {
+
+    if (!this.usuarioLogado?.telefone) {
+      return;
+    }
+
+    const pedidosRef = collection(this.firestore, 'pedidos');
+    const consulta = query(pedidosRef, where('telefone', '==', this.usuarioLogado.telefone));
+
+    this.cancelarListenerPedidos = onSnapshot(consulta, (snapshot) => {
+
+      const pedidos = snapshot.docs.map(item => {
+        const dados: any = item.data();
+
+        return {
+          id: item.id,
+          ...dados,
+          passoAtual: this.obterPassoAtual(dados.status)
+        };
+      });
+
+      // Mais recentes primeiro
+      this.meusPedidos = pedidos.sort((a: any, b: any) => {
+        const dataA = a.criadoEm?.toDate ? a.criadoEm.toDate().getTime() : 0;
+        const dataB = b.criadoEm?.toDate ? b.criadoEm.toDate().getTime() : 0;
+        return dataB - dataA;
+      });
+
+      this.cdr.detectChanges();
+
+    }, (erro) => {
+      console.error('Erro ao acompanhar pedidos:', erro);
+    });
+  }
+
+  obterPassoAtual(status: string): number {
+    switch (status) {
+      case 'Recebido':
+        return 0;
+      case 'Preparando':
+        return 1;
+      case 'Pronto para entrega':
+        return 2;
+      case 'Entregue':
+      case 'Pago':
+      case 'Finalizado':
+        return 3;
+      default:
+        return 0;
+    }
+  }
+
+  /** Texto amigável exibido nos cards do histórico (pedidos já concluídos). */
+  labelStatusFinal(status: string): string {
+    if (status === 'Pago') return 'Pago';
+    if (status === 'Finalizado') return 'Finalizado';
+    return 'Entregue';
+  }
+
+  /** Pedidos que ainda não chegaram ao cliente (para o badge do botão e a aba "Em andamento"). */
+  get pedidosEmAndamento(): any[] {
+    return this.meusPedidos.filter(p => p.passoAtual < 3);
+  }
+
+  /** Pedidos já entregues/pagos/finalizados — histórico do cliente. */
+  get pedidosFinalizados(): any[] {
+    return this.meusPedidos.filter(p => p.passoAtual >= 3);
+  }
+
+  /** Quantidade de pedidos em andamento (para o badge do botão). */
+  get pedidosAtivos(): number {
+    return this.pedidosEmAndamento.length;
+  }
+
+  togglePedidos() {
+    this.mostrarPedidos = !this.mostrarPedidos;
+
+    if (this.mostrarPedidos) {
+      this.mostrarCarrinho = false;
+    }
+  }
+
+  toggleCarrinho() {
+    this.mostrarCarrinho = !this.mostrarCarrinho;
+
+    if (this.mostrarCarrinho) {
+      this.mostrarPedidos = false;
+    }
+  }
+
+  trocarAbaPedidos(aba: 'andamento' | 'historico') {
+    this.abaPedidos = aba;
+  }
+
+  formatarHora(timestamp: any): string {
+    if (!timestamp) return '';
+
+    const data = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+
+    return data.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+  }
+
+  formatarData(timestamp: any): string {
+    if (!timestamp) return '';
+
+    const data = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+
+    const dataFormatada = data.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
+    const horaFormatada = data.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+
+    return `${dataFormatada} às ${horaFormatada}`;
+  }
+
+  // ---------- Carrinho ----------
+
   adicionarAoCarrinho(prato: Prato) {
     const itemExistente = this.carrinho.find(
       item => item.prato.id === prato.id
@@ -84,6 +245,9 @@ export class ClientePedidos implements OnInit {
         quantidade: 1
       });
     }
+
+    this.mostrarCarrinho = true;
+    this.mostrarPedidos = false;
   }
 
   get totalCarrinho(): number {
@@ -131,7 +295,7 @@ export class ClientePedidos implements OnInit {
 
     const pedidosRef = collection(this.firestore, 'pedidos');
 
-    const pedidoCriado = await addDoc(pedidosRef, {
+    await addDoc(pedidosRef, {
       origem: 'delivery',
 
       cliente: this.usuarioLogado.nome,
@@ -165,9 +329,11 @@ export class ClientePedidos implements OnInit {
 
     this.carrinho = [];
     this.formaPagamentoDelivery = '';
-    this.cdr.detectChanges();
 
-    this.router.navigate(['/cliente-acompanhamento', pedidoCriado.id]);
+    // Abre o painel "Meus Pedidos" para o cliente já ver o status
+    this.mostrarPedidos = true;
+
+    this.cdr.detectChanges();
   }
 
   voltarHome() {
