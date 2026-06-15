@@ -13,7 +13,14 @@
           👤 {{ usuarioLogado.nome }}
         </span>
 
-        <button class="btn-carrinho" [class.tem-itens]="carrinho.length > 0">
+        <button class="btn-pedidos" (click)="togglePedidos()">
+          📦 Meus Pedidos
+          <span class="badge" *ngIf="pedidosAtivos > 0">
+            {{ pedidosAtivos }}
+          </span>
+        </button>
+
+        <button class="btn-carrinho" [class.tem-itens]="carrinho.length > 0" (click)="toggleCarrinho()">
           🛒 Sacola
           <span class="badge" *ngIf="carrinho.length > 0">
             {{ carrinho.length }}
@@ -25,7 +32,7 @@
     </div>
   </header>
 
-  <main class="main-pedidos">
+  <main class="main-pedidos" [class.com-painel-lateral]="(carrinho.length > 0 && mostrarCarrinho) || mostrarPedidos">
     <div class="secao-titulo">
       <h2 class="titulo-cardapio">Cardápio</h2>
       <p class="localizacao">Bairro do Limoeiro</p>
@@ -58,10 +65,13 @@
       </div>
     </div>
 
-    <div class="resumo-carrinho" *ngIf="carrinho.length > 0">
+    <div class="resumo-carrinho" *ngIf="carrinho.length > 0 && mostrarCarrinho && !mostrarPedidos">
       <div class="carrinho-header">
-        <h3>Meu Carrinho</h3>
-        <p class="total-itens">{{ carrinho.length }} item(ns)</p>
+        <div class="carrinho-header-textos">
+          <h3>Meu Carrinho</h3>
+          <p class="total-itens">{{ carrinho.length }} item(ns)</p>
+        </div>
+        <button class="btn-fechar-carrinho" (click)="toggleCarrinho()">✕</button>
       </div>
 
       <div class="lista-carrinho">
@@ -126,5 +136,114 @@
         </button>
       </div>
     </div>
+
+    <!-- Painel de acompanhamento dos pedidos -->
+    <div class="painel-pedidos" *ngIf="mostrarPedidos">
+
+      <div class="pedidos-header">
+        <h3>Meus Pedidos</h3>
+        <button class="btn-fechar-pedidos" (click)="togglePedidos()">✕</button>
+      </div>
+
+      <!-- Abas -->
+      <div class="abas-pedidos">
+        <button
+          class="aba-pedido"
+          [class.ativa]="abaPedidos === 'andamento'"
+          (click)="trocarAbaPedidos('andamento')">
+          Em andamento
+          <span class="badge-aba" *ngIf="pedidosEmAndamento.length > 0">
+            {{ pedidosEmAndamento.length }}
+          </span>
+        </button>
+
+        <button
+          class="aba-pedido"
+          [class.ativa]="abaPedidos === 'historico'"
+          (click)="trocarAbaPedidos('historico')">
+          Histórico
+        </button>
+      </div>
+
+      <div class="lista-pedidos">
+
+        <!-- Em andamento -->
+        <ng-container *ngIf="abaPedidos === 'andamento'">
+
+          <p *ngIf="pedidosEmAndamento.length === 0" class="vazio-pedidos">
+            Nenhum pedido em andamento no momento.
+          </p>
+
+          <div class="card-pedido-status" *ngFor="let pedido of pedidosEmAndamento">
+
+            <div class="card-pedido-topo">
+              <span class="numero-pedido">Pedido #{{ pedido.id.slice(0, 6).toUpperCase() }}</span>
+              <span class="hora-pedido" *ngIf="pedido.criadoEm">
+                {{ formatarHora(pedido.criadoEm) }}
+              </span>
+            </div>
+
+            <!-- Stepper -->
+            <div class="stepper-mini">
+              <div
+                *ngFor="let passo of passos; let i = index"
+                class="passo-mini"
+                [class.concluido]="i <= pedido.passoAtual"
+                [class.atual]="i === pedido.passoAtual">
+
+                <div class="bolinha-mini">{{ passo.icone }}</div>
+                <p class="label-mini">{{ passo.label }}</p>
+              </div>
+            </div>
+
+            <div class="itens-pedido-status">
+              <span *ngFor="let item of pedido.itens">
+                {{ item.quantidade }}x {{ item.nome }}
+              </span>
+            </div>
+
+            <div class="total-pedido-status">
+              <strong>Total: R$ {{ pedido.totalFinal?.toFixed(2) }}</strong>
+            </div>
+
+          </div>
+
+        </ng-container>
+
+        <!-- Histórico -->
+        <ng-container *ngIf="abaPedidos === 'historico'">
+
+          <p *ngIf="pedidosFinalizados.length === 0" class="vazio-pedidos">
+            Nenhum pedido finalizado ainda.
+          </p>
+
+          <div class="card-pedido-historico" *ngFor="let pedido of pedidosFinalizados">
+
+            <div class="card-pedido-topo">
+              <span class="numero-pedido">Pedido #{{ pedido.id.slice(0, 6).toUpperCase() }}</span>
+              <span class="badge-finalizado">{{ labelStatusFinal(pedido.status) }}</span>
+            </div>
+
+            <span class="data-pedido-historico" *ngIf="pedido.criadoEm">
+              {{ formatarData(pedido.criadoEm) }}
+            </span>
+
+            <div class="itens-pedido-status">
+              <span *ngFor="let item of pedido.itens">
+                {{ item.quantidade }}x {{ item.nome }}
+              </span>
+            </div>
+
+            <div class="total-pedido-status">
+              <strong>Total: R$ {{ pedido.totalFinal?.toFixed(2) }}</strong>
+            </div>
+
+          </div>
+
+        </ng-container>
+
+      </div>
+    </div>
   </main>
+
 </div>
