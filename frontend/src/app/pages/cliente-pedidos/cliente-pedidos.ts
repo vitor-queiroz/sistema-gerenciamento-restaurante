@@ -146,8 +146,10 @@ export class ClientePedidos implements OnInit {
       })),
 
       total: this.totalCarrinho,
+      taxaEntrega: this.taxaEntrega,
+      totalFinal: this.totalCarrinho + this.taxaEntrega,
 
-         pagamento: {
+      pagamento: {
         forma: this.formaPagamentoDelivery,
         subtotal: this.totalCarrinho,
         valorTaxaEntrega: this.taxaEntrega,
@@ -162,6 +164,7 @@ export class ClientePedidos implements OnInit {
     alert('Pedido enviado para a cozinha!!');
 
     this.carrinho = [];
+    this.formaPagamentoDelivery = '';
     this.cdr.detectChanges();
 
     this.router.navigate(['/cliente-acompanhamento', pedidoCriado.id]);

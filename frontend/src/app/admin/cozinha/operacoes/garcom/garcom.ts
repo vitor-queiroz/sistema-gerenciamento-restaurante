@@ -273,26 +273,44 @@ export class Garcom {
   }
 
 
-  async confirmarEntregaMotoboy(pedido: any) {
-    const codigo = prompt('Digite o código informado pelo motoboy:');
 
-    if (!codigo) {
-      alert('Informe o código para confirmar a entrega');
-      return;
-    }
+  async motoboyChegou(pedido: any) {
+    const pedidoDoc = doc(this.firestore, 'pedidos', pedido.id);
 
+    await updateDoc(pedidoDoc, {
+      statusEntrega: 'Motoboy chegou',
+      motoboyChegouEm: new Date()
+    });
+
+    await this.carregarPedidos();
+    this.cdr.detectChanges();
+  }
+
+  async saiuParaEntrega(pedido: any) {
+    const pedidoDoc = doc(this.firestore, 'pedidos', pedido.id);
+
+    await updateDoc(pedidoDoc, {
+      statusEntrega: 'Saiu para entrega',
+      saiuParaEntregaEm: new Date()
+    });
+
+    await this.carregarPedidos();
+    this.cdr.detectChanges();
+  }
+
+  async finalizarEntregaDelivery(pedido: any) {
     const pedidoDoc = doc(this.firestore, 'pedidos', pedido.id);
 
     await updateDoc(pedidoDoc, {
       status: 'Pago',
       origem: 'delivery',
-      statusEntrega: 'Entregue pelo motoboy',
-      codigoMotoboy: codigo,
-      entreguePorMotoboyEm: new Date()
+      statusEntrega: 'Entregue ao cliente',
+      entregueClienteEm: new Date()
     });
 
     await this.carregarPedidos();
+    this.cdr.detectChanges();
 
-    alert('Entrega confirmada com sucesso!');
+    alert('Entrega finalizada com sucesso!');
   }
 }
