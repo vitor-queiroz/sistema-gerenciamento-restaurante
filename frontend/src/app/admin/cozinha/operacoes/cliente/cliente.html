@@ -1,22 +1,62 @@
 <h1>Dom Palladar</h1>
 <p>Selecione uma mesa disponível</p>
 
+<h2>Reservas Pendentes</h2>
+
+<div *ngIf="reservasPendentes.length === 0">
+  <p>Nenhuma reserva pendente.</p>
+</div>
+
+<div *ngFor="let reserva of reservasPendentes">
+
+  <h3>Reserva - {{ reserva.nome }}</h3>
+
+  <p><strong>Telefone:</strong> {{ reserva.telefone }}</p>
+  <p><strong>Pessoas:</strong> {{ reserva.pessoas }}</p>
+  <p><strong>Data:</strong> {{ reserva.data }}</p>
+  <p><strong>Horário:</strong> {{ reserva.horario }}</p>
+  <p><strong>Preferência:</strong> {{ reserva.mesa }}</p>
+  <p><strong>Status:</strong> {{ reserva.status }}</p>
+
+  <hr>
+
+</div>
+
 <h2>Mesas Disponíveis</h2>
 
 <div class="mesas">
 
-  <div
-    class="mesa"
-    *ngFor="let mesa of mesas"
-    [class.ocupada]="mesa.status === 'Ocupada'"
-    (click)="abrirMesa(mesa)"
-  >
+  <div class="mesa" *ngFor="let mesa of mesas" [class.ocupada]="mesa.status === 'Ocupada'" (click)="abrirMesa(mesa)">
 
     <h2>Mesa {{ mesa.numero }}</h2>
 
     <p *ngIf="mesa.status === 'Disponível'">
       Disponível
     </p>
+
+    <div *ngIf="buscarReservaMesa(mesa.numero) as reserva">
+
+      <p style="color: orange;">
+        🔔 Reserva pendente
+      </p>
+
+      <p>
+        {{ reserva.nome }}
+      </p>
+
+      <p>
+        {{ reserva.pessoas }}
+      </p>
+
+      <button (click)="confirmarReserva(reserva, mesa); $event.stopPropagation()">
+        ✅ Confirmar
+      </button>
+
+      <button (click)="recusarReserva(reserva); $event.stopPropagation()">
+        ❌ Recusar
+      </button>
+
+    </div>
 
     <div *ngIf="mesa.status === 'Ocupada'">
       <p>{{ mesa.cliente }}</p>
@@ -37,11 +77,7 @@
 
   <label>Nome do cliente</label>
 
-  <input
-    type="text"
-    [(ngModel)]="nomeCliente"
-    placeholder="Digite o nome"
-  >
+  <input type="text" [(ngModel)]="nomeCliente" placeholder="Digite o nome">
 
   <br><br>
 
@@ -53,13 +89,9 @@
 
   <button (click)="fecharModal()"> Cancelar </button>
 
-  <button
-  *ngIf="mesaSelecionada.status === 'Ocupada'"
-  (click)="atualizarMesa()">Atualizar Mesa</button>
+  <button *ngIf="mesaSelecionada.status === 'Ocupada'" (click)="atualizarMesa()">Atualizar Mesa</button>
 
   <button (click)="ocuparMesa()">Continuar para cardápio</button>
 
-  <button
-  *ngIf="mesaSelecionada.status === 'Ocupada'" 
-  (click)="liberarMesa()">Liberar Mesa</button>
+  <button *ngIf="mesaSelecionada.status === 'Ocupada'" (click)="liberarMesa()">Liberar Mesa</button>
 </div>

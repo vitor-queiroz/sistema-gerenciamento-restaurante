@@ -16,24 +16,15 @@
 
         <label>Nome completo</label>
 
-        <input
-          type="text"
-          [(ngModel)]="nome"
-          name="nome"
-          placeholder="Digite seu nome">
+        <input type="text" [(ngModel)]="nome" name="nome" placeholder="Digite seu nome">
       </div>
 
       <div class="grupo-input">
 
         <label>Telefone</label>
 
-        <input
-          type="tel"
-          [(ngModel)]="telefone"
-          name="telefone"
-          maxlength="11"
-          pattern="[0-9]{11}"
-          placeholder="11999999999">
+        <input type="tel" [(ngModel)]="telefone" name="telefone" maxlength="11" pattern="[0-9]{11}"
+          placeholder="(11) 99999-9999">
       </div>
 
       <div class="grupo-input">
@@ -55,8 +46,7 @@
 
         <label>Data da reserva</label>
 
-        <input type="date"
-        [(ngModel)]="data" name="data">
+        <input type="date" [(ngModel)]="data" name="data">
 
       </div>
 
@@ -65,6 +55,10 @@
         <label>Horário</label>
 
         <select [(ngModel)]="horario" name="horario">
+          <option>11:00</option>
+          <option>12:00</option>
+          <option>13:00</option>
+          <option>14:00</option>
           <option>18:00</option>
           <option>19:00</option>
           <option>20:00</option>
@@ -79,17 +73,16 @@
         <label>Mesa desejada</label>
 
         <select [(ngModel)]="mesa" name="mesa">
-          <option>Área interna</option>
-          <option>Área externa</option>
-          <option>Próximo à janela</option>
-          <option>Área VIP</option>
+          <option value="">Selecione uma mesa</option>
+
+          <option *ngFor="let mesa of mesas" [value]="mesa.numero" [disabled]="mesa.status === 'Ocupada'">
+            Mesa {{ mesa.numero }} - {{ mesa.status }}
+          </option>
         </select>
 
       </div>
 
-      <button class="botao-confirmar"
-      type="button"
-      (click)="salvarReserva()">
+      <button class="botao-confirmar" type="button" (click)="salvarReserva()">
         Confirmar Reserva
       </button>
 
