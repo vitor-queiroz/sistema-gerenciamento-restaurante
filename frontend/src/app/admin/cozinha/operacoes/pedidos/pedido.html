@@ -1,100 +1,94 @@
-<h1>Pedidos da Cozinha</h1>
+<div class="pagina-pedidos-cozinha">
 
+  <header class="topo-cozinha">
+    <h1>Pedidos da Cozinha</h1>
+    <p>Acompanhe os pedidos recebidos e atualize o preparo.</p>
+  </header>
 
-<div *ngIf="producaoPrioritaria().length > 0">
-
+  <section class="producao-prioritaria" *ngIf="producaoPrioritaria().length > 0">
     <h2>🔥 Produção Pé na Porta</h2>
     <p>Ativem o modo turbo e mão na massa!</p>
 
-    <div *ngFor="let item of producaoPrioritaria()">
-        <h3>{{ item.quantidade }}x {{ item.nome }}</h3>
+    <div class="lista-prioritaria">
+      <div class="item-prioritario" *ngFor="let item of producaoPrioritaria()">
+        <strong>{{ item.quantidade }}x</strong>
+        <span>{{ item.nome }}</span>
+      </div>
     </div>
+  </section>
 
-</div>
-
-
-
-<div *ngIf="pedidos.length === 0">
+  <div class="sem-pedidos" *ngIf="pedidos.length === 0">
     <p>Nenhum pedido recebido ainda.</p>
-</div>
+  </div>
 
-<div *ngFor="let pedido of pedidos">
+  <section class="grid-pedidos">
 
-    <h3 *ngIf="pedido.origem?.toLowerCase() !== 'delivery'">
-        Mesa {{ pedido.numeroMesa }}
-    </h3>
+    <article class="card-pedido" *ngFor="let pedido of pedidos">
 
-    <h3 *ngIf="pedido.origem?.toLowerCase() === 'delivery'">
-        🛵 DELIVERY - {{ pedido.cliente }}
-    </h3>
+      <div class="cabecalho-pedido">
+        <h2 *ngIf="pedido.origem?.toLowerCase() !== 'delivery'">
+          Mesa {{ pedido.numeroMesa }}
+        </h2>
 
-    <p>
-        <strong>Cliente:</strong>
-        {{ pedido.cliente }}
-    </p>
+        <h2 *ngIf="pedido.origem?.toLowerCase() === 'delivery'">
+          🛵 Delivery - {{ pedido.cliente }}
+        </h2>
 
-    <p>
-        <strong>Status:</strong>
-        <span [ngClass]="pedido.status">
-            {{ pedido.status }}
+        <span class="status-pedido" [ngClass]="pedido.status">
+          {{ pedido.status }}
         </span>
-    </p>
+      </div>
 
-    <p>
-        <strong>Entrou às:</strong>
-        {{ mostrarHorarioPedido(pedido.criadoEm) }}
-    </p>
+      <div class="info-pedido">
+        <p><strong>Cliente:</strong> {{ pedido.cliente }}</p>
+        <p><strong>Entrou às:</strong> {{ mostrarHorarioPedido(pedido.criadoEm) }}</p>
 
-    <p>
-        <strong>Tempo:</strong>
-        <span [ngClass]="verificarUrgenciaPedido(pedido)">
+        <p>
+          <strong>Tempo:</strong>
+          <span [ngClass]="verificarUrgenciaPedido(pedido)">
             {{ calcularMinutosPedido(pedido) }} min
-        </span>
-    </p>
-
-    <h3>Itens</h3>
-
-    <div *ngFor="let item of pedido.itens">
-        <p>
-            {{ item.nome }} - Qtd: {{ item.quantidade }}
+          </span>
         </p>
-    </div>
+      </div>
 
-    <h3 *ngIf="pedido.origem?.toLowerCase() !== 'delivery'">
-        Total: R$ {{ pedido.total | number:'1.2-2' }}
-    </h3>
+      <div class="itens-pedido">
+        <h3>Itens</h3>
 
-    <div *ngIf="pedido.origem?.toLowerCase() === 'delivery'">
-        <h3>
-            Subtotal: R$ {{ pedido.total | number:'1.2-2' }}
-        </h3>
+        <div class="item-pedido" *ngFor="let item of pedido.itens">
+          <span>{{ item.nome }}</span>
+          <strong>Qtd: {{ item.quantidade }}</strong>
+        </div>
+      </div>
 
-        <p>
-            <strong>Taxa de entrega:</strong>
-            R$ {{ pedido.taxaEntrega | number:'1.2-2' }}
-        </p>
+    
 
-        <h3>
-            Total pago:
-            R$ {{ pedido.pagamento?.valor | number:'1.2-2' }}
-        </h3>
+      
 
-        <p>
-            <strong>Pagamento:</strong>
-            {{ pedido.pagamento?.forma }} - Pago
-        </p>
-    </div>
+      <div class="acoes-pedido">
+        <button
+          class="btn-acao iniciar"
+          *ngIf="pedido.status === 'Recebido'"
+          (click)="atualizarStatus(pedido.id, 'Preparando')">
+          Iniciar preparo
+        </button>
 
-    <button *ngIf="pedido.status === 'Recebido'" (click)="atualizarStatus(pedido.id, 'Preparando')">
-        Iniciar preparo
-    </button>
+        <button
+          class="btn-acao finalizar"
+          *ngIf="pedido.status === 'Preparando'"
+          (click)="atualizarStatus(pedido.id, 'Finalizado')">
+          Finalizar pedido
+        </button>
 
-    <button *ngIf="pedido.status === 'Preparando'" (click)="atualizarStatus(pedido.id, 'Finalizado')">
-        Finalizar pedido
-    </button>
+        <button
+          class="btn-acao entrega"
+          *ngIf="pedido.status === 'Finalizado'"
+          (click)="marcarProntoParaEntrega(pedido.id)">
+          Pronto para entrega
+        </button>
+      </div>
 
-    <button *ngIf="pedido.status === 'Finalizado'" (click)="atualizarStatus(pedido.id, 'Pronto para entrega')">
-        Pronto para entrega
-    </button>
+    </article>
 
-    <hr>
+  </section>
+
+</div>
