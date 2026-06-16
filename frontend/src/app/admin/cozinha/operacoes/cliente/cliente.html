@@ -1,97 +1,125 @@
-<h1>Dom Palladar</h1>
-<p>Selecione uma mesa disponível</p>
+<div class="pagina-cliente">
 
-<h2>Reservas Pendentes</h2>
-
-<div *ngIf="reservasPendentes.length === 0">
-  <p>Nenhuma reserva pendente.</p>
-</div>
-
-<div *ngFor="let reserva of reservasPendentes">
-
-  <h3>Reserva - {{ reserva.nome }}</h3>
-
-  <p><strong>Telefone:</strong> {{ reserva.telefone }}</p>
-  <p><strong>Pessoas:</strong> {{ reserva.pessoas }}</p>
-  <p><strong>Data:</strong> {{ reserva.data }}</p>
-  <p><strong>Horário:</strong> {{ reserva.horario }}</p>
-  <p><strong>Preferência:</strong> {{ reserva.mesa }}</p>
-  <p><strong>Status:</strong> {{ reserva.status }}</p>
-
-  <hr>
-
-</div>
-
-<h2>Mesas Disponíveis</h2>
-
-<div class="mesas">
-
-  <div class="mesa" *ngFor="let mesa of mesas" [class.ocupada]="mesa.status === 'Ocupada'" (click)="abrirMesa(mesa)">
-
-    <h2>Mesa {{ mesa.numero }}</h2>
-
-    <p *ngIf="mesa.status === 'Disponível'">
-      Disponível
-    </p>
-
-    <div *ngIf="buscarReservaMesa(mesa.numero) as reserva">
-
-      <p style="color: orange;">
-        🔔 Reserva pendente
-      </p>
-
-      <p>
-        {{ reserva.nome }}
-      </p>
-
-      <p>
-        {{ reserva.pessoas }}
-      </p>
-
-      <button (click)="confirmarReserva(reserva, mesa); $event.stopPropagation()">
-        ✅ Confirmar
-      </button>
-
-      <button (click)="recusarReserva(reserva); $event.stopPropagation()">
-        ❌ Recusar
-      </button>
-
+  <!-- Header -->
+  <div class="header">
+    <button class="btn-voltar" routerLink="/admin/cozinha/operacoes">←</button>
+    <div>
+      <h1 class="logo">Dom Palladar</h1>
+      <p class="header-sub">Selecione uma mesa disponível</p>
     </div>
-
-    <div *ngIf="mesa.status === 'Ocupada'">
-      <p>{{ mesa.cliente }}</p>
-      <p>{{ mesa.quantidadePessoas }} pessoas</p>
-    </div>
-
   </div>
 
-</div>
+  <!-- Reservas Pendentes -->
+  <div class="secao" *ngIf="reservasPendentes.length > 0">
+    <div class="secao-header">
+      <h2>🔔 Reservas Pendentes</h2>
+      <span class="badge-count">{{ reservasPendentes.length }}</span>
+    </div>
 
-<div class="modal" *ngIf="mesaSelecionada">
+    <div class="lista-reservas">
+      <div class="card-reserva" *ngFor="let reserva of reservasPendentes">
+        <div class="reserva-info">
+          <strong>{{ reserva.nome }}</strong>
+          <span>{{ reserva.pessoas }} pessoas · {{ reserva.horario }}</span>
+          <span>Mesa preferida: {{ reserva.mesa }}</span>
+        </div>
+        <div class="reserva-acoes">
+          <span class="reserva-data">{{ reserva.data }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
 
-  <h2>Mesa {{ mesaSelecionada.numero }}</h2>
-  <p>
-    <strong>Status:</strong>
-    {{ mesaSelecionada.status }}
-  </p>
+  <!-- Mesas -->
+  <div class="secao">
+    <div class="secao-header">
+      <h2>Mesas Disponíveis</h2>
+      <div class="legenda">
+        <span class="legenda-item">
+          <span class="legenda-cor legenda-disponivel"></span> Disponível
+        </span>
+        <span class="legenda-item">
+          <span class="legenda-cor legenda-ocupada"></span> Ocupada
+        </span>
+      </div>
+    </div>
 
-  <label>Nome do cliente</label>
+    <div class="grid-mesas">
+      <div
+        class="card-mesa"
+        *ngFor="let mesa of mesas | sort:'numero'"
+        [class.ocupada]="mesa.status === 'Ocupada'"
+        (click)="abrirMesa(mesa)">
 
-  <input type="text" [(ngModel)]="nomeCliente" placeholder="Digite o nome">
+        <!-- Badge de reserva -->
+        <div class="badge-reserva" *ngIf="buscarReservaMesa(mesa.numero)">
+          🔔
+        </div>
 
-  <br><br>
+        <!-- Ícone de pessoas -->
+        <div class="icone-pessoas">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+          </svg>
+        </div>
 
-  <label>Quantidade de pessoas</label>
+        <span class="mesa-numero">{{ mesa.numero }}</span>
 
-  <input type="number" [(ngModel)]="quantidadePessoas" placeholder="Ex: 4">
+        <span class="mesa-status" *ngIf="mesa.status === 'Disponível'">Disponível</span>
 
-  <br><br>
+        <div class="mesa-cliente" *ngIf="mesa.status === 'Ocupada'">
+          <span class="cliente-nome">{{ mesa.cliente }}</span>
+          <span class="cliente-valor" *ngIf="mesa.total">R$ {{ mesa.total?.toFixed(2) }}</span>
+        </div>
 
-  <button (click)="fecharModal()"> Cancelar </button>
+        <!-- Alerta de reserva pendente na mesa -->
+        <div class="reserva-alerta" *ngIf="buscarReservaMesa(mesa.numero) as reserva">
+          <span>🔔 {{ reserva.nome }}</span>
+          <div class="reserva-btns">
+            <button class="btn-confirmar" (click)="confirmarReserva(reserva, mesa); $event.stopPropagation()">✅</button>
+            <button class="btn-recusar" (click)="recusarReserva(reserva); $event.stopPropagation()">❌</button>
+          </div>
+        </div>
 
-  <button *ngIf="mesaSelecionada.status === 'Ocupada'" (click)="atualizarMesa()">Atualizar Mesa</button>
+      </div>
+    </div>
+  </div>
 
-  <button (click)="ocuparMesa()">Continuar para cardápio</button>
+  <!-- Modal -->
+  <div class="modal-overlay" *ngIf="mesaSelecionada" (click)="fecharModal()">
+    <div class="modal" (click)="$event.stopPropagation()">
 
-  <button *ngIf="mesaSelecionada.status === 'Ocupada'" (click)="liberarMesa()">Liberar Mesa</button>
+      <div class="modal-header">
+        <h2>Mesa {{ mesaSelecionada.numero }}</h2>
+        <button class="modal-fechar" (click)="fecharModal()">✕</button>
+      </div>
+
+      <p class="modal-status">
+        <span class="status-dot" [class.dot-ocupada]="mesaSelecionada.status === 'Ocupada'"></span>
+        {{ mesaSelecionada.status }}
+      </p>
+
+      <div class="modal-campo">
+        <label>Nome do cliente</label>
+        <input type="text" [(ngModel)]="nomeCliente" placeholder="Digite o nome">
+      </div>
+
+      <div class="modal-campo">
+        <label>Quantidade de pessoas</label>
+        <input type="number" [(ngModel)]="quantidadePessoas" placeholder="Ex: 4" min="1">
+      </div>
+
+      <div class="modal-acoes">
+        <button class="btn-modal btn-cancelar" (click)="fecharModal()">Cancelar</button>
+        <button class="btn-modal btn-atualizar" *ngIf="mesaSelecionada.status === 'Ocupada'" (click)="atualizarMesa()">Atualizar</button>
+        <button class="btn-modal btn-continuar" (click)="ocuparMesa()">Continuar para cardápio</button>
+        <button class="btn-modal btn-liberar" *ngIf="mesaSelecionada.status === 'Ocupada'" (click)="liberarMesa()">Liberar Mesa</button>
+      </div>
+
+    </div>
+  </div>
+
 </div>

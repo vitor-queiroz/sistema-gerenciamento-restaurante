@@ -1,19 +1,46 @@
-<h1>DomPalladar System</h1>
+<div class="pagina-inicio">
 
-<div class="card">
-  <h2>Operações</h2>
+  <div class="conteudo-central">
 
-  <button
-    routerLink="/admin/login/operacoes">
-    Acessar Operações
-  </button>
-</div>
+    <div class="cabecalho">
+      <h1 class="titulo">Dom Palladar</h1>
+      <p class="subtitulo">Sistema de Gerenciamento de Restaurante</p>
+    </div>
 
-<div class="card">
-  <h2>Gerência</h2>
+    <div class="cards">
 
-  <button
-    routerLink="/admin/login/gerente">
-    Acessar Gerência
-  </button>
+      <div class="card" routerLink="/admin/login/operacoes">
+        <div class="icone-circulo icone-azul">
+          <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+          </svg>
+        </div>
+
+        <h2>Acesso aos Módulos de Trabalho</h2>
+        <p>Acesse os módulos para realizar o serviço do estabelecimento, parte administrativa e produção</p>
+        <span class="rodape-card">Requer aprovação do administrador</span>
+      </div>
+
+      <div class="card" routerLink="/admin/login/gerente">
+        <div class="icone-circulo icone-roxo">
+          <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/>
+            <path d="M12 2v2M12 20v2M2 12h2M20 12h2"/>
+            <path d="M6.34 6.34l1.42 1.42M16.24 16.24l1.42 1.42M6.34 17.66l1.42-1.42M16.24 7.76l1.42-1.42"/>
+          </svg>
+        </div>
+
+        <h2>Módulo de Controle</h2>
+        <p>Gerencie permissões de acesso aos menus e aprove novos usuários no sistema</p>
+        <span class="rodape-card">Acesso restrito a administradores</span>
+      </div>
+
+    </div>
+
+  </div>
+
 </div>

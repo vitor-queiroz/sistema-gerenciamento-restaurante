@@ -1,42 +1,136 @@
-<h1>Painel de Operações</h1>
+<div class="pagina-operacoes">
 
-<button (click)="sair()">Sair</button>
+  <div class="topo">
+    <button class="btn-voltar" routerLink="/admin/cozinha">← Voltar</button>
+  </div>
 
-<div *ngIf="auth.temPermissao('cliente')">
-  <h2>Mesas</h2>
-  <button routerLink="/admin/cozinha/operacoes/cliente">
-    Clientes
-  </button>
+  <div class="conteudo">
+
+    <div class="cabecalho">
+      <h1 class="titulo">Dom Palladar</h1>
+      <p class="subtitulo">Selecione o módulo que deseja acessar</p>
+      <p class="usuario-logado" *ngIf="auth.getUsuario()">
+        Você está logado como: <strong>{{ auth.getUsuario()?.nome }}</strong>
+      </p>
+    </div>
+
+    <div class="grid-modulos">
+
+      <!-- Cliente -->
+      <div class="card-modulo" [class.sem-permissao]="!auth.temPermissao('cliente')"
+           routerLink="/admin/cozinha/operacoes/cliente">
+        <div class="icone-modulo" style="background: #fff3e0; color: #e65100;">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M3 11l19-9-9 19-2-8-8-2z"/>
+          </svg>
+        </div>
+        <h3>Cliente</h3>
+        <p>Acessar o cardápio digital da mesa e visualizar pratos disponíveis</p>
+        <div class="status-permissao" *ngIf="!auth.temPermissao('cliente')">
+          <span>🔒 Sem permissão</span>
+        </div>
+        <button class="btn-modulo btn-laranja" [disabled]="!auth.temPermissao('cliente')">
+          Ver Mesas Disponíveis
+        </button>
+      </div>
+
+      <!-- Cozinha/Pedidos -->
+      <div class="card-modulo" [class.sem-permissao]="!auth.temPermissao('pedidos')"
+           routerLink="/admin/cozinha/operacoes/pedidos">
+        <div class="icone-modulo" style="background: #fce4ec; color: #c62828;">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M6 2v6a6 6 0 0 0 12 0V2"/>
+            <path d="M12 12v10"/>
+            <path d="M8 22h8"/>
+          </svg>
+        </div>
+        <h3>Cozinha</h3>
+        <p>Gerenciar pedidos recebidos e acompanhar a produção dos pratos</p>
+        <div class="status-permissao" *ngIf="!auth.temPermissao('pedidos')">
+          <span>🔒 Sem permissão</span>
+        </div>
+        <button class="btn-modulo btn-vermelho" [disabled]="!auth.temPermissao('pedidos')">
+          Acessar Cozinha
+        </button>
+      </div>
+
+      <!-- Garçom -->
+      <div class="card-modulo" [class.sem-permissao]="!auth.temPermissao('garcom')"
+           routerLink="/admin/cozinha/operacoes/garcom">
+        <div class="icone-modulo" style="background: #e3f2fd; color: #1565c0;">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <rect x="5" y="2" width="14" height="20" rx="2"/>
+            <line x1="9" y1="7" x2="15" y2="7"/>
+            <line x1="9" y1="11" x2="15" y2="11"/>
+            <line x1="9" y1="15" x2="13" y2="15"/>
+          </svg>
+        </div>
+        <h3>Garçom</h3>
+        <p>Acompanhar mesas, registrar pedidos e gerenciar atendimento</p>
+        <div class="status-permissao" *ngIf="!auth.temPermissao('garcom')">
+          <span>🔒 Sem permissão</span>
+        </div>
+        <button class="btn-modulo btn-azul" [disabled]="!auth.temPermissao('garcom')">
+          Acessar Painel
+        </button>
+      </div>
+
+      <!-- Estoque -->
+      <div class="card-modulo" [class.sem-permissao]="!auth.temPermissao('estoque')"
+           routerLink="/admin/cozinha/operacoes/estoque">
+        <div class="icone-modulo" style="background: #e8f5e9; color: #2e7d32;">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+            <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
+            <line x1="12" y1="22.08" x2="12" y2="12"/>
+          </svg>
+        </div>
+        <h3>Estoque</h3>
+        <p>Controlar inventário, ajustar quantidades e transferir entre unidades</p>
+        <div class="status-permissao" *ngIf="!auth.temPermissao('estoque')">
+          <span>🔒 Sem permissão</span>
+        </div>
+        <button class="btn-modulo btn-verde" [disabled]="!auth.temPermissao('estoque')">
+          Gerenciar Estoque
+        </button>
+      </div>
+
+      <!-- ESG -->
+      <div class="card-modulo" [class.sem-permissao]="!auth.temPermissao('esg')"
+           routerLink="/admin/cozinha/operacoes/esg">
+        <div class="icone-modulo" style="background: #e8f5e9; color: #00695c;">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          </svg>
+        </div>
+        <h3>ESG & ANVISA</h3>
+        <p>Vigilância sanitária, checklist de conformidade e boas práticas</p>
+        <div class="status-permissao" *ngIf="!auth.temPermissao('esg')">
+          <span>🔒 Sem permissão</span>
+        </div>
+        <button class="btn-modulo btn-verde-escuro" [disabled]="!auth.temPermissao('esg')">
+          Acessar Checklist
+        </button>
+      </div>
+
+      <!-- Sair -->
+      <div class="card-modulo card-sair" (click)="sair()">
+        <div class="icone-modulo" style="background: #f3e5f5; color: #6a1b9a;">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+            <polyline points="16 17 21 12 16 7"/>
+            <line x1="21" y1="12" x2="9" y2="12"/>
+          </svg>
+        </div>
+        <h3>Sair</h3>
+        <p>Encerrar sessão e voltar para a tela inicial</p>
+        <button class="btn-modulo btn-roxo">
+          Sair do Sistema
+        </button>
+      </div>
+
+    </div>
+
+  </div>
+
 </div>
-
-<div *ngIf="auth.temPermissao('pedidos')">
-  <h2>Cozinha</h2>
-  <button routerLink="/admin/cozinha/operacoes/pedidos">
-    Pedidos
-  </button>
-</div>
-
-<div *ngIf="auth.temPermissao('garcom')">
-  <h2>Garçom</h2>
-  <button routerLink="/admin/cozinha/operacoes/garcom">
-    Garçom
-  </button>
-</div>
-
-<div *ngIf="auth.temPermissao('estoque')">
-  <h2>Estoque</h2>
-  <button routerLink="/admin/cozinha/operacoes/estoque">
-    Estoque
-  </button>
-</div>
-
-<div *ngIf="auth.temPermissao('esg')">
-  <h2>ESG</h2>
-  <button routerLink="/admin/cozinha/operacoes/esg">
-    ESG
-  </button>
-</div>
-
-<p *ngIf="!auth.temPermissao('cliente') && !auth.temPermissao('pedidos') && !auth.temPermissao('garcom') && !auth.temPermissao('estoque') && !auth.temPermissao('esg')">
-  Você ainda não tem acesso a nenhum módulo. Fale com o gerente para liberar suas permissões.
-</p>
