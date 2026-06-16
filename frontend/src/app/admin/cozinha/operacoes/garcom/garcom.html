@@ -11,7 +11,7 @@
     <p>Nenhum pedido finalizado pela cozinha.</p>
 </div>
 
-<div *ngFor="let pedido of pedidos">
+<div class="card-garcom" *ngFor="let pedido of pedidos">
 
     <h2 *ngIf="pedido.origem?.toLowerCase() !== 'delivery'">
         Mesa {{ pedido.numeroMesa }}
@@ -44,6 +44,16 @@
         <p>
             <strong>Taxa de entrega:</strong>
             R$ {{ pedido.pagamento?.valorTaxaEntrega | number:'1.2-2' }}
+        </p>
+
+        <p>
+            <strong>Subtotal:</strong>
+            R$ {{ pedido.total | number:'1.2-2' }}
+        </p>
+
+        <p>
+            <strong>Total Final:</strong>
+            R$ {{ calcularTotalFinal(pedido) | number:'1.2-2' }}
         </p>
 
         <p>
@@ -182,7 +192,7 @@
 </div>
 
 
-<div *ngIf="mostrarHistorico">
+<div class="historico-garcom" *ngIf="mostrarHistorico">
 
     <h2>Histórico de Pagamentos</h2>
 
@@ -202,7 +212,7 @@
 
 
 
-    <div *ngFor="let pedido of historicoFiltrado()">
+    <div class="card-historico" *ngFor="let pedido of historicoFiltrado()">
 
         <h3 *ngIf="pedido.origem?.toLowerCase() !== 'delivery'">
             Mesa {{ pedido.numeroMesa }}
@@ -267,7 +277,7 @@
 
         <p>
             <strong>Pago em:</strong>
-            {{ pedido.pagamento?.pagoEm?.toDate() | date:'dd/MM/yyyy HH:mm' }}
+            {{ formatarDataFirestore(pedido.pagamento?pagoEm) | date:'dd/MM/yyyy HH:mm' }}
         </p>
 
         <hr>

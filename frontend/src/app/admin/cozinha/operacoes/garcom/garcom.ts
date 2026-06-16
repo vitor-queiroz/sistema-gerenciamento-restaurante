@@ -299,18 +299,32 @@ export class Garcom {
   }
 
   async finalizarEntregaDelivery(pedido: any) {
-    const pedidoDoc = doc(this.firestore, 'pedidos', pedido.id);
+    try {
+      const pedidoDoc = doc(this.firestore, 'pedidos', pedido.id);
 
-    await updateDoc(pedidoDoc, {
-      status: 'Pago',
-      origem: 'delivery',
-      statusEntrega: 'Entregue ao cliente',
-      entregueClienteEm: new Date()
-    });
+      await updateDoc(pedidoDoc, {
+        status: 'Pago',
+        origem: 'delivery',
+        statusEntrega: 'Entregue ao cliente',
+        entregueClienteEm: new Date()
+      });
 
-    await this.carregarPedidos();
-    this.cdr.detectChanges();
+      await this.carregarPedidos();
+      this.cdr.detectChanges();
 
-    alert('Entrega finalizada com sucesso!');
+      alert('Entrega finalizada com sucesso!');
+
+    } catch (error) {
+
+      console.error(error);
+      alert('Erro ao finalizar entrega.')
+    }
+  }
+
+
+  formatarDataFirestore(data: any) {
+    if (!data) return null;
+
+    return data.toDate ? data.toDate() : new Date(data);
   }
 }
