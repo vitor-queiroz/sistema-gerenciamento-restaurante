@@ -1,4 +1,4 @@
-import { Component, ChangeDetectorRef } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -28,7 +28,15 @@ export class Login {
   senha = '';
   carregando = false;
 
-  constructor(private firestore: Firestore, private router: Router, private auth: AuthService, private cdr: ChangeDetectorRef) {}
+  constructor(
+    private firestore: Firestore,
+    private router: Router,
+    private auth: AuthService
+  ) {}
+
+  voltar() {
+    this.router.navigate(['/admin/cozinha']);
+  }
 
   async entrar() {
 
@@ -42,6 +50,7 @@ export class Login {
     let mensagemErro = '';
     let usuarioLogado: UsuarioLogado | null = null;
     let destino = '';
+    let semPrivilegios = false;
 
     try {
 
@@ -77,43 +86,56 @@ export class Login {
         }
 
         if (!mensagemErro) {
-          usuarioLogado = {
-            id: funcionario.id,
-            nome: funcionario.nome,
-            email: funcionario.email,
-            status: funcionario.status,
-            estoque: !!funcionario.estoque,
-            pedidos: !!funcionario.pedidos,
-            cliente: !!funcionario.cliente,
-            garcom: !!funcionario.garcom,
-            esg: !!funcionario.esg
-          };
 
-          const isAdmin = funcionario.email === 'admin@123.com' || funcionario.nome === 'Administrador';
+          const isAdmin = !!funcionario.gerente ||
+            funcionario.email === 'admin@123.com' ||
+            funcionario.nome === 'Administrador';
+
           const rotaAtual = this.router.url;
+          const tentandoAcessarGerente = rotaAtual.includes('/gerente');
 
-          destino = rotaAtual.includes('/operacoes')
-            ? '/admin/cozinha/operacoes'
-            : isAdmin ? '/admin/cozinha/gerente' : '/admin/cozinha/operacoes';
+          if (tentandoAcessarGerente && !isAdmin) {
+            mensagemErro = 'Você não possui privilégios de administrador, entre em contato com algum superior de sua organização.';
+            semPrivilegios = true;
+          } else {
+
+            usuarioLogado = {
+              id: funcionario.id,
+              nome: funcionario.nome,
+              email: funcionario.email,
+              status: funcionario.status,
+              gerente: isAdmin,
+              estoque: !!funcionario.estoque,
+              pedidos: !!funcionario.pedidos,
+              cliente: !!funcionario.cliente,
+              garcom: !!funcionario.garcom,
+              esg: !!funcionario.esg
+            };
+
+            destino = rotaAtual.includes('/operacoes')
+              ? '/admin/cozinha/operacoes'
+              : isAdmin ? '/admin/cozinha/gerente' : '/admin/cozinha/operacoes';
+          }
         }
       }
 
-    if (mensagemErro) {
-      alert(mensagemErro);
-      this.carregando = false;
-      return;
-
-    }if (usuarioLogado) {
-      this.auth.login(usuarioLogado);
-      await this.router.navigate([destino]);
-      return;  
-    }
-
-  } catch (e) {
+    } catch (e) {
       console.error('Erro no login:', e);
       mensagemErro = 'Erro ao tentar fazer login. Tente novamente.';
     } finally {
       this.carregando = false;
-      this.cdr.detectChanges();
-    }  }
+    }
+
+    if (mensagemErro) {
+      alert(mensagemErro);
+
+      if (semPrivilegios) {
+        this.router.navigate(['/admin/cozinha']);
+      }
+
+    } else if (usuarioLogado) {
+      this.auth.login(usuarioLogado);
+      this.router.navigate([destino]);
+    }
+  }
 }

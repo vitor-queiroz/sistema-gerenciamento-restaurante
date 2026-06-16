@@ -89,6 +89,17 @@
           <input type="password" [placeholder]="idUsuarioEditando ? 'Nova senha (opcional)' : 'Senha'" [(ngModel)]="formUsuario.senha">
         </div>
 
+        <label class="toggle-admin">
+          <label class="switch">
+            <input type="checkbox" [(ngModel)]="formUsuario.gerente">
+            <span class="slider"></span>
+          </label>
+          <div>
+            <strong>Administrador</strong>
+            <p>Acesso total ao Painel Administrativo, independente das permissões abaixo</p>
+          </div>
+        </label>
+
         <div class="form-permissoes">
           <span class="form-permissoes-label">Permissões:</span>
           <label class="chip-permissao" *ngFor="let modulo of modulos">

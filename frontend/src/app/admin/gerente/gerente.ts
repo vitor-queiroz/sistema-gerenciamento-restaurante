@@ -63,7 +63,7 @@ export class Gerente implements OnInit {
   // ---------- Form usuário ----------
   mostrarFormUsuario = false;
   idUsuarioEditando: string | null = null;
-  formUsuario = { nome: '', email: '', senha: '', permissoes: new Set<string>() };
+  formUsuario = { nome: '', email: '', senha: '', gerente: false, permissoes: new Set<string>() };
 
   // ---------- Form mesa ----------
   mostrarFormMesa = false;
@@ -112,7 +112,7 @@ export class Gerente implements OnInit {
   // ================= USUÁRIOS =================
 
   ehAdmin(usuario: any): boolean {
-    return usuario.email === 'admin@123.com' || usuario.nome === 'Administrador';
+    return !!usuario.gerente || usuario.email === 'admin@123.com' || usuario.nome === 'Administrador';
   }
 
   cargoUsuario(usuario: any): { label: string; classe: string } {
@@ -151,7 +151,7 @@ export class Gerente implements OnInit {
 
   abrirFormNovoUsuario() {
     this.idUsuarioEditando = null;
-    this.formUsuario = { nome: '', email: '', senha: '', permissoes: new Set() };
+    this.formUsuario = { nome: '', email: '', senha: '', gerente: false, permissoes: new Set() };
     this.mostrarFormUsuario = true;
   }
 
@@ -161,6 +161,7 @@ export class Gerente implements OnInit {
       nome: usuario.nome,
       email: usuario.email,
       senha: '',
+      gerente: !!usuario.gerente,
       permissoes: new Set(MODULOS.filter(m => usuario[m]))
     };
     this.mostrarFormUsuario = true;
@@ -186,7 +187,12 @@ export class Gerente implements OnInit {
     MODULOS.forEach(m => permissoesObj[m] = this.formUsuario.permissoes.has(m));
 
     if (this.idUsuarioEditando) {
-      const dados: any = { nome: this.formUsuario.nome, email: this.formUsuario.email, ...permissoesObj };
+      const dados: any = {
+        nome: this.formUsuario.nome,
+        email: this.formUsuario.email,
+        gerente: this.formUsuario.gerente,
+        ...permissoesObj
+      };
       if (this.formUsuario.senha) dados.senha = await hashSenha(this.formUsuario.senha);
       await updateDoc(doc(this.firestore, 'funcionarios', this.idUsuarioEditando), dados);
     } else {
@@ -199,6 +205,7 @@ export class Gerente implements OnInit {
         email: this.formUsuario.email,
         senha: await hashSenha(this.formUsuario.senha),
         status: 'Ativo',
+        gerente: this.formUsuario.gerente,
         dataCadastro: new Date(),
         ...permissoesObj
       });
