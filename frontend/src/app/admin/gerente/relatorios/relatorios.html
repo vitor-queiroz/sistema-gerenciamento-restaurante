@@ -1,103 +1,139 @@
-<h1>Relatórios Dom Palladar</h1>
+<div class="pagina-relatorios">
 
-<select
-  [(ngModel)]="filtroPeriodo"
-  (change)="filtrarPeriodo()"
->
-  <option value="todos">Todos</option>
-  <option value="hoje">Hoje</option>
-  <option value="semana">Últimos 7 dias</option>
-  <option value="mes">Este mês</option>
-</select>
+  <div class="relatorios-topo">
+    <div>
+      <h1>Relatórios</h1>
+      <p>Desempenho de vendas, pratos e formas de pagamento</p>
+    </div>
 
-<hr>
-
-<div class="dashboard-cards">
-
-  <div class="card">
-    <h3>💰 Faturamento</h3>
-    <p>R$ {{ faturamentoTotal.toFixed(2) }}</p>
+    <select class="filtro-periodo" [(ngModel)]="filtroPeriodo" (change)="filtrarPeriodo()">
+      <option value="todos">Todos os períodos</option>
+      <option value="hoje">Hoje</option>
+      <option value="semana">Últimos 7 dias</option>
+      <option value="mes">Este mês</option>
+    </select>
   </div>
 
-  <div class="card">
-    <h3>📦 Pedidos</h3>
-    <p>{{ totalPedidos }}</p>
+  <!-- Cards de resumo -->
+  <div class="cards-resumo">
+
+    <div class="card-resumo">
+      <span class="card-icone">💰</span>
+      <div>
+        <span class="card-label">Faturamento</span>
+        <span class="card-valor valor-verde">R$ {{ faturamentoTotal.toFixed(2) }}</span>
+      </div>
+    </div>
+
+    <div class="card-resumo">
+      <span class="card-icone">📦</span>
+      <div>
+        <span class="card-label">Pedidos</span>
+        <span class="card-valor valor-azul">{{ totalPedidos }}</span>
+      </div>
+    </div>
+
+    <div class="card-resumo">
+      <span class="card-icone">🍽</span>
+      <div>
+        <span class="card-label">Mais Vendido</span>
+        <span class="card-valor valor-roxo card-valor-texto">{{ pratoMaisVendido || '—' }}</span>
+      </div>
+    </div>
+
+    <div class="card-resumo">
+      <span class="card-icone">🎯</span>
+      <div>
+        <span class="card-label">Ticket Médio</span>
+        <span class="card-valor valor-laranja">R$ {{ ticketMedio.toFixed(2) }}</span>
+      </div>
+    </div>
+
   </div>
 
-  <div class="card">
-    <h3>🍽 Mais Vendido</h3>
-    <p>{{ pratoMaisVendido }}</p>
+  <!-- Faturamento diário + Ranking -->
+  <div class="grid-duas-colunas">
+
+    <div class="painel-card">
+      <h2>Faturamento Diário</h2>
+      <div class="container-grafico">
+        <canvas id="graficoFaturamento"></canvas>
+      </div>
+    </div>
+
+    <div class="painel-card">
+      <h2>Ranking de Pratos</h2>
+      <div class="lista-ranking">
+        <div class="item-ranking" *ngFor="let prato of rankingPratos; let i = index">
+          <span class="ranking-posicao">{{ i + 1 }}</span>
+          <span class="ranking-nome">{{ prato.nome }}</span>
+          <span class="ranking-qtd">{{ prato.quantidade }} vendas</span>
+        </div>
+        <p *ngIf="rankingPratos.length === 0" class="vazio-relatorio">Sem vendas no período.</p>
+      </div>
+    </div>
+
   </div>
 
-  <div class="card">
-    <h3>🎯 Ticket Médio</h3>
-    <p>R$ {{ ticketMedio.toFixed(2) }}</p>
+  <!-- Top 5 pratos -->
+  <div class="painel-card">
+    <h2>Top 5 Pratos Mais Vendidos</h2>
+    <div class="container-grafico">
+      <canvas id="graficoPratos"></canvas>
+    </div>
+  </div>
+
+  <!-- Formas de pagamento -->
+  <div class="painel-card">
+    <h2>Formas de Pagamento</h2>
+
+    <div class="grid-pagamento">
+      <div class="container-grafico-pizza">
+        <h3>Quantidade de Pagamentos</h3>
+        <canvas id="graficoPagamentoQtd"></canvas>
+      </div>
+
+      <div class="container-grafico-pizza">
+        <h3>Valor Recebido por Forma</h3>
+        <canvas id="graficoPagamentoValor"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Resumo diário (tabela) -->
+  <div class="painel-card">
+    <h2>Resumo Diário</h2>
+
+    <table class="tabela-resumo">
+      <thead>
+        <tr>
+          <th>Data</th>
+          <th>Faturamento</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let dia of faturamentoPorDia">
+          <td>{{ dia.data }}</td>
+          <td class="valor-tabela">R$ {{ dia.valor }}</td>
+        </tr>
+        <tr *ngIf="faturamentoPorDia.length === 0">
+          <td colspan="2" class="vazio-relatorio">Sem dados no período.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pedidos pagos -->
+  <div class="painel-card">
+    <h2>Pedidos Pagos</h2>
+
+    <div class="lista-pedidos-pagos">
+      <div class="item-pedido-pago" *ngFor="let pedido of pedidos">
+        <span>{{ pedido.cliente }}</span>
+        <span class="valor-pedido-pago">R$ {{ pedido.total }}</span>
+      </div>
+      <p *ngIf="pedidos.length === 0" class="vazio-relatorio">Nenhum pedido pago no período.</p>
+    </div>
   </div>
 
 </div>
-
-<hr>
-
-<h3>Ranking de Pratos</h3>
-
-<ul>
-  <li *ngFor="let prato of rankingPratos">
-    {{ prato.nome }} - {{ prato.quantidade }} vendas
-  </li>
-</ul>
-
-<h3>Faturamento Diário</h3>
-
-<div style="height: 400px;">
-  <canvas id="graficoFaturamento"></canvas>
-</div>
-
-<h3>Resumo Diário</h3>
-
-<table>
-  <tr>
-    <th>Data</th>
-    <th>Faturamento</th>
-  </tr>
-
-  <tr *ngFor="let dia of faturamentoPorDia">
-    <td>{{ dia.data }}</td>
-    <td>R$ {{ dia.valor }}</td>
-  </tr>
-</table>
-
-<h3>Top 5 Pratos Mais Vendidos</h3>
-
-<div style="height: 400px;">
-  <canvas id="graficoPratos"></canvas>
-</div>
-
-
-<hr>
-
-<h2>Formas de Pagamento</h2>
-
-<div class="graficos-pagamento">
-
-  <div class="grafico-pizza">
-    <h3>Quantidade de Pagamentos</h3>
-    <canvas id="graficoPagamentoQtd"></canvas>
-  </div>
-
-  <div class="grafico-pizza">
-    <h3>Valor Recebido por Forma</h3>
-    <canvas id="graficoPagamentoValor"></canvas>
-  </div>
-
-</div>
-
-<hr>
-
-<h2>Pedidos Pagos</h2>
-
-<div *ngFor="let pedido of pedidos">
-  <p>
-    {{ pedido.cliente }} - R$ {{ pedido.total }}
-  </p>
-</div>
-
