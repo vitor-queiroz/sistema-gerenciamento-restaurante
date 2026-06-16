@@ -124,5 +124,7 @@ export class Cardapio {
   this.cdr.detectChanges();
 
   alert('Pedido enviado para a cozinha!');
+    this.cdr.detectChanges();
+
 }
 }

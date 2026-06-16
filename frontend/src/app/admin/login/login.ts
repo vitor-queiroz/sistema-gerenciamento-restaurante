@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -28,11 +28,7 @@ export class Login {
   senha = '';
   carregando = false;
 
-  constructor(
-    private firestore: Firestore,
-    private router: Router,
-    private auth: AuthService
-  ) {}
+  constructor(private firestore: Firestore, private router: Router, private auth: AuthService, private cdr: ChangeDetectorRef) {}
 
   async entrar() {
 
@@ -102,18 +98,22 @@ export class Login {
         }
       }
 
-    } catch (e) {
+    if (mensagemErro) {
+      alert(mensagemErro);
+      this.carregando = false;
+      return;
+
+    }if (usuarioLogado) {
+      this.auth.login(usuarioLogado);
+      await this.router.navigate([destino]);
+      return;  
+    }
+
+  } catch (e) {
       console.error('Erro no login:', e);
       mensagemErro = 'Erro ao tentar fazer login. Tente novamente.';
     } finally {
       this.carregando = false;
-    }
-
-    if (mensagemErro) {
-      alert(mensagemErro);
-    } else if (usuarioLogado) {
-      this.auth.login(usuarioLogado);
-      this.router.navigate([destino]);
-    }
-  }
+      this.cdr.detectChanges();
+    }  }
 }

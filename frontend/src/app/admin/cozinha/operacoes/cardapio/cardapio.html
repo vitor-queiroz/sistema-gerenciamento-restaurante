@@ -1,51 +1,78 @@
-<h1>Cardápio</h1>
+<div class="pagina-cardapio-admin">
 
-<div *ngFor="let produto of produtos">
+  <section class="area-produtos">
 
-  <img
-  *ngIf="produto.imagem"
-  [src]="produto.imagem"
-  width="150">
-  
-  <h2>{{ produto.nome }}</h2>
+    <div class="topo-cardapio">
+      <h1>Cardápio</h1>
+      <p>Selecione os itens para montar o pedido da mesa.</p>
+    </div>
 
-  <p>{{ produto.descricao }}</p>
+    <div class="grid-produtos">
 
-  <p>
-    <strong>R$ {{ produto.preco }}</strong>
-  </p>
+      <div class="card-produto" *ngFor="let produto of produtos">
 
-  <button (click)="adicionarAoPedido(produto)">
-    Adicionar ao pedido
-  </button>
+        <img
+          *ngIf="produto.imagem"
+          [src]="produto.imagem"
+          [alt]="produto.nome">
 
-  <hr>
+        <div class="info-produto">
+          <h2>{{ produto.nome }}</h2>
+
+          <p class="descricao-produto">
+            {{ produto.descricao }}
+          </p>
+
+          <div class="rodape-produto">
+            <strong>R$ {{ produto.preco | number:'1.2-2' }}</strong>
+
+            <button (click)="adicionarAoPedido(produto)">
+              Adicionar
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+  <aside class="painel-pedido">
+
+    <h2>Pedido</h2>
+
+    <div *ngIf="carrinho.length === 0" class="pedido-vazio">
+      <p>Nenhum item adicionado ainda.</p>
+    </div>
+
+    <div class="item-pedido" *ngFor="let item of carrinho">
+
+      <div>
+        <h3>{{ item.nome }}</h3>
+        <p>Qtd: {{ item.quantidade }}</p>
+        <strong>R$ {{ item.preco * item.quantidade | number:'1.2-2' }}</strong>
+      </div>
+
+      <div class="controles">
+        <button (click)="diminuirQuantidade(item)">−</button>
+        <button (click)="aumentarQuantidade(item)">+</button>
+      </div>
+
+    </div>
+
+    <div class="total-pedido">
+      <span>Total</span>
+      <strong>R$ {{ calcularTotal() | number:'1.2-2' }}</strong>
+    </div>
+
+    <button
+      class="btn-enviar"
+      *ngIf="carrinho.length > 0"
+      (click)="enviarParaCozinha()">
+      Enviar pedido para cozinha
+    </button>
+
+  </aside>
+
 </div>
-
-<h2>Pedido</h2>
-
-<div *ngIf="carrinho.length === 0">
-  <p>Nenhum item adicionado ainda</p>
-</div>
-
-<div *ngFor="let item of carrinho">
-  <p>{{ item.nome }}</p>
-  <p>Qtd: {{ item.quantidade }}</p>
-  <p>R$ {{ item.preco * item.quantidade }}</p>
-
-  <button (click)="diminuirQuantidade(item)">
-    ➖
-  </button>
-
-  <button (click)="aumentarQuantidade(item)">
-    ➕
-  </button>
-
-  <hr>
-
-
-</div>
-
-<h3>Total: R$ {{ calcularTotal() }}</h3>
-
-  <button *ngIf="carrinho.length > 0" (click)="enviarParaCozinha()">Enviar pedido para cozinha</button>
