@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectorRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Firestore, collection, addDoc, getDocs } from '@angular/fire/firestore';
@@ -22,7 +22,7 @@ export class Reservas {
   horario = '';
   mesa = '';
 
-  constructor(private firestore: Firestore) {
+  constructor(private firestore: Firestore, private cdr: ChangeDetectorRef) {
     this.carregarMesas();
   }
 
@@ -33,8 +33,10 @@ export class Reservas {
         return;
       }
 
-      if (this.telefone.length !== 11) {
-        alert('Informe um telefone válido com DDD e 9 dígitos. Ex: 11999999999');
+      const telefoneLimpo = this.telefone.replace(/\D/g, '');
+
+      if (telefoneLimpo.length !== 11) {
+        alert('Informe um telefone válido com DDD e 9 dígitos.');
         return;
       }
 
@@ -89,6 +91,9 @@ export class Reservas {
       this.horario = '';
       this.mesa = '';
 
+      this.cdr.detectChanges();
+
+
     } catch (error) {
       console.error(error);
       alert('Erro ao realizar reserva.');
@@ -103,5 +108,37 @@ export class Reservas {
       id: item.id,
       ...item.data()
     }));
+  }
+
+
+  validarNome() {
+    this.nome = this.nome.replace(/[0-9]/g, '');
+  }
+
+  formatarTelefone(event: any) {
+    let numeros = event.target.value.replace(/\D/g, '');
+
+    if (numeros.length > 11) {
+      numeros = numeros.substring(0, 11);
+    }
+
+    if (numeros.length > 10) {
+      this.telefone = numeros.replace(
+        /(\d{2})(\d{5})(\d{4})/,
+        '($1) $2-$3'
+      );
+    } else if (numeros.length > 6) {
+      this.telefone = numeros.replace(
+        /(\d{2})(\d{4,5})(\d{0,4})/,
+        '($1) $2-$3'
+      );
+    } else if (numeros.length > 2) {
+      this.telefone = numeros.replace(
+        /(\d{2})(\d+)/,
+        '($1) $2'
+      );
+    } else {
+      this.telefone = numeros;
+    }
   }
 }

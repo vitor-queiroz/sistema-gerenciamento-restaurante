@@ -1,3 +1,14 @@
 html{
     scroll-behavior: smooth;
 }
+/*aqui foi para me ajudar a ampliar o meu css da reserva...*/
+html,
+body {
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+}
+
+* {
+    box-sizing: border-box;
+}

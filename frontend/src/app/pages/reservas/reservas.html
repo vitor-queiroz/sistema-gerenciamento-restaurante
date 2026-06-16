@@ -1,93 +1,111 @@
 <section class="reserva-container">
+  <div class="reserva-imagem">
+    <div class="reserva-overlay">
+      <h1>DOM PALLADAR</h1>
+      <p>Reserve uma experiência gastronômica especial.</p>
+    </div>
+  </div>
 
-  <div class="reserva-card">
+  <div class="reserva-area-formulario">
 
-    <h1 class="titulo-reserva">
-      Faça sua Reserva
-    </h1>
+    <div class="reserva-card">
 
-    <p class="subtitulo-reserva">
-      Reserve sua experiência gastronômica no Dom Palladar.
-    </p>
+      <h1 class="titulo-reserva">
+        Faça sua Reserva
+      </h1>
 
-    <form class="form-reserva">
+      <p class="subtitulo-reserva">
+        Reserve sua experiência gastronômica aqui no Dom Palladar.
+      </p>
 
-      <div class="grupo-input">
+      <form class="form-reserva">
 
-        <label>Nome completo</label>
+        <div class="grupo-input">
 
-        <input type="text" [(ngModel)]="nome" name="nome" placeholder="Digite seu nome">
-      </div>
+          <label>Nome completo</label>
 
-      <div class="grupo-input">
+          <input type="text" 
+          [(ngModel)]="nome" 
+          name="nome" 
+          placeholder="Digite seu nome"
+          (input)="validarNome()">
+        </div>
 
-        <label>Telefone</label>
+        <div class="grupo-input">
 
-        <input type="tel" [(ngModel)]="telefone" name="telefone" maxlength="11" pattern="[0-9]{11}"
+          <label>Telefone</label>
+
+          <input type="tel" 
+          [(ngModel)]="telefone" 
+          (input)="formatarTelefone($event)"
+          name="telefone" 
+          maxlength="15" 
+          pattern="[0-9]{11}"
           placeholder="(11) 99999-9999">
-      </div>
+        </div>
 
-      <div class="grupo-input">
+        <div class="grupo-input">
 
-        <label>Quantidade de pessoas</label>
+          <label>Quantidade de pessoas</label>
 
-        <select [(ngModel)]="pessoas" name="pessoas">
-          <option>1 Pessoa</option>
-          <option>2 Pessoas</option>
-          <option>3 Pessoas</option>
-          <option>4 Pessoas</option>
-          <option>5 Pessoas</option>
-          <option>6+ Pessoas</option>
-        </select>
+          <select [(ngModel)]="pessoas" name="pessoas">
+            <option>1 Pessoa</option>
+            <option>2 Pessoas</option>
+            <option>3 Pessoas</option>
+            <option>4 Pessoas</option>
+            <option>5 Pessoas</option>
+            <option>6+ Pessoas</option>
+          </select>
 
-      </div>
+        </div>
 
-      <div class="grupo-input">
+        <div class="grupo-input">
 
-        <label>Data da reserva</label>
+          <label>Data da reserva</label>
 
-        <input type="date" [(ngModel)]="data" name="data">
+          <input type="date" [(ngModel)]="data" name="data">
 
-      </div>
+        </div>
 
-      <div class="grupo-input">
+        <div class="grupo-input">
 
-        <label>Horário</label>
+          <label>Horário</label>
 
-        <select [(ngModel)]="horario" name="horario">
-          <option>11:00</option>
-          <option>12:00</option>
-          <option>13:00</option>
-          <option>14:00</option>
-          <option>18:00</option>
-          <option>19:00</option>
-          <option>20:00</option>
-          <option>21:00</option>
-          <option>22:00</option>
-        </select>
+          <select [(ngModel)]="horario" name="horario">
+            <option>11:00</option>
+            <option>12:00</option>
+            <option>13:00</option>
+            <option>14:00</option>
+            <option>18:00</option>
+            <option>19:00</option>
+            <option>20:00</option>
+            <option>21:00</option>
+            <option>22:00</option>
+          </select>
 
-      </div>
+        </div>
 
-      <div class="grupo-input">
+        <div class="grupo-input">
 
-        <label>Mesa desejada</label>
+          <label>Mesa desejada</label>
 
-        <select [(ngModel)]="mesa" name="mesa">
-          <option value="">Selecione uma mesa</option>
+          <select [(ngModel)]="mesa" name="mesa">
+            <option value="">Selecione uma mesa</option>
 
-          <option *ngFor="let mesa of mesas" [value]="mesa.numero" [disabled]="mesa.status === 'Ocupada'">
-            Mesa {{ mesa.numero }} - {{ mesa.status }}
-          </option>
-        </select>
+            <option *ngFor="let mesa of mesas" [value]="mesa.numero" [disabled]="mesa.status === 'Ocupada'">
+              Mesa {{ mesa.numero }} - {{ mesa.status }}
+            </option>
+          </select>
 
-      </div>
+        </div>
 
-      <button class="botao-confirmar" type="button" (click)="salvarReserva()">
-        Confirmar Reserva
-      </button>
+        <button class="botao-confirmar" type="button" (click)="salvarReserva()">
+          Confirmar Reserva
+        </button>
 
-    </form>
+      </form>
 
+    </div>
   </div>
 
 </section>

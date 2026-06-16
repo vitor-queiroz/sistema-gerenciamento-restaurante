@@ -1,0 +1,170 @@
+:host {
+    display: block;
+    min-height: 100vh;
+    background: #61300d;
+}
+
+.reserva-container {
+    width: 100%;
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    background: #61300d;
+}
+
+.reserva-imagem {
+    background-image:
+    linear-gradient(rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.75)),
+    url('/assets/img/reserva.jpg');
+    background-size: cover;
+    background-position: center;
+    position: relative;
+}
+
+.reserva-overlay {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;  
+    align-items: center;
+    padding: 3rem;
+    color: white;
+}
+
+.reserva-overlay h1 {
+    color: #d4a017;
+    font-size: 5rem;
+    margin-bottom: 1.2rem;
+    line-height: 1.1;
+}
+
+.reserva-overlay p {
+    font-size: 1.25rem;
+    max-width: 420px;
+    color: wheat;
+    line-height: 1.6;
+}
+
+/*  FORMULÁRIO VASII AQUI */
+.reserva-area-formulario {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.2rem;
+    background: linear-gradient(25deg, #61300d, #2a160b);;
+}
+
+.reserva-card {
+    width: 100%;
+    max-width: 525px;          
+    background: #1C1108;
+    padding: 1.8rem 2rem;
+    border-radius: 20px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+    color: white;
+}
+
+.titulo-reserva {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 3rem;
+    font-weight: 600;
+    color: #d4a017;
+    margin-bottom: 0.6rem;
+}
+
+.subtitulo-reserva {
+    color: wheat;
+    margin-bottom: 1.2rem;
+    line-height: 1.5;
+    font-size: 0.98rem;
+}
+
+.form-reserva {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+.grupo-input {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+}
+
+.grupo-input label {
+    color: #d4a017;
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+.grupo-input input,
+.grupo-input select {
+    padding: 1rem 1.1rem;
+    border-radius: 10px;
+    border: 1px solid rgba(68, 49, 2, 0.35);
+    background: #2a160b;
+    color: white;
+    font-size: 1.05rem;
+    outline: none;
+    transition: border 0.3s;
+}
+
+.grupo-input input::placeholder {
+    color: rgba(245, 222, 179, 0.6);
+}
+
+.grupo-input input:focus,
+.grupo-input select:focus {
+    border-color: #61300d;
+}
+
+.botao-confirmar {
+    margin-top: 0.7rem;
+    background: #d4a017;
+    color: #1C1108;
+    border: none;
+    padding: 1.1rem 2rem;
+    border-radius: 50px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.5s ease;
+}
+
+.botao-confirmar:hover {
+    background:linear-gradient(75deg, #2a160b, green);
+    transform: translateY(-6px);
+}
+
+@media (max-width: 900px) {
+    .reserva-container {
+        grid-template-columns: 1fr;
+    }
+
+    .reserva-imagem {
+        min-height: 380px;
+    }
+
+    .reserva-overlay {
+        padding: 3rem 2.5rem 4rem;
+    }
+
+    .reserva-overlay h1 {
+        font-size: 3rem;
+    }
+
+    .reserva-card {
+        max-width: 100%;
+        padding: 2.2rem 2rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .reserva-overlay {
+        padding: 2.5rem 1.8rem 3.5rem;
+    }
+
+    .reserva-overlay h1 {
+        font-size: 2.6rem;
+    }
+}
