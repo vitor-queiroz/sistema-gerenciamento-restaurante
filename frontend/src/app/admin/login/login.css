@@ -1,0 +1,118 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.pagina-login {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0f1b2d 0%, #1a2744 50%, #0d1f3c 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  padding: 20px;
+}
+
+.card-login {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 48px 44px;
+  width: 100%;
+  max-width: 420px;
+  backdrop-filter: blur(10px);
+}
+
+.login-cabecalho {
+  text-align: center;
+  margin-bottom: 36px;
+}
+
+.login-cabecalho h1 {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 36px;
+  font-weight: 400;
+  color: #ffffff;
+  margin-bottom: 8px;
+}
+
+.login-cabecalho p {
+  font-size: 14px;
+  color: #8899bb;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.campo label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #aabbcc;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+}
+
+.campo input {
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-size: 15px;
+  color: #ffffff;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.campo input::placeholder {
+  color: #556688;
+}
+
+.campo input:focus {
+  border-color: rgba(99, 140, 255, 0.6);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.campo input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-entrar {
+  margin-top: 8px;
+  background: linear-gradient(135deg, #3b82f6, #6366f1);
+  border: none;
+  border-radius: 8px;
+  padding: 14px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #ffffff;
+  cursor: pointer;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.btn-entrar:hover:not(:disabled) {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.btn-entrar:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+@media (max-width: 480px) {
+  .card-login {
+    padding: 36px 24px;
+  }
+}

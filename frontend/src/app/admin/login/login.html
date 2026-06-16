@@ -1,21 +1,38 @@
-<h1>DomPalladar Login</h1>
+<div class="pagina-login">
 
-<input
-  type="email"
-  [(ngModel)]="email"
-  placeholder="E-mail"
-  [disabled]="carregando">
+  <div class="card-login">
 
-<br><br>
+    <div class="login-cabecalho">
+      <h1>Dom Palladar</h1>
+      <p>Sistema de Gerenciamento de Restaurante</p>
+    </div>
 
-<input
-  type="password"
-  [(ngModel)]="senha"
-  placeholder="Senha"
-  [disabled]="carregando">
+    <div class="login-form">
 
-<br><br>
+      <div class="campo">
+        <label>E-mail</label>
+        <input
+          type="email"
+          [(ngModel)]="email"
+          placeholder="seu@email.com"
+          [disabled]="carregando">
+      </div>
 
-<button (click)="entrar()" [disabled]="carregando">
-  {{ carregando ? 'Entrando...' : 'Entrar' }}
-</button>
+      <div class="campo">
+        <label>Senha</label>
+        <input
+          type="password"
+          [(ngModel)]="senha"
+          placeholder="••••••••"
+          [disabled]="carregando">
+      </div>
+
+      <button class="btn-entrar" (click)="entrar()" [disabled]="carregando">
+        {{ carregando ? 'Entrando...' : 'Entrar' }}
+      </button>
+
+    </div>
+
+  </div>
+
+</div>

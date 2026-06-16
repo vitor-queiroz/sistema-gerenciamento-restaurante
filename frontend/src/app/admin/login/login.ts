@@ -26,7 +26,6 @@ export class Login {
 
   email = '';
   senha = '';
-
   carregando = false;
 
   constructor(
@@ -44,90 +43,77 @@ export class Login {
 
     this.carregando = true;
 
+    let mensagemErro = '';
+    let usuarioLogado: UsuarioLogado | null = null;
+    let destino = '';
+
     try {
 
-      const funcionariosRef = collection(this.firestore, 'funcionarios');
-      const consulta = query(funcionariosRef, where('email', '==', this.email));
-      const snapshot = await getDocs(consulta);
+      const snap = await getDocs(
+        query(collection(this.firestore, 'funcionarios'), where('email', '==', this.email))
+      );
 
-      if (snapshot.empty) {
-        alert('E-mail ou senha inválidos');
-        return;
-      }
-
-      const docSnap = snapshot.docs[0];
-      const funcionario: any = { id: docSnap.id, ...docSnap.data() };
-
-
-      // ---------- Verificação de senha ----------
-
-      if (!funcionario.senha) {
-
-
-        // Funcionário cadastrado antes de existir o campo senha.
-        // Primeiro acesso precisa ser feito com a senha temporária padrão.
-        if (this.senha !== SENHA_PADRAO) {
-          alert(
-            `Este usuário ainda não tem uma senha definida. ` +
-            `Use a senha temporária "${SENHA_PADRAO}" para o primeiro acesso.`
-          );
-          return;
-        }
-
-        // Login com a senha temporária: já grava o hash dela como senha
-        // definitiva, para que da próxima vez a verificação normal funcione.
-        const senhaHash = await hashSenha(SENHA_PADRAO);
-        const funcionarioDoc = doc(this.firestore, 'funcionarios', funcionario.id);
-        await updateDoc(funcionarioDoc, { senha: senhaHash });
-
+      if (snap.empty) {
+        mensagemErro = 'E-mail ou senha inválidos';
       } else {
 
-        const senhaDigitadaHash = await hashSenha(this.senha);
+        const funcionario: any = { id: snap.docs[0].id, ...snap.docs[0].data() };
 
-        if (senhaDigitadaHash !== funcionario.senha) {
-          alert('E-mail ou senha inválidos');
-          return;
+        if (!funcionario.senha) {
+
+          if (this.senha !== SENHA_PADRAO) {
+            mensagemErro = `Este usuário ainda não tem senha. Use a senha temporária "${SENHA_PADRAO}".`;
+          } else {
+            const senhaHash = await hashSenha(SENHA_PADRAO);
+            await updateDoc(doc(this.firestore, 'funcionarios', funcionario.id), { senha: senhaHash });
+          }
+
+        } else {
+
+          const hash = await hashSenha(this.senha);
+          if (hash !== funcionario.senha) {
+            mensagemErro = 'E-mail ou senha inválidos';
+          }
+        }
+
+        if (!mensagemErro && funcionario.status === 'Pendente') {
+          mensagemErro = 'Seu acesso está pendente de aprovação pelo gerente.';
+        }
+
+        if (!mensagemErro) {
+          usuarioLogado = {
+            id: funcionario.id,
+            nome: funcionario.nome,
+            email: funcionario.email,
+            status: funcionario.status,
+            estoque: !!funcionario.estoque,
+            pedidos: !!funcionario.pedidos,
+            cliente: !!funcionario.cliente,
+            garcom: !!funcionario.garcom,
+            esg: !!funcionario.esg
+          };
+
+          const isAdmin = funcionario.email === 'admin@123.com' || funcionario.nome === 'Administrador';
+          const rotaAtual = this.router.url;
+
+          destino = rotaAtual.includes('/operacoes')
+            ? '/admin/cozinha/operacoes'
+            : isAdmin ? '/admin/cozinha/gerente' : '/admin/cozinha/operacoes';
         }
       }
 
-      // ---------- Verificação de status ----------
-
-      if (funcionario.status === 'Pendente') {
-        alert('Seu acesso ainda está pendente de aprovação pelo gerente.');
-        return;
-      }
-
-      // ---------- Sessão / permissões ----------
-
-      const usuarioLogado: UsuarioLogado = {
-        id: funcionario.id,
-        nome: funcionario.nome,
-        email: funcionario.email,
-        status: funcionario.status,
-        estoque: !!funcionario.estoque,
-        pedidos: !!funcionario.pedidos,
-        cliente: !!funcionario.cliente,
-        garcom: !!funcionario.garcom,
-        esg: !!funcionario.esg
-      };
-
-      this.auth.login(usuarioLogado);
-
-      // ---------- Redirecionamento ----------
-
-      // TODO: enquanto não existir um campo de "cargo"/"tipo" no cadastro,
-      // o e-mail/nome do administrador continua sendo o critério para
-      // entrar na área de gerente. Demais funcionários vão para operações.
-      if (funcionario.email === 'admin@123.com' || funcionario.nome === 'Administrador') {
-        this.router.navigate(['/admin/cozinha/gerente']);
-      } else {
-        this.router.navigate(['/admin/cozinha/operacoes']);
-      }
-
-    } catch (erro) {
-      alert('Erro ao tentar fazer login. Tente novamente.');
+    } catch (e) {
+      console.error('Erro no login:', e);
+      mensagemErro = 'Erro ao tentar fazer login. Tente novamente.';
     } finally {
       this.carregando = false;
+    }
+
+    if (mensagemErro) {
+      alert(mensagemErro);
+    } else if (usuarioLogado) {
+      this.auth.login(usuarioLogado);
+      this.router.navigate([destino]);
     }
   }
 }
