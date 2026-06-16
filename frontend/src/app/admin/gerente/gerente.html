@@ -1,58 +1,259 @@
-<h1>Painel de Gerência</h1>
+<div class="painel">
 
-<button (click)="sair()">Sair</button>
+  <!-- Header -->
+  <div class="header">
+    <div class="header-esquerda">
+      <button class="btn-voltar" routerLink="/admin/cozinha">←</button>
+      <div>
+        <h1>Painel Administrativo</h1>
+        <p>Gerenciamento Completo do Sistema</p>
+      </div>
+    </div>
 
-<div class="card">
+    <div class="header-direita">
+      <div class="usuario-atual">
+        <strong>Administrador</strong>
+        <span>Administrador</span>
+      </div>
+      <button class="btn-sair" (click)="sair()">↪ Sair</button>
+    </div>
+  </div>
 
-  <h2>Produtos</h2>
+  <div *ngIf="carregando" class="carregando">Carregando painel...</div>
 
-  <button
-    routerLink="/admin/cozinha/gerente/produtos">
-    Acessar
-  </button>
+  <ng-container *ngIf="!carregando">
 
-</div>
+    <!-- Cards de estatística -->
+    <div class="cards-stats">
 
-<div class="card">
+      <div class="card-stat">
+        <div>
+          <span class="stat-label">Total de Usuários</span>
+          <span class="stat-valor">{{ totalUsuarios }}</span>
+        </div>
+        <span class="stat-icone">👥</span>
+      </div>
 
-  <h2>Funcionários</h2>
+      <div class="card-stat">
+        <div>
+          <span class="stat-label">Pratos no Cardápio</span>
+          <span class="stat-valor valor-verde">{{ totalProdutos }}</span>
+        </div>
+        <span class="stat-icone">🍴</span>
+      </div>
 
-  <button
-    routerLink="/admin/cozinha/gerente/funcionarios">
-    Acessar
-  </button>
+      <div class="card-stat">
+        <div>
+          <span class="stat-label">Total de Mesas</span>
+          <span class="stat-valor valor-roxo">{{ totalMesas }}</span>
+        </div>
+        <span class="stat-icone">📦</span>
+      </div>
 
-</div>
+      <div class="card-stat">
+        <div>
+          <span class="stat-label">Administradores</span>
+          <span class="stat-valor valor-azul">{{ totalAdmins }}</span>
+        </div>
+        <span class="stat-icone">🛡️</span>
+      </div>
 
-<div class="card">
+    </div>
 
-  <h2>Acessos</h2>
+    <!-- Abas -->
+    <div class="abas">
+      <button class="aba" [class.ativa]="abaAtiva === 'usuarios'" (click)="trocarAba('usuarios')">Usuários</button>
+      <button class="aba" [class.ativa]="abaAtiva === 'mesas'" (click)="trocarAba('mesas')">Mesas</button>
+      <button class="aba" [class.ativa]="abaAtiva === 'cardapio'" (click)="trocarAba('cardapio')">Cardápio</button>
+      <button class="aba" [class.ativa]="abaAtiva === 'relatorios'" (click)="trocarAba('relatorios')">Relatórios</button>
+    </div>
 
-  <button
-    routerLink="/admin/cozinha/gerente/acessos">
-    Acessar
-  </button>
+    <!-- ===================== ABA USUÁRIOS ===================== -->
+    <div class="conteudo-aba" *ngIf="abaAtiva === 'usuarios'">
 
-</div>
+      <div class="aba-header">
+        <h2>Lista de Usuários</h2>
 
-<div class="card">
+        <div class="aba-header-acoes">
+          <input type="text" class="busca" placeholder="Buscar usuários por nome ou email..." [(ngModel)]="buscaUsuario">
+          <button class="btn-adicionar" (click)="abrirFormNovoUsuario()">+ Adicionar Usuário</button>
+        </div>
+      </div>
 
-  <h2>Relatórios</h2>
+      <div class="form-card" *ngIf="mostrarFormUsuario">
+        <h3>{{ idUsuarioEditando ? 'Editar Usuário' : 'Novo Usuário' }}</h3>
 
-  <button
-    routerLink="/admin/cozinha/gerente/relatorios">
-    Acessar
-  </button>
+        <div class="form-linha">
+          <input type="text" placeholder="Nome" [(ngModel)]="formUsuario.nome">
+          <input type="email" placeholder="E-mail" [(ngModel)]="formUsuario.email">
+          <input type="password" [placeholder]="idUsuarioEditando ? 'Nova senha (opcional)' : 'Senha'" [(ngModel)]="formUsuario.senha">
+        </div>
 
-</div>
+        <div class="form-permissoes">
+          <span class="form-permissoes-label">Permissões:</span>
+          <label class="chip-permissao" *ngFor="let modulo of modulos">
+            <input type="checkbox" [checked]="formUsuario.permissoes.has(modulo)" (change)="togglePermissaoForm(modulo)">
+            {{ iconeModulo[modulo] }} {{ labelModulo[modulo] }}
+          </label>
+        </div>
 
-<div class="card">
+        <div class="form-acoes">
+          <button class="btn-cancelar" (click)="cancelarFormUsuario()">Cancelar</button>
+          <button class="btn-salvar" (click)="salvarUsuario()">Salvar</button>
+        </div>
+      </div>
 
-  <h2>Mesas</h2>
+      <div class="lista-usuarios">
 
-  <button
-    routerLink="/admin/cozinha/gerente/mesas">
-    Acessar
-  </button>
+        <div class="card-usuario" *ngFor="let usuario of usuariosFiltrados">
+
+          <div class="usuario-avatar">{{ iniciaisNome(usuario.nome) }}</div>
+
+          <div class="usuario-info">
+            <div class="usuario-nome-linha">
+              <strong>{{ usuario.nome }}</strong>
+              <span class="badge-cargo" [ngClass]="cargoUsuario(usuario).classe">{{ cargoUsuario(usuario).label }}</span>
+            </div>
+
+            <span class="usuario-email">{{ usuario.email }}</span>
+
+            <div class="usuario-permissoes" *ngIf="permissoesAtivas(usuario).length > 0">
+              <span class="texto-permissoes-label">Permissões:</span>
+              <span class="chip-mini" *ngFor="let modulo of permissoesAtivas(usuario)">
+                {{ iconeModulo[modulo] }} {{ labelModulo[modulo] }}
+              </span>
+            </div>
+          </div>
+
+          <div class="usuario-acoes">
+            <div class="toggle-ativo">
+              <span>{{ usuario.status === 'Ativo' ? 'Ativo' : 'Pendente' }}</span>
+              <label class="switch">
+                <input type="checkbox" [checked]="usuario.status === 'Ativo'" (change)="toggleAtivo(usuario)">
+                <span class="slider"></span>
+              </label>
+            </div>
+
+            <button class="btn-acao" (click)="redefinirSenhaUsuario(usuario)">🔑 Senha</button>
+            <button class="btn-acao" (click)="abrirFormEditarUsuario(usuario)">✏️ Editar</button>
+            <button class="btn-acao btn-excluir" (click)="excluirUsuario(usuario)">🗑️</button>
+          </div>
+
+        </div>
+
+        <p *ngIf="usuariosFiltrados.length === 0" class="vazio">Nenhum usuário encontrado.</p>
+
+      </div>
+    </div>
+
+    <!-- ===================== ABA MESAS ===================== -->
+    <div class="conteudo-aba" *ngIf="abaAtiva === 'mesas'">
+
+      <div class="aba-header">
+        <div>
+          <h2>Gerenciamento de Mesas</h2>
+          <p class="aba-subtitulo">Total de mesas: {{ totalMesas }}</p>
+        </div>
+        <button class="btn-adicionar" (click)="abrirFormNovaMesa()">+ Adicionar Mesa</button>
+      </div>
+
+      <div class="form-card form-card-inline" *ngIf="mostrarFormMesa">
+        <input type="number" placeholder="Número da mesa" [(ngModel)]="novoNumeroMesa" min="1">
+        <button class="btn-salvar" (click)="salvarMesa()">Salvar</button>
+        <button class="btn-cancelar" (click)="mostrarFormMesa = false">Cancelar</button>
+      </div>
+
+      <div class="grid-mesas-admin">
+        <div
+          class="card-mesa-admin"
+          *ngFor="let mesa of mesas"
+          [class.ocupada]="mesa.status === 'Ocupada'">
+
+          <div class="mesa-admin-topo">
+            <span class="circulo-mesa" [class.circulo-ocupada]="mesa.status === 'Ocupada'">{{ mesa.numero }}</span>
+            <div class="mesa-admin-acoes">
+              <button class="btn-icone" (click)="abrirFormEditarMesa(mesa)">✏️</button>
+              <button class="btn-icone btn-icone-excluir" (click)="excluirMesa(mesa)">🗑️</button>
+            </div>
+          </div>
+
+          <strong class="mesa-admin-nome">Mesa {{ mesa.numero }}</strong>
+
+          <span class="badge-status-mesa" [class.badge-livre]="mesa.status === 'Disponível'">
+            <span class="dot"></span> {{ mesa.status === 'Disponível' ? 'Livre' : 'Ocupada' }}
+          </span>
+
+          <span class="mesa-admin-cliente" *ngIf="mesa.status === 'Ocupada'">Cliente: {{ mesa.cliente }}</span>
+
+          <div class="aviso-pedido-ativo" *ngIf="mesa.temPedidoAtivo">
+            ⚠ Possui pedidos ativos
+          </div>
+
+        </div>
+
+        <p *ngIf="mesas.length === 0" class="vazio">Nenhuma mesa cadastrada.</p>
+      </div>
+    </div>
+
+    <!-- ===================== ABA CARDÁPIO ===================== -->
+    <div class="conteudo-aba" *ngIf="abaAtiva === 'cardapio'">
+
+      <div class="aba-header">
+        <h2>Gerenciamento de Cardápio</h2>
+        <button class="btn-adicionar" (click)="abrirFormNovoProduto()">+ Adicionar Prato</button>
+      </div>
+
+      <div class="form-card" *ngIf="mostrarFormProduto">
+        <h3>{{ idProdutoEditando ? 'Editar Prato' : 'Novo Prato' }}</h3>
+
+        <div class="form-linha">
+          <input type="text" placeholder="Nome do prato" [(ngModel)]="formProduto.nome">
+          <input type="number" placeholder="Preço" [(ngModel)]="formProduto.preco">
+          <input type="text" placeholder="Categoria" [(ngModel)]="formProduto.categoria">
+        </div>
+        <div class="form-linha">
+          <input type="text" placeholder="Descrição" [(ngModel)]="formProduto.descricao">
+          <input type="text" placeholder="URL da imagem" [(ngModel)]="formProduto.imagem">
+        </div>
+
+        <div class="form-acoes">
+          <button class="btn-cancelar" (click)="cancelarFormProduto()">Cancelar</button>
+          <button class="btn-salvar" (click)="salvarProduto()">Salvar</button>
+        </div>
+      </div>
+
+      <div class="lista-produtos-admin">
+
+        <div class="card-produto-linha" *ngFor="let produto of produtos">
+
+          <img *ngIf="produto.imagem" [src]="produto.imagem" class="produto-thumb">
+          <div *ngIf="!produto.imagem" class="produto-thumb produto-thumb-vazia">🍴</div>
+
+          <div class="produto-linha-info">
+            <div class="produto-linha-topo">
+              <strong>{{ produto.nome }}</strong>
+              <span class="badge-categoria" *ngIf="produto.categoria">{{ produto.categoria }}</span>
+            </div>
+            <span class="produto-linha-desc">{{ produto.descricao }}</span>
+            <span class="produto-linha-preco">R$ {{ produto.preco?.toFixed ? produto.preco.toFixed(2) : produto.preco }}</span>
+          </div>
+
+          <div class="produto-linha-acoes">
+            <button class="btn-acao" (click)="abrirFormEditarProduto(produto)">✏️ Editar</button>
+            <button class="btn-acao btn-excluir" (click)="excluirProduto(produto)">🗑️</button>
+          </div>
+
+        </div>
+
+        <p *ngIf="produtos.length === 0" class="vazio">Nenhum prato cadastrado.</p>
+      </div>
+    </div>
+
+    <!-- ===================== ABA RELATÓRIOS ===================== -->
+    <div class="conteudo-aba conteudo-relatorios" *ngIf="abaAtiva === 'relatorios'">
+      <app-relatorios></app-relatorios>
+    </div>
+
+  </ng-container>
 
 </div>
