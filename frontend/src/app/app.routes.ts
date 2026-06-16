@@ -28,6 +28,7 @@ import { Cardapio } from './admin/cozinha/operacoes/cardapio/cardapio';
 
 import { logadoGuard, gerenteGuard, permissaoGuard } from './shared/guards/auth.guards';
 
+import { CardapioPublic } from './pages/cardapiopublic/cardapiopublic';
 
 export const routes: Routes=[
     {
@@ -144,5 +145,10 @@ export const routes: Routes=[
         path: 'admin/cozinha/operacoes/cardapio/:mesaId',
         component: Cardapio,
         canActivate: [permissaoGuard('cliente')]
+    },
+
+    {
+        path: 'cardapio-public',
+        component: CardapioPublic
     }
    ];
