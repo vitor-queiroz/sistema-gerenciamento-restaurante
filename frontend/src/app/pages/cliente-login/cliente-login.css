@@ -1,11 +1,20 @@
 .container-cliente-login {
   min-height: 100vh;
-  background: linear-gradient(135deg, #61300d 0%, #070502 100%);
+
+  background-image: linear-gradient(rgba(0, 0, 0, 0.80), rgba(0, 0, 0, 0.85)),
+    url('/assets/img/login5.jpg');
+
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   padding: 20px;
+
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
@@ -17,11 +26,11 @@
 }
 
 .btn-voltar {
-  background-color: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 193, 7, 0.5);
-  color: #ffc107;
+  background-color: rgba(0,0,0,0.25);
+  border: 1px solid rgba(191,133,46,0.7);
+  color: #d4a45f;
   padding: 10px 20px;
-  border-radius: 5px;
+  border-radius: 8px;
   cursor: pointer;
   font-size: 14px;
   transition: all 0.3s ease;
@@ -35,7 +44,7 @@
 
 .titulo-login {
   text-align: center;
-  color: #ffc107;
+  color: #d9a45f;
   font-size: 36px;
   font-weight: bold;
   letter-spacing: 2px;
@@ -43,16 +52,18 @@
 }
 
 .card-login {
-  background: linear-gradient(to bottom, #1a1a1a, #2a2a2a);
-  border-radius: 10px;
+  background: rgba(10, 5, 2, 0.78);
+  backdrop-filter: blur(8px);
+  border-radius: 18px;
+    border: 1px solid rgba(191, 133, 46, 0.45);
+
   padding: 40px;
   width: 100%;
   max-width: 500px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
-  border: 2px solid #ffc107;
+  border: 1px solid rgba(191, 133, 46, 0.55);
+  box-shadow: 0 25px 80px rgba(0, 0, 0, 0.75);
 }
 
-/* ABAS */
 .abas {
   display: flex;
   gap: 10px;
@@ -65,7 +76,7 @@
   padding: 12px 20px;
   background: none;
   border: none;
-  color: rgba(255, 193, 7, 0.6);
+  color: rgba(217, 164, 95, 0.55);
   font-size: 16px;
   font-weight: 600;
   cursor: pointer;
@@ -76,15 +87,15 @@
 }
 
 .aba:hover {
-  color: #ffc107;
+  color: #d9a45f;
 }
 
 .aba.ativa {
-  color: #ffc107;
-  border-bottom-color: #ffc107;
+  color: #d9a45f;
+  border-bottom-color: #d9a45f;
+;
 }
 
-/* FORMULÁRIOS */
 .formulario {
   animation: fadeIn 0.3s ease;
 }
@@ -109,7 +120,7 @@
 }
 
 .titulo-secao {
-  color: #ffc107;
+  color: #d4a45f;
   font-size: 16px;
   font-weight: 700;
   margin-top: 25px;
@@ -144,10 +155,10 @@
 
 .input-campo {
   padding: 12px 16px;
-  background-color: rgba(255, 193, 7, 0.05);
-  border: 2px solid #ffc107;
-  border-radius: 5px;
-  color: #ffffff;
+  background-color: rgba(20, 10, 4, 0.72);
+  border: 2px solid rgba(191, 133, 46, 0.55);
+  color: #f5e8d0;
+  border-radius: 8px;
   font-size: 14px;
   transition: all 0.3s ease;
   font-family: inherit;
@@ -155,23 +166,22 @@
 
 .input-campo:focus {
   outline: none;
-  background-color: rgba(255, 193, 7, 0.1);
-  border-color: #ffc107;
-  box-shadow: 0 0 10px rgba(255, 193, 7, 0.3);
+  background-color: rgba(26, 19, 1, 0.1);
+  border-color: #d9a45f;
+  box-shadow: 0 0 0 3px rgba(217, 164, 95, 0.18);
 }
 
 .input-campo::placeholder {
   color: rgba(255, 255, 255, 0.5);
 }
 
-/* BOTÕES */
 .btn-primario {
   width: 100%;
   padding: 14px 20px;
   background-color: #ffc107;
   border: none;
   border-radius: 5px;
-  color: #1a1a1a;
+  color: #120802;
   font-size: 16px;
   font-weight: 700;
   cursor: pointer;
@@ -182,16 +192,15 @@
 }
 
 .btn-primario:hover {
-  background-color: #ffb300;
+background: linear-gradient(135deg, #ffc107, #f0c987);
+  box-shadow: 0 8px 22px rgba(217, 164, 95, 0.28);
   transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(255, 193, 7, 0.4);
 }
 
 .btn-primario:active {
   transform: translateY(0);
 }
 
-/* TEXTO DE AJUDA */
 .texto-ajuda {
   text-align: center;
   color: rgba(255, 255, 255, 0.7);

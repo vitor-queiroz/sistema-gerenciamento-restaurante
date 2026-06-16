@@ -136,13 +136,13 @@
     transform: translateY(-6px);
 }
 
-@media (max-width: 900px) {
+@media (max-width: 768px) {
     .reserva-container {
         grid-template-columns: 1fr;
     }
 
     .reserva-imagem {
-        min-height: 380px;
+        min-height: 250px;
     }
 
     .reserva-overlay {
@@ -150,12 +150,12 @@
     }
 
     .reserva-overlay h1 {
-        font-size: 3rem;
+        font-size: 2.5rem;
     }
 
     .reserva-card {
-        max-width: 100%;
-        padding: 2.2rem 2rem;
+        max-width: 95%;
+        padding: 1.5rem;
     }
 }
 
