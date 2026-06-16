@@ -1,46 +1,249 @@
-<div class="pagina-inicio">
-
-  <div class="conteudo-central">
-
-    <div class="cabecalho">
-      <h1 class="titulo">Dom Palladar</h1>
-      <p class="subtitulo">Sistema de Gerenciamento de Restaurante</p>
-    </div>
-
-    <div class="cards">
-
-      <div class="card" routerLink="/admin/login/operacoes">
-        <div class="icone-circulo icone-azul">
-          <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-            <circle cx="9" cy="7" r="4"/>
-            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
-            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-          </svg>
-        </div>
-
-        <h2>Acesso aos Módulos de Trabalho</h2>
-        <p>Acesse os módulos para realizar o serviço do estabelecimento, parte administrativa e produção</p>
-        <span class="rodape-card">Requer aprovação do administrador</span>
+<div class="container-pedidos">
+  <header class="header-pedidos">
+    <div class="header-conteudo">
+      <div class="header-esquerda">
+        <button class="btn-voltar" (click)="voltarHome()">
+          🏠 Início
+        </button>
+        <h1 class="logo">DOM PALLADAR</h1>
       </div>
 
-      <div class="card" routerLink="/admin/login/gerente">
-        <div class="icone-circulo icone-roxo">
-          <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="3"/>
-            <path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/>
-            <path d="M12 2v2M12 20v2M2 12h2M20 12h2"/>
-            <path d="M6.34 6.34l1.42 1.42M16.24 16.24l1.42 1.42M6.34 17.66l1.42-1.42M16.24 7.76l1.42-1.42"/>
-          </svg>
-        </div>
+      <div class="header-direita">
+        <span class="usuario-info" *ngIf="usuarioLogado">
+          👤 {{ usuarioLogado.nome }}
+        </span>
 
-        <h2>Módulo de Controle</h2>
-        <p>Gerencie permissões de acesso aos menus e aprove novos usuários no sistema</p>
-        <span class="rodape-card">Acesso restrito a administradores</span>
+        <button class="btn-pedidos" (click)="togglePedidos()">
+          📦 Meus Pedidos
+          <span class="badge" *ngIf="pedidosAtivos > 0">
+            {{ pedidosAtivos }}
+          </span>
+        </button>
+
+        <button class="btn-carrinho" [class.tem-itens]="carrinho.length > 0" (click)="toggleCarrinho()">
+          🛒 Sacola
+          <span class="badge" *ngIf="carrinho.length > 0">
+            {{ carrinho.length }}
+          </span>
+        </button>
+
+        <button class="btn-logout" (click)="logout()">Sair</button>
       </div>
+    </div>
+  </header>
 
+  <main class="main-pedidos" [class.com-painel-lateral]="(carrinho.length > 0 && mostrarCarrinho) || mostrarPedidos">
+    <div class="secao-titulo">
+      <h2 class="titulo-cardapio">Cardápio</h2>
+      <p class="localizacao">Bairro do Limoeiro</p>
     </div>
 
-  </div>
+    <div class="titulo-categoria">
+      <h3>Produtos disponíveis</h3>
+    </div>
+
+    <div class="grid-pratos">
+      <div class="card-prato" *ngFor="let prato of pratos">
+        <div class="imagem-prato">
+          <img [src]="prato.imagem" [alt]="prato.nome" />
+        </div>
+
+        <div class="info-prato">
+          <h4 class="nome-prato">{{ prato.nome }}</h4>
+          <p class="descricao-prato">{{ prato.descricao }}</p>
+
+          <div class="footer-prato">
+            <span class="preco-prato">
+              R$ {{ prato.preco }}
+            </span>
+
+            <button class="btn-adicionar" (click)="adicionarAoCarrinho(prato)">
+              Adicionar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="resumo-carrinho" *ngIf="carrinho.length > 0 && mostrarCarrinho && !mostrarPedidos">
+      <div class="carrinho-header">
+        <div class="carrinho-header-textos">
+          <h3>Meu Carrinho</h3>
+          <p class="total-itens">{{ carrinho.length }} item(ns)</p>
+        </div>
+        <button class="btn-fechar-carrinho" (click)="toggleCarrinho()">✕</button>
+      </div>
+
+      <div class="lista-carrinho">
+        <div class="item-carrinho" *ngFor="let item of carrinho">
+          <div class="info-item">
+            <p class="nome-item">{{ item.prato.nome }}</p>
+            <p class="preco-item">
+              R$ {{ (item.prato.preco * item.quantidade).toFixed(2) }}
+            </p>
+          </div>
+
+          <div class="controles-quantidade">
+            <button (click)="diminuirQuantidade(item.prato.id)" class="btn-qtd">
+              -
+            </button>
+
+            <span class="quantidade">{{ item.quantidade }}</span>
+
+            <button (click)="aumentarQuantidade(item.prato.id)" class="btn-qtd">
+              +
+            </button>
+
+            <button (click)="removerDoCarrinho(item.prato.id)" class="btn-remover">
+              ✕
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="carrinho-footer">
+        <div class="total">
+          <span>Total:</span>
+          <span class="valor-total">
+            R$ {{ totalCarrinho.toFixed(2) }}
+          </span>
+        </div>
+
+
+        <h4>Forma de pagamento</h4>
+
+        <select [(ngModel)]="formaPagamentoDelivery">
+          <option value="">Selecione</option>
+          <option value="Pix">Pix</option>
+          <option value="Crédito">Crédito</option>
+          <option value="Débito">Débito</option>
+          <option value="Dinheiro">Dinheiro</option>
+        </select>
+
+        <p>
+          <strong>Taxa de entrega:</strong>
+          R$ 8,00
+        </p>
+
+        <p>
+          <strong>Total Final:</strong>
+          R$ {{ (totalCarrinho + 8).toFixed(2) }}
+        </p>
+
+
+        <button class="btn-finalizar" (click)="fazerPedido()">
+          Fazer Pedido
+        </button>
+      </div>
+    </div>
+
+    <!-- Painel de acompanhamento dos pedidos -->
+    <div class="painel-pedidos" *ngIf="mostrarPedidos">
+
+      <div class="pedidos-header">
+        <h3>Meus Pedidos</h3>
+        <button class="btn-fechar-pedidos" (click)="togglePedidos()">✕</button>
+      </div>
+
+      <!-- Abas -->
+      <div class="abas-pedidos">
+        <button
+          class="aba-pedido"
+          [class.ativa]="abaPedidos === 'andamento'"
+          (click)="trocarAbaPedidos('andamento')">
+          Em andamento
+          <span class="badge-aba" *ngIf="pedidosEmAndamento.length > 0">
+            {{ pedidosEmAndamento.length }}
+          </span>
+        </button>
+
+        <button
+          class="aba-pedido"
+          [class.ativa]="abaPedidos === 'historico'"
+          (click)="trocarAbaPedidos('historico')">
+          Histórico
+        </button>
+      </div>
+
+      <div class="lista-pedidos">
+
+        <!-- Em andamento -->
+        <ng-container *ngIf="abaPedidos === 'andamento'">
+
+          <p *ngIf="pedidosEmAndamento.length === 0" class="vazio-pedidos">
+            Nenhum pedido em andamento no momento.
+          </p>
+
+          <div class="card-pedido-status" *ngFor="let pedido of pedidosEmAndamento">
+
+            <div class="card-pedido-topo">
+              <span class="numero-pedido">Pedido #{{ pedido.id.slice(0, 6).toUpperCase() }}</span>
+              <span class="hora-pedido" *ngIf="pedido.criadoEm">
+                {{ formatarHora(pedido.criadoEm) }}
+              </span>
+            </div>
+
+            <!-- Stepper -->
+            <div class="stepper-mini">
+              <div
+                *ngFor="let passo of passos; let i = index"
+                class="passo-mini"
+                [class.concluido]="i <= pedido.passoAtual"
+                [class.atual]="i === pedido.passoAtual">
+
+                <div class="bolinha-mini">{{ passo.icone }}</div>
+                <p class="label-mini">{{ passo.label }}</p>
+              </div>
+            </div>
+
+            <div class="itens-pedido-status">
+              <span *ngFor="let item of pedido.itens">
+                {{ item.quantidade }}x {{ item.nome }}
+              </span>
+            </div>
+
+            <div class="total-pedido-status">
+              <strong>Total: R$ {{ pedido.totalFinal?.toFixed(2) }}</strong>
+            </div>
+
+          </div>
+
+        </ng-container>
+
+        <!-- Histórico -->
+        <ng-container *ngIf="abaPedidos === 'historico'">
+
+          <p *ngIf="pedidosFinalizados.length === 0" class="vazio-pedidos">
+            Nenhum pedido finalizado ainda.
+          </p>
+
+          <div class="card-pedido-historico" *ngFor="let pedido of pedidosFinalizados">
+
+            <div class="card-pedido-topo">
+              <span class="numero-pedido">Pedido #{{ pedido.id.slice(0, 6).toUpperCase() }}</span>
+              <span class="badge-finalizado">{{ labelStatusFinal(pedido.status) }}</span>
+            </div>
+
+            <span class="data-pedido-historico" *ngIf="pedido.criadoEm">
+              {{ formatarData(pedido.criadoEm) }}
+            </span>
+
+            <div class="itens-pedido-status">
+              <span *ngFor="let item of pedido.itens">
+                {{ item.quantidade }}x {{ item.nome }}
+              </span>
+            </div>
+
+            <div class="total-pedido-status">
+              <strong>Total: R$ {{ pedido.totalFinal?.toFixed(2) }}</strong>
+            </div>
+
+          </div>
+
+        </ng-container>
+
+      </div>
+    </div>
+  </main>
 
 </div>
