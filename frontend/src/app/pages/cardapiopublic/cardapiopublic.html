@@ -1,0 +1,43 @@
+<div class="pagina-cardapio-public">
+
+  <header class="topo-cardapio">
+    <a routerLink="/home" class="btn-voltar">← Voltar</a>
+
+    <div>
+      <h1>Cardápio Dom Palladar</h1>
+      <p>Conheça nossos pratos antes de fazer seu pedido.</p>
+    </div>
+  </header>
+
+  <section class="grid-cardapio-public">
+
+    <div class="card-prato-public" *ngFor="let prato of pratos">
+
+      <img [src]="prato.imagem" [alt]="prato.nome">
+
+      <div class="info-prato-public">
+        <h2>{{ prato.nome }}</h2>
+
+        <p class="descricao-prato">
+          {{ prato.descricao }}
+        </p>
+
+        <p class="preco-prato">
+          R$ {{ prato.preco | number:'1.2-2' }}
+        </p>
+      </div>
+
+    </div>
+
+  </section>
+
+  <section class="chamada-delivery">
+    <h2>Gostou do cardápio?</h2>
+    <p>Faça seu pedido pelo delivery e acompanhe tudo em tempo real.</p>
+
+    <a routerLink="/cliente-login">
+      Peça pelo Delivery
+    </a>
+  </section>
+
+</div>
