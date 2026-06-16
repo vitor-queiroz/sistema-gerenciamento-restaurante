@@ -11,7 +11,7 @@
 
   <section class="grid-cardapio-public">
 
-    <div class="card-prato-public" *ngFor="let prato of pratos">
+    <div class="card-prato-public" *ngFor="let prato of pratos" (click)="abrirPrato(prato)">
 
       <img [src]="prato.imagem" [alt]="prato.nome">
 
@@ -39,5 +39,40 @@
       Peça pelo Delivery
     </a>
   </section>
+  
+
+  <div class="modal-prato" *ngIf="pratoSelecionado" (click)="fecharPrato()">
+
+  <div class="conteudo-modal-prato" (click)="$event.stopPropagation()">
+
+    <button class="fechar-modal" (click)="fecharPrato()">
+      ×
+    </button>
+
+    <img
+      [src]="pratoSelecionado.imagem"
+      [alt]="pratoSelecionado.nome">
+
+    <div class="info-modal-prato">
+
+      <h2>{{ pratoSelecionado.nome }}</h2>
+
+      <p>
+        {{ pratoSelecionado.descricao }}
+      </p>
+
+      <h3 class="preco-modal">
+        R$ {{ pratoSelecionado.preco | number:'1.2-2' }}
+      </h3>
+
+      <a routerLink="/cliente-login" class="chamada-delivery">
+        Peça pelo Delivery
+      </a>
+
+    </div>
+
+  </div>
+
+</div>
 
 </div>

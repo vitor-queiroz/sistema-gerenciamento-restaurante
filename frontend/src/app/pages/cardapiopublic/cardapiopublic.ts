@@ -24,7 +24,7 @@ export class CardapioPublic implements OnInit {
   constructor(
     private firestore: Firestore,
     private cdr: ChangeDetectorRef
-  ) {}
+  ) { }
 
   async ngOnInit() {
     await this.carregarProdutos();
@@ -47,5 +47,15 @@ export class CardapioPublic implements OnInit {
     });
 
     this.cdr.detectChanges();
+  }
+
+  pratoSelecionado: Prato | null = null;
+
+  abrirPrato(prato: Prato) {
+    this.pratoSelecionado = prato;
+  }
+
+  fecharPrato() {
+    this.pratoSelecionado = null;
   }
 }

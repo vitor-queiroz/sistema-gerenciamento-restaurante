@@ -55,23 +55,22 @@
     margin: 0.5rem 0 0;
 }
 
-/* Grid do Cardápio */
 .grid-cardapio-public {
     max-width: 1200px;
     margin: 0 auto;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 2.5rem;
+    align-items: stretch;
 }
 
-/* Card do Prato */
+/* CARDSSS DO PRAtO */
 .card-prato-public {
-    background: var(--cor-card);
+    background: linear-gradient(45deg, white, #c9c4b9);
     border-radius: 16px;
     overflow: hidden;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    border: 1px solid rgba(212, 160, 23, 0.15);
 }
 
 .card-prato-public:hover {
@@ -88,6 +87,9 @@
 
 .info-prato-public {
     padding: 1.8rem;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
 }
 
 .info-prato-public h2 {
@@ -102,6 +104,12 @@
     font-size: 1.02rem;
     margin-bottom: 1.2rem;
     min-height: 3.2em;
+
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+
+    overflow: hidden;
 }
 
 .preco-prato {
@@ -111,26 +119,24 @@
     margin: 0;
 }
 
-/* Chamada Delivery */
 .chamada-delivery {
     max-width: 900px;
     margin: 5rem auto 2rem;
     text-align: center;
-    background: #61300d;
+    background: linear-gradient(75deg, #3a210f, #643a03);
     padding: 3.5rem 2.5rem;
     border-radius: 16px;
-    border: 2px solid rgba(253, 253, 253, 0.25);
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
 }
 
 .chamada-delivery h2 {
-    color: var(--cor-dourado);
+    color: wheat;
     font-size: 2.4rem;
     margin-bottom: 1rem;
 }
 
 .chamada-delivery p {
-    color: var(--cor-texto-claro);
+    color: wheat;
     font-size: 1.15rem;
     max-width: 600px;
     margin: 0 auto 2rem;
@@ -139,7 +145,7 @@
 .chamada-delivery a {
     display: inline-block;
     text-decoration: none;
-    background: var(--cor-dourado);
+    background: #d4a017;
     color: #3a210f;
     padding: 1.1rem 2.8rem;
     font-weight: 700;
@@ -149,6 +155,154 @@
 }
 
 .chamada-delivery a:hover {
-    background: #f0c040;
+    background: #680404;
+    color: white;
     transform: scale(1.05);
+}
+
+.card-prato-public {
+    cursor: pointer;
+}
+
+.modal-prato {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.88);     /* Fundo escuro mais visível */
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    transition: all 0.3s ease;
+}
+
+
+
+.conteudo-modal-prato {
+    background: #61300d;
+    color: white;
+    width: 100%;
+    max-width: 920px;
+    height: auto;
+    max-height: 92vh;
+    border-radius: 20px;
+    overflow: hidden;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    box-shadow: 0 25px 70px rgba(0, 0, 0, 0.65);
+    position: relative;
+}
+
+.conteudo-modal-prato img {
+    width: 100%;
+    height: 100%;
+    min-height: 420px;           /* Tamanho correto da imagem */
+    object-fit: cover;
+    display: block;
+}
+
+.info-modal-prato {
+    padding: 2.5rem 2.6rem;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    max-height: 92vh;
+}
+
+.info-modal-prato h2 {
+    color: var(--cor-dourado);
+    font-size: 2.35rem;
+    margin-bottom: 1rem;
+    font-weight: 700;
+}
+
+.info-modal-prato p {
+    color: var(--cor-texto-claro);
+    font-size: 1.08rem;
+    line-height: 1.75;
+    margin-bottom: 1.5rem;
+    flex-grow: 1;
+}
+
+.preco-modal {
+    color: white;
+    font-size: 1.85rem;
+    font-weight: 700;
+    margin-bottom: 1.8rem;
+}
+
+.info-modal-prato a {
+    text-decoration: none;
+    background: #d4a017;
+    color: #3a210f;
+    padding: 1.05rem 2.2rem;
+    border-radius: 50px;
+    font-weight: 700;
+    font-size: 1.08rem;
+    text-align: center;
+    transition: all 0.3s ease;
+    margin-top: auto;
+    flex-shrink: 0;
+}
+
+.info-modal-prato a:hover {
+    background: #660101;
+    color: white;
+    transform: translateY(-3px);
+}
+
+.fechar-modal {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: rgba(0, 0, 0, 0.75);
+    color: white;
+    border: none;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    font-size: 1.75rem;
+    line-height: 1;
+    cursor: pointer;
+    z-index: 10;
+    transition: all 0.25s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.fechar-modal:hover {
+    background: var(--cor-dourado);
+    color: #fffffe;
+    transform: rotate(90deg);
+}
+
+@media (max-width: 768px) {
+    .conteudo-modal-prato {
+        grid-template-columns: 1fr;
+        max-width: 95vw;
+    }
+
+    .conteudo-modal-prato img {
+        min-height: 280px;
+        max-height: 340px;
+    }
+
+    .info-modal-prato {
+        padding: 2rem 1.8rem;
+    }
+
+    .info-modal-prato h2 {
+        font-size: 2.1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .modal-prato {
+        padding: 1rem;
+    }
+    
+    .conteudo-modal-prato {
+        max-height: 95vh;
+    }
 }
