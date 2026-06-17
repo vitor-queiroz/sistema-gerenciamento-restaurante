@@ -5,6 +5,7 @@ export interface UsuarioLogado {
   nome: string;
   email: string;
   status: string;
+  gerente: boolean;
   estoque: boolean;
   pedidos: boolean;
   cliente: boolean;
@@ -58,15 +59,18 @@ export class AuthService {
   }
 
   /**
-   * Define quem é "gerente" (acesso total).
-   * TODO: enquanto não existir um campo "cargo"/"tipo" no cadastro,
-   * o critério é ser o usuário Administrador. Se no futuro vocês
-   * adicionarem um campo `gerente: true/false` no Firestore, basta
-   * trocar esta verificação por `!!usuario?.['gerente']`.
+   * Define quem é "gerente" (acesso total ao Painel Administrativo).
+   * Usa o campo `gerente: true/false` salvo no Firestore.
+   * Mantém compatibilidade com o Administrador original (criado antes
+   * desse campo existir), que continua sendo reconhecido por e-mail/nome.
    */
   isGerente(): boolean {
     const usuario = this.usuario();
-    return !!usuario && (usuario.email === 'admin@123.com' || usuario.nome === 'Administrador');
+    if (!usuario) return false;
+
+    return !!usuario.gerente ||
+      usuario.email === 'admin@123.com' ||
+      usuario.nome === 'Administrador';
   }
 
   /**

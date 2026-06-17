@@ -34,7 +34,7 @@ export const gerenteGuard: CanActivateFn = () => {
   }
 
   if (auth.estaLogado()) {
-    alert('Você não tem permissão para acessar essa área.');
+    alert('Você não possui privilégios de administrador, entre em contato com algum superior de sua organização.');
     router.navigate(['/admin/cozinha/operacoes']);
   } else {
     router.navigate(['/admin/login']);
