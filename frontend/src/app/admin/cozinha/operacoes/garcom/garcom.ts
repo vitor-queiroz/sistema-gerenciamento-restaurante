@@ -17,6 +17,25 @@ export class Garcom {
 
   mostrarHistorico = false;
 
+  // ---------- Busca (pedidos ativos) ----------
+  termoBusca = '';
+
+  get pedidosFiltrados(): any[] {
+    const termo = this.termoBusca.trim().toLowerCase();
+
+    if (!termo) return this.pedidos;
+
+    return this.pedidos.filter((pedido: any) => {
+      const numeroMesa = String(pedido.numeroMesa || '');
+      const cliente = (pedido.cliente || '').toLowerCase();
+
+      return numeroMesa.includes(termo) || cliente.includes(termo);
+    });
+  }
+
+  // ---------- Busca / filtro (histórico) ----------
+  termoBuscaHistorico = '';
+
 
   formaPagamento = '';
 
@@ -257,18 +276,21 @@ export class Garcom {
   filtroHistorico = 'presencial';
 
   historicoFiltrado() {
+
+    const termo = this.termoBuscaHistorico.trim().toLowerCase();
+
     return this.historicoPedidos.filter((pedido: any) => {
       const origem = (pedido.origem || '').toLowerCase().trim();
 
-      if (this.filtroHistorico === 'presencial') {
-        return origem !== 'delivery';
-      }
+      if (this.filtroHistorico === 'presencial' && origem === 'delivery') return false;
+      if (this.filtroHistorico === 'delivery' && origem !== 'delivery') return false;
 
-      if (this.filtroHistorico === 'delivery') {
-        return origem === 'delivery';
-      }
+      if (!termo) return true;
 
-      return true;
+      const numeroMesa = String(pedido.numeroMesa || '');
+      const cliente = (pedido.cliente || '').toLowerCase();
+
+      return numeroMesa.includes(termo) || cliente.includes(termo);
     });
   }
 

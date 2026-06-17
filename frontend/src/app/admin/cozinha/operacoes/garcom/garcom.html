@@ -1,286 +1,247 @@
-<div class="topo">
-    <h1>Área do Garçom</h1>
+<div class="pagina-garcom">
 
-    <button (click)="alternarHistorico()">
-        {{mostrarHistorico? 'Fechar histórico' : 'Histórico'}}
+  <!-- Topo -->
+  <div class="topo">
+    <div>
+      <h1>Área do Garçom</h1>
+      <p class="topo-sub">Acompanhe os pedidos prontos e finalize pagamentos</p>
+    </div>
+
+    <button class="btn-historico" (click)="alternarHistorico()">
+      {{ mostrarHistorico ? '✕ Fechar histórico' : '🕐 Histórico' }}
     </button>
-</div>
+  </div>
 
+  <!-- Barra de busca (pedidos ativos) -->
+  <div class="barra-busca" *ngIf="!mostrarHistorico">
 
-<div *ngIf="pedidos.length === 0">
-    <p>Nenhum pedido finalizado pela cozinha.</p>
-</div>
+    <div class="campo-busca">
+      <span class="icone-busca">🔍</span>
+      <input
+        type="text"
+        placeholder="Buscar por número da mesa ou nome do cliente..."
+        [(ngModel)]="termoBusca">
+    </div>
 
-<div class="card-garcom" *ngFor="let pedido of pedidos">
+  </div>
 
-    <h2 *ngIf="pedido.origem?.toLowerCase() !== 'delivery'">
-        Mesa {{ pedido.numeroMesa }}
-    </h2>
+  <!-- Lista de pedidos -->
+  <div class="lista-pedidos" *ngIf="!mostrarHistorico">
 
-    <h2 *ngIf="pedido.origem?.toLowerCase() === 'delivery'">
-        🛵 Pedido Delivery
-    </h2>
-
-    <p>
-        <strong>Cliente:</strong>
-        {{ pedido.cliente }}
+    <p *ngIf="pedidosFiltrados.length === 0" class="vazio">
+      Nenhum pedido encontrado.
     </p>
 
+    <div class="card-garcom" *ngFor="let pedido of pedidosFiltrados">
 
-    <div *ngIf="pedido.origem?.toLowerCase() === 'delivery'">
+      <div class="card-topo">
+        <h2 *ngIf="pedido.origem?.toLowerCase() !== 'delivery'">Mesa {{ pedido.numeroMesa }}</h2>
+        <h2 *ngIf="pedido.origem?.toLowerCase() === 'delivery'">🛵 Pedido Delivery</h2>
 
-        <p>
-            <strong>Telefone:</strong>
-            {{ pedido.telefone }}
-        </p>
+        <span class="badge-status" [ngClass]="pedido.status === 'Entregue' ? 'badge-entregue' : 'badge-pronto'">
+          {{ pedido.status }}
+        </span>
+      </div>
 
-        <p>
-            <strong>Endereço:</strong>
-            {{ pedido.endereco?.rua }},
-            {{ pedido.endereco?.numero }},
-            {{ pedido.endereco?.bairro }}
-        </p>
+      <p class="linha-info"><strong>Cliente:</strong> {{ pedido.cliente }}</p>
 
-        <p>
-            <strong>Taxa de entrega:</strong>
-            R$ {{ pedido.pagamento?.valorTaxaEntrega | number:'1.2-2' }}
-        </p>
+      <div class="info-delivery" *ngIf="pedido.origem?.toLowerCase() === 'delivery'">
+        <p class="linha-info"><strong>Telefone:</strong> {{ pedido.telefone }}</p>
+        <p class="linha-info"><strong>Endereço:</strong> {{ pedido.endereco?.rua }}, {{ pedido.endereco?.numero }}, {{ pedido.endereco?.bairro }}</p>
+        <p class="linha-info"><strong>Taxa de entrega:</strong> R$ {{ pedido.pagamento?.valorTaxaEntrega | number:'1.2-2' }}</p>
+        <p class="linha-info"><strong>Subtotal:</strong> R$ {{ pedido.total | number:'1.2-2' }}</p>
+        <p class="linha-info"><strong>Total Final:</strong> R$ {{ calcularTotalFinal(pedido) | number:'1.2-2' }}</p>
+        <p class="linha-info"><strong>Status da entrega:</strong> {{ pedido.statusEntrega || 'Aguardando motoboy' }}</p>
+      </div>
 
-        <p>
-            <strong>Subtotal:</strong>
-            R$ {{ pedido.total | number:'1.2-2' }}
-        </p>
+      <div class="lista-itens">
+        <h3>Itens</h3>
+        <div class="item-pedido" *ngFor="let item of pedido.itens">
+          <span>{{ item.nome }}</span>
+          <span class="item-qtd">Qtd: {{ item.quantidade }}</span>
+        </div>
+      </div>
 
-        <p>
-            <strong>Total Final:</strong>
-            R$ {{ calcularTotalFinal(pedido) | number:'1.2-2' }}
-        </p>
-
-        <p>
-            <strong>Status da entrega:</strong>
-            {{ pedido.statusEntrega }}
-        </p>
-
-    </div>
-
-    <h3>Itens</h3>
-
-    <div *ngFor="let item of pedido.itens">
-        <p>{{ item.nome }} - Qtd: {{ item.quantidade }}</p>
-    </div>
-
-    <!--taxaa garcommm-->
-    <h3 *ngIf="pedido.origem?.toLowerCase() !== 'delivery'">
+      <p class="total-simples" *ngIf="pedido.origem?.toLowerCase() !== 'delivery'">
         Total: R$ {{ pedido.total | number:'1.2-2' }}
-    </h3>
+      </p>
 
-    <label *ngIf="pedido.status === 'Entregue' && pedido.origem?.toLowerCase() !== 'delivery'">
+      <label class="checkbox-taxa" *ngIf="pedido.status === 'Entregue' && pedido.origem?.toLowerCase() !== 'delivery'">
         <input type="checkbox" [(ngModel)]="pedido.incluirTaxaGarcom">
         Incluir taxa de serviço (10%)
-    </label>
+      </label>
 
-    <p *ngIf="pedido.status === 'Entregue' && pedido.origem?.toLowerCase() !== 'delivery'">
-        <strong>Taxa de serviço:</strong>
-        R$ {{ calcularTaxaGarcom(pedido) | number:'1.2-2' }}
-    </p>
+      <p class="linha-info" *ngIf="pedido.status === 'Entregue' && pedido.origem?.toLowerCase() !== 'delivery'">
+        <strong>Taxa de serviço:</strong> R$ {{ calcularTaxaGarcom(pedido) | number:'1.2-2' }}
+      </p>
 
-    <p *ngIf="pedido.status === 'Entregue' && pedido.origem?.toLowerCase() === 'delivery'">
-        <strong>Taxa de entrega:</strong>
-        R$ {{ calcularTaxaEntrega(pedido) | number:'1.2-2' }}
-    </p>
+      <p class="linha-info" *ngIf="pedido.status === 'Entregue' && pedido.origem?.toLowerCase() === 'delivery'">
+        <strong>Taxa de entrega:</strong> R$ {{ calcularTaxaEntrega(pedido) | number:'1.2-2' }}
+      </p>
 
-    <h3 *ngIf="pedido.status === 'Entregue'">
-        Total Final:
-        R$ {{ calcularTotalFinal(pedido) | number:'1.2-2' }}
-    </h3>
+      <p class="total-final" *ngIf="pedido.status === 'Entregue'">
+        Total Final: R$ {{ calcularTotalFinal(pedido) | number:'1.2-2' }}
+      </p>
 
-    <button *ngIf="pedido.status === 'Pronto para entrega' && pedido.origem?.toLowerCase() !== 'delivery'"
+      <button
+        class="btn-acao-principal"
+        *ngIf="pedido.status === 'Pronto para entrega' && pedido.origem?.toLowerCase() !== 'delivery'"
         (click)="marcarComoEntregue(pedido.id)">
         Marcar como entregue
-    </button>
+      </button>
 
-    <div *ngIf="pedido.origem?.toLowerCase() === 'delivery'">
+      <!-- Ações de delivery -->
+      <div class="acoes-delivery" *ngIf="pedido.origem?.toLowerCase() === 'delivery'">
 
-        <p>
-            <strong>Status da entrega:</strong>
-            {{ pedido.statusEntrega || 'Aguardando motoboy' }}
-        </p>
-
-        <button *ngIf="pedido.status === 'Pronto para entrega'
-         && pedido.statusEntrega !== 'Motoboy chegou' 
-         && pedido.statusEntrega !== 'Saiu para entrega'" (click)="motoboyChegou(pedido)">
-            🛵 Motoboy chegou
+        <button
+          class="btn-acao-principal"
+          *ngIf="pedido.status === 'Pronto para entrega' && pedido.statusEntrega !== 'Motoboy chegou' && pedido.statusEntrega !== 'Saiu para entrega'"
+          (click)="motoboyChegou(pedido)">
+          🛵 Motoboy chegou
         </button>
 
-        <button *ngIf="pedido.statusEntrega === 'Motoboy chegou'" (click)="saiuParaEntrega(pedido)">
-            Saiu para entrega
+        <button class="btn-acao-principal" *ngIf="pedido.statusEntrega === 'Motoboy chegou'" (click)="saiuParaEntrega(pedido)">
+          Saiu para entrega
         </button>
 
-        <button *ngIf="pedido.statusEntrega === 'Saiu para entrega'" (click)="finalizarEntregaDelivery(pedido)">
-            Finalizar entrega
+        <button class="btn-acao-principal" *ngIf="pedido.statusEntrega === 'Saiu para entrega'" (click)="finalizarEntregaDelivery(pedido)">
+          Finalizar entrega
         </button>
 
-    </div>
+      </div>
 
-    <div *ngIf="pedido.status === 'Entregue' && pedido.origem?.toLowerCase() !== 'delivery'">
+      <!-- Pagamento -->
+      <div class="bloco-pagamento" *ngIf="pedido.status === 'Entregue' && pedido.origem?.toLowerCase() !== 'delivery'">
 
         <h3>Pagamento</h3>
 
-        <select [(ngModel)]="pedido.formaPagamento" (ngModelChange)="selecionarFormaPagamento(pedido, $event)">
-            <option value="">Selecione</option>
-            <option value="Pix">Pix</option>
-            <option value="Crédito">Crédito</option>
-            <option value="Débito">Débito</option>
-            <option value="Dinheiro">Dinheiro</option>
+        <select class="select-pagamento" [(ngModel)]="pedido.formaPagamento" (ngModelChange)="selecionarFormaPagamento(pedido, $event)">
+          <option value="">Selecione a forma de pagamento</option>
+          <option value="Pix">Pix</option>
+          <option value="Crédito">Crédito</option>
+          <option value="Débito">Débito</option>
+          <option value="Dinheiro">Dinheiro</option>
         </select>
 
-        <br><br>
-
-        <button (click)="finalizarPagamento(pedido)">
-            Finalizar pagamento
-        </button>
-
-        <button (click)="alternarPagamentoDividido()">
+        <div class="botoes-pagamento">
+          <button class="btn-finalizar" (click)="finalizarPagamento(pedido)">Finalizar pagamento</button>
+          <button class="btn-dividir" (click)="alternarPagamentoDividido()">
             {{ mostrarPagamentoDividido ? 'Fechar pagamento dividido' : 'Dividir pagamento' }}
-        </button>
+          </button>
+        </div>
 
-        <hr>
+        <!-- Pagamento dividido -->
+        <div class="bloco-dividido" *ngIf="mostrarPagamentoDividido">
 
-        <div *ngIf="mostrarPagamentoDividido">
+          <h4>Pagamento dividido</h4>
 
-            <h3>Pagamento dividido</h3>
-
+          <div class="form-linha-pagamento">
             <select [(ngModel)]="formaPagamentoParcial">
-                <option value="">Forma de pagamento</option>
-                <option value="Pix">Pix</option>
-                <option value="Crédito">Crédito</option>
-                <option value="Débito">Débito</option>
-                <option value="Dinheiro">Dinheiro</option>
+              <option value="">Forma de pagamento</option>
+              <option value="Pix">Pix</option>
+              <option value="Crédito">Crédito</option>
+              <option value="Débito">Débito</option>
+              <option value="Dinheiro">Dinheiro</option>
             </select>
 
-            <br><br>
-
             <input type="number" [(ngModel)]="valorPagamentoParcial" placeholder="Valor pago">
+          </div>
 
-            <br><br>
-
-            <button (click)="adicionarPagamentoParcial(pedido)">
-                Adicionar pagamento
+          <div class="botoes-pagamento">
+            <button class="btn-secundario" (click)="adicionarPagamentoParcial(pedido)">+ Adicionar pagamento</button>
+            <button class="btn-secundario" (click)="finalizarRestante(pedido)">Finalizar restante</button>
+            <button
+              class="btn-finalizar"
+              *ngIf="calcularRestante(pedido) <= 0.01"
+              [disabled]="processandoPagamento"
+              (click)="finalizarPagamentoDividido(pedido)">
+              {{ processandoPagamento ? 'Finalizando...' : 'Finalizar pagamento dividido' }}
             </button>
+          </div>
 
-            <button (click)="finalizarRestante(pedido)">
-                Finalizar restante
-            </button>
-
-            <button *ngIf="calcularRestante(pedido) <= 0.01" [disabled]="processandoPagamento"
-                (click)="finalizarPagamentoDividido(pedido)">
-                {{ processandoPagamento? 'Finalizando...' : 'Finalizar pagamento dividido'}}
-            </button>
-
-            <h4>Pagamentos adicionados</h4>
-
-            <div *ngFor="let pagamento of pagamentosParciais">
-                <p>{{ pagamento.forma }} - R$ {{ pagamento.valor }}</p>
+          <div class="resumo-divididos" *ngIf="pagamentosParciais.length > 0">
+            <div class="item-dividido" *ngFor="let pagamento of pagamentosParciais">
+              <span>{{ pagamento.forma }}</span>
+              <span>R$ {{ pagamento.valor }}</span>
             </div>
+          </div>
 
-            <p><strong>Total pago:</strong> R$ {{ calcularTotalPago() | number:'1.2-2' }}</p>
+          <div class="totais-divididos">
+            <span><strong>Total pago:</strong> R$ {{ calcularTotalPago() | number:'1.2-2' }}</span>
+            <span><strong>Restante:</strong> R$ {{ calcularRestante(pedido) | number:'1.2-2' }}</span>
+          </div>
 
-            <p><strong>Restante:</strong> R$ {{ calcularRestante(pedido) | number:'1.2-2' }}</p>
         </div>
+      </div>
+
     </div>
-    <hr>
-</div>
+  </div>
 
+  <!-- Histórico -->
+  <div class="painel-historico" *ngIf="mostrarHistorico">
 
-<div class="historico-garcom" *ngIf="mostrarHistorico">
-
-    <h2>Histórico de Pagamentos</h2>
-
-
-    <button (click)="filtroHistorico = 'presencial'">
-        Presencial
-    </button>
-
-    <button (click)="filtroHistorico = 'delivery'">
-        Delivery
-    </button>
-
-
-    <div *ngIf="historicoFiltrado().length === 0">
-        <p>Nenhum pagamento encontrado para este filtro.</p>
+    <div class="historico-topo">
+      <h2>Histórico de Pagamentos</h2>
     </div>
 
+    <div class="barra-busca">
 
+      <div class="campo-busca">
+        <span class="icone-busca">🔍</span>
+        <input
+          type="text"
+          placeholder="Buscar por número da mesa ou nome do cliente..."
+          [(ngModel)]="termoBuscaHistorico">
+      </div>
+
+      <div class="filtro-origem">
+        <button class="filtro-btn" [class.ativo]="filtroHistorico === 'presencial'" (click)="filtroHistorico = 'presencial'">🍽 Presencial</button>
+        <button class="filtro-btn" [class.ativo]="filtroHistorico === 'delivery'" (click)="filtroHistorico = 'delivery'">🛵 Delivery</button>
+      </div>
+
+    </div>
+
+    <p *ngIf="historicoFiltrado().length === 0" class="vazio">
+      Nenhum pagamento encontrado para este filtro.
+    </p>
 
     <div class="card-historico" *ngFor="let pedido of historicoFiltrado()">
 
-        <h3 *ngIf="pedido.origem?.toLowerCase() !== 'delivery'">
-            Mesa {{ pedido.numeroMesa }}
-        </h3>
+      <div class="card-topo">
+        <h3 *ngIf="pedido.origem?.toLowerCase() !== 'delivery'">Mesa {{ pedido.numeroMesa }}</h3>
+        <h3 *ngIf="pedido.origem?.toLowerCase() === 'delivery'">🛵 Pedido Delivery</h3>
+        <span class="badge-pago">Pago</span>
+      </div>
 
-        <h3 *ngIf="pedido.origem?.toLowerCase() === 'delivery'">
-            🛵 Pedido Delivery
-        </h3>
-        <p>
-            <strong>Cliente:</strong>
-            {{ pedido.cliente }}
-        </p>
+      <p class="linha-info"><strong>Cliente:</strong> {{ pedido.cliente }}</p>
 
-        <div *ngIf="pedido.origem?.toLowerCase() === 'delivery'">
+      <div *ngIf="pedido.origem?.toLowerCase() === 'delivery'">
+        <p class="linha-info"><strong>Telefone:</strong> {{ pedido.telefone }}</p>
+        <p class="linha-info"><strong>Endereço:</strong> {{ pedido.endereco?.rua }}, {{ pedido.endereco?.numero }}, {{ pedido.endereco?.bairro }}</p>
+      </div>
 
-            <p>
-                <strong>Telefone:</strong>
-                {{ pedido.telefone }}
-            </p>
+      <p class="linha-info"><strong>Total pago:</strong> R$ {{ pedido.pagamento?.valor | number:'1.2-2' }}</p>
 
-            <p>
-                <strong>Endereço:</strong>
-                {{ pedido.endereco?.rua }},
-                {{ pedido.endereco?.numero }},
-                {{ pedido.endereco?.bairro }}
-            </p>
+      <div *ngIf="pedido.origem?.toLowerCase() !== 'delivery'">
+        <p class="linha-info"><strong>Subtotal:</strong> R$ {{ pedido.pagamento?.subtotal | number:'1.2-2' }}</p>
+        <p class="linha-info"><strong>Taxa garçom:</strong> R$ {{ pedido.pagamento?.valorTaxaGarcom | number:'1.2-2' }}</p>
+      </div>
 
+      <p class="linha-info"><strong>Forma de pagamento:</strong> {{ pedido.pagamento?.forma }}</p>
 
+      <div class="resumo-divididos" *ngIf="pedido.pagamento?.dividido">
+        <h4>Pagamentos divididos</h4>
+        <div class="item-dividido" *ngFor="let pagamento of pedido.pagamento?.pagamentos">
+          <span>{{ pagamento.forma }}</span>
+          <span>R$ {{ pagamento.valor | number:'1.2-2' }}</span>
         </div>
+      </div>
 
-        <p>
-            <strong>Total pago:</strong>
-            R$ {{ pedido.pagamento?.valor | number:'1.2-2' }}
-        </p>
-
-        <div *ngIf="pedido.origem?.toLowerCase() !== 'delivery'">
-            <p>
-                <strong>Subtotal:</strong>
-                R$ {{ pedido.pagamento?.subtotal | number:'1.2-2' }}
-            </p>
-
-            <p>
-                <strong>Taxa garçom:</strong>
-                R$ {{ pedido.pagamento?.valorTaxaGarcom | number:'1.2-2' }}
-            </p>
-        </div>
-
-        <p>
-            <strong>Forma de pagamento:</strong>
-            {{ pedido.pagamento?.forma }}
-        </p>
-
-        <div *ngIf="pedido.pagamento?.dividido">
-            <h4>Pagamentos divididos</h4>
-
-            <div *ngFor="let pagamento of pedido.pagamento?.pagamentos">
-                <p> {{ pagamento.forma }} - R$ {{ pagamento.valor | number:'1.2-2' }}</p>
-
-            </div>
-
-        </div>
-
-        <p>
-            <strong>Pago em:</strong>
-            {{ formatarDataFirestore(pedido.pagamento?pagoEm) | date:'dd/MM/yyyy HH:mm' }}
-        </p>
-
-        <hr>
+      <p class="linha-info data-pagamento">
+        <strong>Pago em:</strong> {{ formatarDataFirestore(pedido.pagamento?.pagoEm) | date:'dd/MM/yyyy HH:mm' }}
+      </p>
 
     </div>
+  </div>
+
 </div>

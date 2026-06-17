@@ -1,399 +1,468 @@
-<div class="cabecalho-estoque">
-
-  <h1>Controle de Estoque</h1>
-
-  <button (click)="abrirModalHistorico()">
-    📋 Histórico ({{ movimentacoesEstoque.length }})
-  </button>
-
-</div>
-
-<div class="cards-estoque">
-
-  <div class="card-estoque">
-    <p>Total de Itens</p>
-    <h2>{{ totalItens() }}</h2>
-  </div>
-
-  <div class="card-estoque">
-    <p>Crítico</p>
-    <h2>{{ totalCriticos() }}</h2>
-  </div>
-
-  <div class="card-estoque">
-    <p>Atenção</p>
-    <h2>{{ totalAtencao() }}</h2>
-  </div>
-
-  <div class="card-estoque">
-    <p>Normal</p>
-    <h2>{{ totalNormais() }}</h2>
-  </div>
-
-  <div class="card-estoque">
-    <p>Acima Média</p>
-    <h2>{{ totalAcimaMedia() }}</h2>
-  </div>
-
-</div>
-
-<input type="text" [(ngModel)]="buscaProduto" placeholder="Buscar produto...">
-
-<select [(ngModel)]="categoriaSelecionada">
-  <option value="">Todas as categorias</option>
-  <option value="Massa">Massa</option>
-  <option value="Proteína">Proteína</option>
-  <option value="Aves">Aves</option>
-  <option value="Peixe">Peixe</option>
-  <option value="Guarnição">Guarnição</option>
-  <option value="Sobremesa">Sobremesa</option>
-  <option value="Bebida">Bebida</option>
-  <option value="Tempero">Tempero</option>
-</select>
-
-<select [(ngModel)]="nivelSelecionado">
-  <option value="">Todos os níveis</option>
-  <option value="Crítico">🔴 Crítico</option>
-  <option value="Atenção">⚠️ Atenção</option>
-  <option value="Normal">✓ Normal</option>
-  <option value="Acima da média">↗ Alto</option>
-</select>
-
-<button (click)="abrirModalCadastro()">
-  + Cadastrar Novo Produto
-</button>
-
-<div class="modal" *ngIf="mostrarModalCadastro">
-
-  <h2>Adicionar Novo Produto </h2>
-
-  <input type="text" [(ngModel)]="nome" placeholder="Nome do item">
-  <br><br>
-
-  <input type="text" [(ngModel)]="marca" placeholder="Marca">
-  <br><br>
-
-
-  <select [(ngModel)]="categoria">
-
-    <option value="">
-      Selecione uma categoria
-    </option>
-
-    <option value="Massa">
-      Massa
-    </option>
-
-    <option value="Proteína">
-      Proteína
-    </option>
-
-    <option value="Aves">
-      Aves
-    </option>
-
-    <option value="Peixe">
-      Peixe
-    </option>
-
-    <option value="Guarnição">
-      Guarnição
-    </option>
-
-    <option value="Sobremesa">
-      Sobremesa
-    </option>
-
-    <option value="Bebida">
-      Bebida
-    </option>
-
-    <option value="Tempero">
-      Tempero
-    </option>
-  </select>
-
-  <br><br>
-
-  <select [(ngModel)]="unidade">
-
-    <option value="">
-      Unidade de medida
-    </option>
-
-    <option value="kg">kg</option>
-    <option value="g">g</option>
-    <option value="L">L</option>
-    <option value="ml">ml</option>
-    <option value="un">Unidades</option>
-    <option value="porção">Porções</option>
-    <option value="garrafa">Garrafas</option>
-    <option value="dose">Doses</option>
-    <option value="lata">Latas</option>
-    <option value="caixa">Caixas</option>
-
-  </select>
-
-  <br><br>
-
-  <input type="number" [(ngModel)]="quantidadeAtual" placeholder="Quantidade inicial">
-  <br><br>
-
-  <input type="number" [(ngModel)]="quantidadeMinima" placeholder="Quantidade mínima">
-  <br><br>
-
-  <input type="number" [(ngModel)]="quantidadeMaxima" placeholder="Quantidade máxima">
-  <br><br>
-
-  <button (click)="fecharModalCadastro()">
-    Cancelar
-  </button>
-
-  <button (click)="salvarItem()">
-    Adicionar
-  </button>
-</div>
-
-
-<div class="modal" *ngIf="mostrarModalAjuste">
-
-  <h2>Ajustar Estoque</h2>
-
-  <p>
-    <strong>Produto:</strong>
-    {{ itemSelecionado?.nome }}
-  </p>
-
-  <p>
-    <strong>Estoque atual:</strong>
-    {{ itemSelecionado?.quantidadeAtual }} {{ itemSelecionado?.unidade }}
-  </p>
-
-  <select [(ngModel)]="tipoMovimentacao">
-    <option value="">Selecione o tipo</option>
-    <option value="entrada">Entrada</option>
-    <option value="saida">Saída</option>
-  </select>
-
-  <br><br>
-
-  <input type="number" [(ngModel)]="quantidadeAjuste" placeholder="Quantidade">
-
-  <br><br>
-
-  <button (click)="fecharModalAjuste()">
-    Cancelar
-  </button>
-
-  <button (click)="confirmarAjuste()">
-    Confirmar ajuste
-  </button>
-
-</div>
-
-<!--MODALL DE TRANSFERENCIAAA-->
-<div class="modal" *ngIf="mostrarModalTransferencia">
-
-  <h2>Transferir Estoque</h2>
-
-  <p>
-    <strong>Produto:</strong>
-    {{ itemTransferencia?.nome }}
-  </p>
-
-  <p>
-    <strong>Estoque atual:</strong>
-    {{ itemTransferencia?.quantidadeAtual }}
-    {{ itemTransferencia?.unidade }}
-  </p>
-
-  <select [(ngModel)]="destinoTransferencia">
-    <option value="">Selecione o destino</option>
-    <option value="Dom Palladar Centro">Dom Palladar Centro</option>
-    <option value="Dom Palladar Zona Sul">Dom Palladar Zona Sul</option>
-    <option value="Dom Palladar Zona Norte">Dom Palladar Zona Norte</option>
-  </select>
-
-  <br><br>
-
-  <input type="number" [(ngModel)]="quantidadeTransferencia" placeholder="Quantidade para transferir">
-
-  <br><br>
-
-  <button (click)="fecharModalTransferencia()">
-    Cancelar
-  </button>
-
-  <button (click)="confirmarTransferencia()">
-    Confirmar transferência
-  </button>
-
-</div>
-
-
-<!--MODALL DE EDIÇÃO DOS PRODUTOS = EDITAR--> 
-<div class="modal" *ngIf="mostrarModalEdicao">
-
-  <h2>Editar Produto</h2>
-
-  <input type="text" [(ngModel)]="nome" placeholder="Nome do item">
-
-  <br><br>
-
-  <input type="text" [(ngModel)]="marca" placeholder="Marca">
-
-  <br><br>
-
-  <select [(ngModel)]="categoria">
-
-    <option value="Massa">Massa</option>
-    <option value="Proteína">Proteína</option>
-    <option value="Aves">Aves</option>
-    <option value="Peixe">Peixe</option>
-    <option value="Guarnição">Guarnição</option>
-    <option value="Sobremesa">Sobremesa</option>
-    <option value="Bebida">Bebida</option>
-    <option value="Tempero">Tempero</option>
-
-  </select>
-
-  <br><br>
-
-  <select [(ngModel)]="unidade">
-
-    <option value="kg">kg</option>
-    <option value="g">g</option>
-    <option value="L">L</option>
-    <option value="ml">ml</option>
-    <option value="un">Unidades</option>
-    <option value="porção">Porções</option>
-    <option value="garrafa">Garrafas</option>
-    <option value="dose">Doses</option>
-    <option value="lata">Latas</option>
-    <option value="caixa">Caixas</option>
-
-  </select>
-
-  <br><br>
-
-  <input type="number" [(ngModel)]="quantidadeMinima" placeholder="Quantidade mínima">
-
-  <br><br>
-
-  <input type="number" [(ngModel)]="quantidadeMaxima" placeholder="Quantidade máxima">
-
-  <br><br>
-
-  <button (click)="fecharModalEdicao()">
-    Cancelar
-  </button>
-
-  <button (click)="salvarEdicao()">
-    Salvar alterações
-  </button>
-
-</div>
-
-<hr>
-
-<h2>Itens cadastrados</h2>
-
-<div class="lista-estoque">
-
-  <div class="card-produto" *ngFor="let item of itensFiltrados()">
-
-    <div class="topo-card-produto">
-      <h3>{{ item.nome }}</h3>
-
-      <span>{{ verificarStatus(item) }}</span>
+<div class="pagina-estoque">
+
+  <!-- Cabeçalho -->
+  <div class="cabecalho-estoque">
+    <div>
+      <h1>Controle de Estoque</h1>
+      <p class="subtitulo">Acompanhe níveis, movimentações e transferências</p>
     </div>
 
-    <p><strong>Marca:</strong> {{ item.marca }}</p>
-    <p><strong>Categoria:</strong> {{ item.categoria }}</p>
+    <button class="btn-historico" (click)="abrirModalHistorico()">
+      🕐 Histórico
+      <span class="badge-contador">{{ movimentacoesEstoque.length }}</span>
+    </button>
+  </div>
 
-    <p>
-      <strong>Estoque atual:</strong>
-      {{ item.quantidadeAtual }} {{ item.unidade }}
-    </p>
+  <!-- Cards de resumo -->
+  <div class="cards-estoque">
 
+    <div class="card-estoque">
+      <span class="card-icone">📦</span>
+      <div>
+        <p>Total de Itens</p>
+        <h2>{{ totalItens() }}</h2>
+      </div>
+    </div>
 
-    <!-- BARRA 'FACILITADORA PARA OS FUNCIONARIOS DO ESTOQUE'-->
-    <div class="barra-estoque">
+    <div class="card-estoque card-critico">
+      <span class="card-icone">🔴</span>
+      <div>
+        <p>Crítico</p>
+        <h2>{{ totalCriticos() }}</h2>
+      </div>
+    </div>
 
-      <div class="progresso-estoque" [ngClass]="{'barra-critico': verificarStatus(item) === 'Crítico',
+    <div class="card-estoque card-atencao">
+      <span class="card-icone">⚠️</span>
+      <div>
+        <p>Atenção</p>
+        <h2>{{ totalAtencao() }}</h2>
+      </div>
+    </div>
+
+    <div class="card-estoque card-normal">
+      <span class="card-icone">✅</span>
+      <div>
+        <p>Normal</p>
+        <h2>{{ totalNormais() }}</h2>
+      </div>
+    </div>
+
+    <div class="card-estoque card-acima">
+      <span class="card-icone">↗️</span>
+      <div>
+        <p>Acima Média</p>
+        <h2>{{ totalAcimaMedia() }}</h2>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Barra de busca e filtros -->
+  <div class="barra-filtros">
+
+    <div class="campo-busca">
+      <span class="icone-busca">🔍</span>
+      <input type="text" [(ngModel)]="buscaProduto" placeholder="Buscar produto...">
+    </div>
+
+    <select class="select-filtro" [(ngModel)]="categoriaSelecionada">
+      <option value="">Todas as categorias</option>
+      <option value="Massa">Massa</option>
+      <option value="Proteína">Proteína</option>
+      <option value="Aves">Aves</option>
+      <option value="Peixe">Peixe</option>
+      <option value="Guarnição">Guarnição</option>
+      <option value="Sobremesa">Sobremesa</option>
+      <option value="Bebida">Bebida</option>
+      <option value="Tempero">Tempero</option>
+    </select>
+
+    <select class="select-filtro" [(ngModel)]="nivelSelecionado">
+      <option value="">Todos os níveis</option>
+      <option value="Crítico">🔴 Crítico</option>
+      <option value="Atenção">⚠️ Atenção</option>
+      <option value="Normal">✓ Normal</option>
+      <option value="Acima da média">↗ Alto</option>
+    </select>
+
+    <button class="btn-adicionar" (click)="abrirModalCadastro()">
+      + Cadastrar Novo Produto
+    </button>
+
+  </div>
+
+  <!-- Lista de produtos -->
+  <h2 class="titulo-secao">Itens cadastrados</h2>
+
+  <div class="lista-estoque">
+
+    <div
+      class="card-produto"
+      *ngFor="let item of itensFiltrados()"
+      [ngClass]="{
+        'borda-critico': verificarStatus(item) === 'Crítico',
+        'borda-atencao': verificarStatus(item) === 'Atenção',
+        'borda-normal': verificarStatus(item) === 'Normal',
+        'borda-acima': verificarStatus(item) === 'Acima da média'
+      }">
+
+      <div class="topo-card-produto">
+        <h3>{{ item.nome }}</h3>
+
+        <span
+          class="badge-nivel"
+          [ngClass]="{
+            'badge-critico': verificarStatus(item) === 'Crítico',
+            'badge-atencao': verificarStatus(item) === 'Atenção',
+            'badge-normal': verificarStatus(item) === 'Normal',
+            'badge-acima': verificarStatus(item) === 'Acima da média'
+          }">
+          {{ verificarStatus(item) }}
+        </span>
+      </div>
+
+      <div class="info-produto">
+        <span><strong>Marca:</strong> {{ item.marca }}</span>
+        <span class="separador">•</span>
+        <span><strong>Categoria:</strong> {{ item.categoria }}</span>
+      </div>
+
+      <div class="linha-estoque-atual">
+        <span class="valor-atual">{{ item.quantidadeAtual }} {{ item.unidade }}</span>
+        <span class="texto-de">de {{ item.quantidadeMaxima }} {{ item.unidade }}</span>
+      </div>
+
+      <!-- Barra de progresso -->
+      <div class="barra-estoque">
+        <div
+          class="progresso-estoque"
+          [ngClass]="{
+            'barra-critico': verificarStatus(item) === 'Crítico',
             'barra-atencao': verificarStatus(item) === 'Atenção',
             'barra-normal': verificarStatus(item) === 'Normal',
-            'barra-acima': verificarStatus(item) === 'Acima da média'}"
-        [style.width.%]="(item.quantidadeAtual / item.quantidadeMaxima) * 100">
+            'barra-acima': verificarStatus(item) === 'Acima da média'
+          }"
+          [style.width.%]="(item.quantidadeAtual / item.quantidadeMaxima) * 100">
+        </div>
+      </div>
+
+      <div class="limites-estoque">
+        <span>Mín: {{ item.quantidadeMinima }} {{ item.unidade }}</span>
+        <span>Máx: {{ item.quantidadeMaxima }} {{ item.unidade }}</span>
+      </div>
+
+      <div class="acoes-produto">
+        <button class="btn-acao btn-ajustar" (click)="abrirModalAjuste(item)">⇅ Ajustar</button>
+        <button class="btn-acao btn-transferir" (click)="abrirModalTransferencia(item)">⇄ Transferir</button>
+        <button class="btn-acao btn-editar" (click)="abrirModalEdicao(item)">✏️</button>
+        <button class="btn-acao btn-excluir" (click)="excluirItem(item)">🗑️</button>
       </div>
 
     </div>
 
-
-
-    <p>
-      <strong>Mínimo:</strong>
-      {{ item.quantidadeMinima }} {{ item.unidade }}
+    <p *ngIf="itensFiltrados().length === 0" class="vazio">
+      Nenhum produto encontrado para esse filtro.
     </p>
-
-    <p>
-      <strong>Máximo:</strong>
-      {{ item.quantidadeMaxima }} {{ item.unidade }}
-    </p>
-
-    <button (click)="abrirModalAjuste(item)">
-      Ajustar
-    </button>
-
-
-    <button (click)="abrirModalTransferencia(item)">
-      Transferir
-    </button>
-
-
-    <button (click)="abrirModalEdicao(item)">
-      Editar
-    </button>
-
-
-    <button (click)="excluirItem(item)">
-      Excluir
-    </button>
 
   </div>
 
-</div>
+  <!-- ===================== MODAL: CADASTRO ===================== -->
+  <div class="modal-overlay" *ngIf="mostrarModalCadastro" (click)="fecharModalCadastro()">
+    <div class="modal" (click)="$event.stopPropagation()">
 
-<!-- Aqui entra as movimentações de entrada e saída de mercadorias-->
-<!--TEM UM BOTAO LA EM CIMA, NO TOPO DO HTML-->
-<div class="modal" *ngIf="mostrarModalHistorico">
-  <h2>Histórico de movimentações</h2>
+      <div class="modal-header">
+        <h2>Adicionar Novo Produto</h2>
+        <button class="modal-fechar" (click)="fecharModalCadastro()">✕</button>
+      </div>
 
-  <div *ngIf="movimentacoesEstoque.length === 0">
-    <p>Nenhuma movimentação registrada ainda</p>
+      <div class="modal-body">
+
+        <div class="campo-modal">
+          <label>Nome do item</label>
+          <input type="text" [(ngModel)]="nome" placeholder="Ex: Filé de Frango">
+        </div>
+
+        <div class="campo-modal">
+          <label>Marca</label>
+          <input type="text" [(ngModel)]="marca" placeholder="Ex: Aurora">
+        </div>
+
+        <div class="linha-modal">
+          <div class="campo-modal">
+            <label>Categoria</label>
+            <select [(ngModel)]="categoria">
+              <option value="">Selecione</option>
+              <option value="Massa">Massa</option>
+              <option value="Proteína">Proteína</option>
+              <option value="Aves">Aves</option>
+              <option value="Peixe">Peixe</option>
+              <option value="Guarnição">Guarnição</option>
+              <option value="Sobremesa">Sobremesa</option>
+              <option value="Bebida">Bebida</option>
+              <option value="Tempero">Tempero</option>
+            </select>
+          </div>
+
+          <div class="campo-modal">
+            <label>Unidade de medida</label>
+            <select [(ngModel)]="unidade">
+              <option value="">Selecione</option>
+              <option value="kg">kg</option>
+              <option value="g">g</option>
+              <option value="L">L</option>
+              <option value="ml">ml</option>
+              <option value="un">Unidades</option>
+              <option value="porção">Porções</option>
+              <option value="garrafa">Garrafas</option>
+              <option value="dose">Doses</option>
+              <option value="lata">Latas</option>
+              <option value="caixa">Caixas</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="linha-modal linha-tres">
+          <div class="campo-modal">
+            <label>Quantidade inicial</label>
+            <input type="number" [(ngModel)]="quantidadeAtual" placeholder="0">
+          </div>
+          <div class="campo-modal">
+            <label>Mínimo</label>
+            <input type="number" [(ngModel)]="quantidadeMinima" placeholder="0">
+          </div>
+          <div class="campo-modal">
+            <label>Máximo</label>
+            <input type="number" [(ngModel)]="quantidadeMaxima" placeholder="0">
+          </div>
+        </div>
+
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-modal btn-cancelar" (click)="fecharModalCadastro()">Cancelar</button>
+        <button class="btn-modal btn-confirmar" (click)="salvarItem()">Adicionar</button>
+      </div>
+
+    </div>
   </div>
 
-  <div *ngFor="let mov of movimentacoesEstoque">
+  <!-- ===================== MODAL: AJUSTE ===================== -->
+  <div class="modal-overlay" *ngIf="mostrarModalAjuste" (click)="fecharModalAjuste()">
+    <div class="modal" (click)="$event.stopPropagation()">
 
-    <p> <strong>{{ mov.nome }}</strong> </p>
+      <div class="modal-header">
+        <h2>Ajustar Estoque</h2>
+        <button class="modal-fechar" (click)="fecharModalAjuste()">✕</button>
+      </div>
 
-    <p *ngIf="mov.tipo !== 'transferencia'">
-      {{ mov.tipo }} de {{ mov.quantidade }} {{ mov.unidade }}
-    </p>
+      <div class="modal-body">
 
-    <p *ngIf="mov.tipo === 'transferencia'">
-      Transferência de {{ mov.quantidade }} {{ mov.unidade }}
-      para a unidade
-      <strong>{{ mov.destino }}</strong>
-    </p>
+        <div class="resumo-item-modal">
+          <strong>{{ itemSelecionado?.nome }}</strong>
+          <span>Estoque atual: {{ itemSelecionado?.quantidadeAtual }} {{ itemSelecionado?.unidade }}</span>
+        </div>
 
-    <p> {{ mov.quantidadeAnterior }} → {{ mov.quantidadeNova }} {{ mov.unidade }}</p>
+        <div class="tipo-movimentacao">
+          <button
+            class="btn-tipo"
+            [class.ativo-entrada]="tipoMovimentacao === 'entrada'"
+            (click)="tipoMovimentacao = 'entrada'">
+            ⬆ Entrada
+          </button>
+          <button
+            class="btn-tipo"
+            [class.ativo-saida]="tipoMovimentacao === 'saida'"
+            (click)="tipoMovimentacao = 'saida'">
+            ⬇ Saída
+          </button>
+        </div>
 
-    <p> {{ mov.criadoEm?.toDate() | date:'dd/MM/yyyy HH:mm' }}</p>
+        <div class="campo-modal">
+          <label>Quantidade</label>
+          <input type="number" [(ngModel)]="quantidadeAjuste" placeholder="0">
+        </div>
 
-    <hr>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-modal btn-cancelar" (click)="fecharModalAjuste()">Cancelar</button>
+        <button class="btn-modal btn-confirmar" (click)="confirmarAjuste()">Confirmar ajuste</button>
+      </div>
+
+    </div>
   </div>
 
-  <button (click)="fecharModalHistorico()"> Fechar </button>
+  <!-- ===================== MODAL: TRANSFERÊNCIA ===================== -->
+  <div class="modal-overlay" *ngIf="mostrarModalTransferencia" (click)="fecharModalTransferencia()">
+    <div class="modal" (click)="$event.stopPropagation()">
+
+      <div class="modal-header">
+        <h2>Transferir Estoque</h2>
+        <button class="modal-fechar" (click)="fecharModalTransferencia()">✕</button>
+      </div>
+
+      <div class="modal-body">
+
+        <div class="resumo-item-modal">
+          <strong>{{ itemTransferencia?.nome }}</strong>
+          <span>Estoque atual: {{ itemTransferencia?.quantidadeAtual }} {{ itemTransferencia?.unidade }}</span>
+        </div>
+
+        <div class="campo-modal">
+          <label>Destino</label>
+          <select [(ngModel)]="destinoTransferencia">
+            <option value="">Selecione o destino</option>
+            <option value="Dom Palladar Centro">Dom Palladar Centro</option>
+            <option value="Dom Palladar Zona Sul">Dom Palladar Zona Sul</option>
+            <option value="Dom Palladar Zona Norte">Dom Palladar Zona Norte</option>
+          </select>
+        </div>
+
+        <div class="campo-modal">
+          <label>Quantidade para transferir</label>
+          <input type="number" [(ngModel)]="quantidadeTransferencia" placeholder="0">
+        </div>
+
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-modal btn-cancelar" (click)="fecharModalTransferencia()">Cancelar</button>
+        <button class="btn-modal btn-confirmar" (click)="confirmarTransferencia()">Confirmar transferência</button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ===================== MODAL: EDIÇÃO ===================== -->
+  <div class="modal-overlay" *ngIf="mostrarModalEdicao" (click)="fecharModalEdicao()">
+    <div class="modal" (click)="$event.stopPropagation()">
+
+      <div class="modal-header">
+        <h2>Editar Produto</h2>
+        <button class="modal-fechar" (click)="fecharModalEdicao()">✕</button>
+      </div>
+
+      <div class="modal-body">
+
+        <div class="campo-modal">
+          <label>Nome do item</label>
+          <input type="text" [(ngModel)]="nome">
+        </div>
+
+        <div class="campo-modal">
+          <label>Marca</label>
+          <input type="text" [(ngModel)]="marca">
+        </div>
+
+        <div class="linha-modal">
+          <div class="campo-modal">
+            <label>Categoria</label>
+            <select [(ngModel)]="categoria">
+              <option value="Massa">Massa</option>
+              <option value="Proteína">Proteína</option>
+              <option value="Aves">Aves</option>
+              <option value="Peixe">Peixe</option>
+              <option value="Guarnição">Guarnição</option>
+              <option value="Sobremesa">Sobremesa</option>
+              <option value="Bebida">Bebida</option>
+              <option value="Tempero">Tempero</option>
+            </select>
+          </div>
+
+          <div class="campo-modal">
+            <label>Unidade</label>
+            <select [(ngModel)]="unidade">
+              <option value="kg">kg</option>
+              <option value="g">g</option>
+              <option value="L">L</option>
+              <option value="ml">ml</option>
+              <option value="un">Unidades</option>
+              <option value="porção">Porções</option>
+              <option value="garrafa">Garrafas</option>
+              <option value="dose">Doses</option>
+              <option value="lata">Latas</option>
+              <option value="caixa">Caixas</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="linha-modal">
+          <div class="campo-modal">
+            <label>Mínimo</label>
+            <input type="number" [(ngModel)]="quantidadeMinima">
+          </div>
+          <div class="campo-modal">
+            <label>Máximo</label>
+            <input type="number" [(ngModel)]="quantidadeMaxima">
+          </div>
+        </div>
+
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-modal btn-cancelar" (click)="fecharModalEdicao()">Cancelar</button>
+        <button class="btn-modal btn-confirmar" (click)="salvarEdicao()">Salvar alterações</button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ===================== MODAL: HISTÓRICO ===================== -->
+  <div class="modal-overlay" *ngIf="mostrarModalHistorico" (click)="fecharModalHistorico()">
+    <div class="modal modal-historico" (click)="$event.stopPropagation()">
+
+      <div class="modal-header">
+        <h2>Histórico de movimentações</h2>
+        <button class="modal-fechar" (click)="fecharModalHistorico()">✕</button>
+      </div>
+
+      <div class="modal-body">
+
+        <p *ngIf="movimentacoesEstoque.length === 0" class="vazio">
+          Nenhuma movimentação registrada ainda.
+        </p>
+
+        <div class="item-historico" *ngFor="let mov of movimentacoesEstoque">
+
+          <div class="historico-topo">
+            <strong>{{ mov.nome }}</strong>
+            <span
+              class="badge-tipo-mov"
+              [ngClass]="{
+                'badge-entrada': mov.tipo === 'entrada',
+                'badge-saida': mov.tipo === 'saida',
+                'badge-transferencia': mov.tipo === 'transferencia'
+              }">
+              {{ mov.tipo === 'entrada' ? '⬆ Entrada' : mov.tipo === 'saida' ? '⬇ Saída' : '⇄ Transferência' }}
+            </span>
+          </div>
+
+          <p class="descricao-mov" *ngIf="mov.tipo !== 'transferencia'">
+            {{ mov.quantidade }} {{ mov.unidade }}
+          </p>
+
+          <p class="descricao-mov" *ngIf="mov.tipo === 'transferencia'">
+            {{ mov.quantidade }} {{ mov.unidade }} para <strong>{{ mov.destino }}</strong>
+          </p>
+
+          <div class="variacao-mov">
+            <span>{{ mov.quantidadeAnterior }}</span>
+            <span class="seta-variacao">→</span>
+            <span>{{ mov.quantidadeNova }} {{ mov.unidade }}</span>
+          </div>
+
+          <span class="data-mov">{{ mov.criadoEm?.toDate() | date:'dd/MM/yyyy HH:mm' }}</span>
+
+        </div>
+
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-modal btn-cancelar" (click)="fecharModalHistorico()">Fechar</button>
+      </div>
+
+    </div>
+  </div>
 
 </div>
