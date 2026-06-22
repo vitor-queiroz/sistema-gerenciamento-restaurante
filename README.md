@@ -1,58 +1,84 @@
-# Sistema de Gerenciamento de Restaurante 🍴
+# 🍴 Dom Palladar
 
-### Qual a proposta deste sistema?
-- Temos como objetivo desenvolver um sistema completo para restaurantes, integrando tanto a experiência do cliente quanto a operação interna do "estabelecimento.
+O **Dom Palladar** é um sistema completo de gerenciamento para restaurantes desenvolvido com Angular e Firebase.
 
-  ## Qual foi a nossa ideia?
-- A proposta do projeto vai além de apenas realizar pedidos
-  - Pensamos em trazer "algo" não apenas para realizar pedidos, mas criar uma experiência completa, aplicando conceitos de desenvolvimento web e organização operacional para o funcionamento real de um restaurante.
-- O sistema contará com:
-  - área web para clientes;
-  - reservas
-  - delivery;
-  - gerenciamento de pedidos;
-  - sistema operacional inteno.
-  
+A aplicação integra clientes, funcionários e gerentes em um único ambiente, permitindo o gerenciamento de pedidos, estoque, reservas, delivery e operações administrativas em tempo real através do Firestore.
 
-## Quais vão ser as Tecnologias usadas? 👀
-<img width="360" alt="image" src="https://github.com/user-attachments/assets/ad521977-5da3-4dc2-8474-4dbd02f9c482" />
-<img width="360" alt="image" src="https://github.com/user-attachments/assets/f9b7ba9f-3fc1-49b8-b959-0af5d4527e92" />
-<img width="370" alt="image" src="https://github.com/user-attachments/assets/642e6699-f579-441a-8f9d-729bbd329fef" />
-<img width="330" alt="image" src="https://github.com/user-attachments/assets/76ec0f5a-0c91-44f8-a8ce-703fd56bffca" />
+## 🧠 Qual foi o objetivo do projeto?
+
+O **Dom Palladar** nasceu com o objetivo de desenvolver uma aplicação que se aproximasse do funcionamento de um restaurante real, indo além de um simples sistema de pedidos.
+
+Por isso, o sistema foi dividido em dois ambientes:
+
+- 🌐 **Área Web** - voltada para os clientes, com acesso ao cardápio, reservas e delivery.
+- 🔐 **Painel Administrativo** - destinado a funcionários e gerentes, permitindo o gerenciamento de pedidos, produtos, estoque, reservas, relatórios, área financeira, ESG e acompanhamento da cozinha por meio do KDS.
+
+O maior desafio do projeto foi integrar todos esses módulos em uma única aplicação, garantindo que as informações fossem sincronizadas em tempo real entre os diferentes setores do restaurante.
 
 
-## O que já está pronto? 💪
-- [x] Toda estrutura inicial das telas
-- [x] Organização incial do projeto
-- [x] Integração com o Firebase
-- [x] Integração com o FireStore
-- [x] Cadastro, edição e exclusão dos produtos
+## 👊 Funcionalidades
 
-## O que precisa ser feito? 😬
-- [ ] Finalização completa dos layouts
-- [ ] Área completa do delivery 
-- [ ] Integração entre pedidos e cozinha
-- [ ] Painel administrativo interno
+### Área do Cliente
 
-#### Preview de algumas das telas: 
-<img width="829" height="429" alt="image" src="https://github.com/user-attachments/assets/690deff7-a07d-43d1-85b4-13f717a51365" />
+- Cardápio online
+- Sistema de Delivery
+- Cadastro e Login
+- Reservas
+- Carrinho de compras
 
----
+### Painel Administrativo
 
-<img width="829" alt="image" src="https://github.com/user-attachments/assets/d1340766-bff5-4955-b4e4-83d708351952" />
+- Controle de produtos
+- Controle de funcionários
+- Controle de acessos
+- Controle de estoque
+- Gestão de pedidos
+- Relatórios
+- Área ESG
 
----
+## 🚀 Tecnologias
 
-<img width="829" alt="image" src="https://github.com/user-attachments/assets/effe6cb6-f4f6-48f5-98e4-6dfe2bb35dad" />
-
-## Acesse por aqui ⤵️
-[DOM PALLADAR](https://vitor-queiroz.github.io/sistema-gerenciamento-restaurante/)
-
-## Quem está por trás disso: 🔍
-[LinkedIn Vitor](https://www.linkedin.com/in/vitor-queiroz-b95224348)
-
----
-[LinkedIn Kelvin](https://www.linkedin.com/in/kelvin-moises-24a849366/)
+| Front-end | Back-end | Banco de Dados | Ferramentas |
+|-----------|----------|----------------|-------------|
+| Angular | Firebase | Firestore | Git |
+| TypeScript |  | | GitHub |
+| HTML | | | Figma |
+| CSS | | | VS Code |
 
 
+## Preview de algumas telas:
+<img width="1740" height="841" alt="image" src="https://github.com/user-attachments/assets/a2588500-4b38-46d1-a81e-94813a2eda3b" />
+<img width="1739" height="786" alt="image" src="https://github.com/user-attachments/assets/d972d0e1-3a21-4c18-ab7f-9a91379b0732" />
+<img width="1757" height="851" alt="image" src="https://github.com/user-attachments/assets/d6ca9a50-9712-43ec-87fe-c7db9df8ad11" />
+<img width="1745" height="843" alt="image" src="https://github.com/user-attachments/assets/130655cd-a1bd-481f-b338-c646ed204cca" />
+<img width="1742" height="843" alt="image" src="https://github.com/user-attachments/assets/be235a81-afcf-4d78-93c5-b89a046411ce" />
+
+
+
+## 🧠 Principais desafios
+
+Durante o desenvolvimento do projeto surgiram diversos desafios técnicos, entre eles:
+
+- Passar boa parte do nosso projeto em HTML e CSS para o Angular.
+- Integração entre Angular, Firebase e Firestore.
+- Organização da arquitetura na utilização dos componentes.
+- Erros de carregamento de imagens e ao nosso CSS (no início da integração com o Angular).
+- Sincronização do Delivery e reservas ao Painel Administrativo.
+- Deploy do projeto.
+
+
+## 👨‍💻 Desenvolvedores
+
+### Vitor Queiroz
+
+- [LinkedIn](https://www.linkedin.com/in/vitor-queiroz-b95224348)
+- [GitHub](https://github.com/vitor-queiroz)
+
+### Kelvin Moisés
+
+- [LinkedIn](https://www.linkedin.com/in/kelvin-moises-24a849366/)
+- [GitHub](https://github.com/Kel106914)
+
+## 🚀 Acesse o projeto
+[DomPalladar]( https://dompalladar-8f4e2.web.app/)
 
